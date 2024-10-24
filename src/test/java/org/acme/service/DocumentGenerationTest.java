@@ -1,6 +1,7 @@
 package org.acme.service;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.IBody;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.acme.service.Constants.*;
@@ -20,9 +22,14 @@ class DocumentGenerationTest {
     @BeforeEach
     void setUp() throws IOException {
         var document = new DocumentGeneration().generateWordFile();
-        XWPFDocument doc = new XWPFDocument(OPCPackage.create(document));
-        paragraphs = doc.getParagraphs();
-        doc.close();
+        var finalDocument = Path.of("proposal.docx");
+        paragraphs = convertToXWPFDocument(finalDocument).getParagraphs();
+        document.close();
+    }
+
+    private IBody convertToXWPFDocument(Path finalDocument) {
+//        IBody iBody = finalDocument......;    // TODO
+        return new XWPFDocument();
     }
 
     @Test
