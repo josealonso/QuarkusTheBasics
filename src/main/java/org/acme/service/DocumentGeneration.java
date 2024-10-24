@@ -25,15 +25,15 @@ public class DocumentGeneration {
 //        this.content = content;
     }
 
-    private FileOutputStream generateDocumentContent() throws IOException {
+    public FileOutputStream generateWordFile() throws IOException {
 	    formatTitle();
 		formatSubtitle();
 		String content = FIRST_LINE;
-	    formatParagraphs(content);
-	    return generateWordFile();
+	    var finalDocument = formatParagraphs(content);
+	    return generateWordFile(finalDocument);
 	}
 
-	private void formatTitle() {
+	private XWPFDocument formatTitle() {
 		XWPFParagraph titleParagraph = document.createParagraph();
 		titleParagraph.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun titleRun = titleParagraph.createRun();
@@ -42,9 +42,10 @@ public class DocumentGeneration {
 		titleRun.setBold(true);
 		titleRun.setFontFamily(TITLE_FONT_FAMILY);
 		titleRun.setFontSize(TITLE_FONT_SIZE);
+		return document;
 	}
 
-	private void formatSubtitle() {
+	private XWPFDocument formatSubtitle() {
 		XWPFParagraph subTitleParagraph = document.createParagraph();
 		subTitleParagraph.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun subTitleRun = subTitleParagraph.createRun();
@@ -54,16 +55,18 @@ public class DocumentGeneration {
 		subTitleRun.setFontSize(16);
 		subTitleRun.setTextPosition(20);
 		subTitleRun.setUnderline(UnderlinePatterns.DOT_DOT_DASH);
+		return document;
 	}
 
-	private void formatParagraphs(String content) {
+	private XWPFDocument formatParagraphs(String content) {
 		XWPFParagraph firstParagraph = document.createParagraph();
 		firstParagraph.setAlignment(ParagraphAlignment.BOTH);
 		XWPFRun firstParagraphRun = firstParagraph.createRun();
 		firstParagraphRun.setText(content);
+		return document;
 	}
 
-	public FileOutputStream generateWordFile() throws IOException {
+	private FileOutputStream generateWordFile(XWPFDocument document) throws IOException {
 		FileOutputStream out = new FileOutputStream(new File("proposal.docx"));
         try {
             document.write(out);
