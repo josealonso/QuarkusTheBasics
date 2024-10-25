@@ -10,8 +10,7 @@ import org.acme.service.DocumentGenerationService;
 
 import java.io.*;
 
-import static org.acme.service.Constants.EXCEL_DOCUMENT_NAME;
-import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
+import static org.acme.service.Constants.*;
 
 @ApplicationScoped
 @Path("/document")
@@ -25,7 +24,7 @@ public class DocumentResourceController {
 
     @GET
     @Path("/word")
-    @Produces("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    @Produces(WORD_CONTENT_TYPE)
     public Response getWordDocument() throws IOException {
 
         try (FileOutputStream wordFile = documentGenerationService.generateWordFile()) {
@@ -48,7 +47,7 @@ public class DocumentResourceController {
 
     @GET
     @Path("/excel")
-    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @Produces(EXCEL_CONTENT_TYPE)
     public Response getExcelDocument() throws IOException {
 
         try (FileOutputStream excelFile = documentGenerationService.generateExcelFile()) {

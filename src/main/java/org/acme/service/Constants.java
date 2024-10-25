@@ -14,4 +14,9 @@ public class Constants {
     public static final int TITLE_PARAGRAPH_NUMBER = 0;
     public static final int SUBTITLE_PARAGRAPH_NUMBER = 1;
     public static final int FIRST_LINE_PARAGRAPH_NUMBER = 2;
+
+    /************************************************** Content Types ******************************************************/
+    public static final String EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String WORD_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
 }
