@@ -50,6 +50,7 @@ public class DocumentResource {
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getExcelDocument() throws IOException {
 
+        documentGeneration = new DocumentGeneration();
         try (FileOutputStream excelFile = documentGeneration.generateExcelFile()) {
             Log.info("================ The excel document has been generated ================");
         }
@@ -64,6 +65,5 @@ public class DocumentResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error generating Excel file").build();
         }
     }
-
 
 }

@@ -7,7 +7,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.*;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -35,7 +34,7 @@ public class DocumentGeneration {
 		formatSubtitle();
 		String content = FIRST_LINE;
 	    var finalDocument = formatParagraphs(content);
-	    return generateWordFile(finalDocument);
+	    return composeWordFile(finalDocument);
 	}
 
 	private XWPFDocument formatTitle() {
@@ -71,16 +70,16 @@ public class DocumentGeneration {
 		return document;
 	}
 
-	private FileOutputStream generateWordFile(XWPFDocument document) throws IOException {
-		FileOutputStream out = new FileOutputStream(new File(WORD_DOCUMENT_NAME));
+	private FileOutputStream composeWordFile(XWPFDocument document) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(WORD_DOCUMENT_NAME);
         try {
-            document.write(out);
-			out.close();
+            document.write(outputStream);
+			outputStream.close();
 			document.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 	    }
-		return out;
+		return outputStream;
 	}
 
 	/****************************************************************************************************/
@@ -95,19 +94,19 @@ public class DocumentGeneration {
 		row.setHeight((short) 500);
 		Cell cell = row.createCell(0);
 		cell.setCellValue("Hello, Excel!");
-		return generateFinalExcelFile(workbook);
+		return composeExcelFile(workbook);
 	}
 
-	private FileOutputStream generateFinalExcelFile(Workbook document) throws IOException {
-		FileOutputStream out = new FileOutputStream(new File(EXCEL_DOCUMENT_NAME));
+	private FileOutputStream composeExcelFile(Workbook document) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(EXCEL_DOCUMENT_NAME);
 		try {
-			document.write(out);
-			out.close();
+			document.write(outputStream);
+			outputStream.close();
 			document.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return out;
+		return outputStream;
 	}
 
 }
