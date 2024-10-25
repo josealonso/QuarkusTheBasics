@@ -24,15 +24,12 @@ public class DocumentResource {
     @GET
     @Path("/word")
     @Produces("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-    public Response getWordDocument() {
-        FileOutputStream wordFile;
+    public Response getWordDocument() throws IOException {
+
         documentGeneration = new DocumentGeneration();
-        try {
-            wordFile = documentGeneration.generateWordFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try (FileOutputStream wordFile = documentGeneration.generateWordFile()) {
+            Log.info("================ The word document has been generated ================");
         }
-        Log.info("================ The word document has been generated ================");
 
         var file = new File(WORD_DOCUMENT_NAME);
 
@@ -51,17 +48,11 @@ public class DocumentResource {
     @GET
     @Path("/excel")
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getExcelDocument() {
-        FileOutputStream excelFile;
-        try {
-            excelFile = documentGeneration.generateExcelFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public Response getExcelDocument() throws IOException {
+
+        try (FileOutputStream excelFile = documentGeneration.generateExcelFile()) {
+            Log.info("================ The excel document has been generated ================");
         }
-
-        Log.info("================ The excel document has been generated ================");
-
-        var file = new File(WORD_DOCUMENT_NAME);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             byte[] excelBytes = outputStream.toByteArray();
