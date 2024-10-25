@@ -1,5 +1,10 @@
 package org.acme.service;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.File;
@@ -67,7 +72,7 @@ public class DocumentGeneration {
 	}
 
 	private FileOutputStream generateWordFile(XWPFDocument document) throws IOException {
-		FileOutputStream out = new FileOutputStream(new File("proposal.docx"));
+		FileOutputStream out = new FileOutputStream(new File(WORD_DOCUMENT_NAME));
         try {
             document.write(out);
 			out.close();
@@ -75,6 +80,33 @@ public class DocumentGeneration {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 	    }
+		return out;
+	}
+
+	/****************************************************************************************************/
+	/*************************** This will be the Excel microservice  ***********************************/
+	/****************************************************************************************************/
+
+	public FileOutputStream generateExcelFile() throws IOException {
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Sample Tab");
+		Row row = sheet.createRow(0);
+		// set row styles
+		row.setHeight((short) 500);
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Hello, Excel!");
+		return generateFinalExcelFile(workbook);
+	}
+
+	private FileOutputStream generateFinalExcelFile(Workbook document) throws IOException {
+		FileOutputStream out = new FileOutputStream(new File(EXCEL_DOCUMENT_NAME));
+		try {
+			document.write(out);
+			out.close();
+			document.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		return out;
 	}
 
