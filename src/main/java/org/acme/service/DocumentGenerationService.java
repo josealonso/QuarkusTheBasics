@@ -1,5 +1,6 @@
 package org.acme.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -12,17 +13,18 @@ import java.io.IOException;
 
 import static org.acme.service.Constants.*;
 
-public class DocumentGeneration {
+@ApplicationScoped
+public class DocumentGenerationService {
 
 	XWPFDocument document;
 	String title;
 	String subtitle;
 
-	public DocumentGeneration() {
+	public DocumentGenerationService() {
 		document = new XWPFDocument();
 	}
 
-    DocumentGeneration(String title, String subtitle, String content) {
+    DocumentGenerationService(String title, String subtitle, String content) {
 		document = new XWPFDocument();
         this.title = title;
         this.subtitle = subtitle;

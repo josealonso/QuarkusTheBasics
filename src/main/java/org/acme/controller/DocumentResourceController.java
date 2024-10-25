@@ -1,33 +1,34 @@
 package org.acme.controller;
 
 import io.quarkus.logging.Log;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
-import org.acme.service.DocumentGeneration;
+import org.acme.service.DocumentGenerationService;
 
 import java.io.*;
 
 import static org.acme.service.Constants.EXCEL_DOCUMENT_NAME;
 import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
 
+@ApplicationScoped
 @Path("/document")
-public class DocumentResource {
+public class DocumentResourceController {
 
-    private DocumentGeneration documentGeneration;
+    private final DocumentGenerationService documentGenerationService;
 
-//    public DocumentResource(DocumentGeneration documentGeneration) {
-//        this.documentGeneration = new DocumentGeneration();
-//    }
+    public DocumentResourceController(DocumentGenerationService documentGenerationService) {
+        this.documentGenerationService = documentGenerationService;
+    }
 
     @GET
     @Path("/word")
     @Produces("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     public Response getWordDocument() throws IOException {
 
-        documentGeneration = new DocumentGeneration();
-        try (FileOutputStream wordFile = documentGeneration.generateWordFile()) {
+        try (FileOutputStream wordFile = documentGenerationService.generateWordFile()) {
             Log.info("================ The word document has been generated ================");
         }
 
@@ -50,8 +51,7 @@ public class DocumentResource {
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getExcelDocument() throws IOException {
 
-        documentGeneration = new DocumentGeneration();
-        try (FileOutputStream excelFile = documentGeneration.generateExcelFile()) {
+        try (FileOutputStream excelFile = documentGenerationService.generateExcelFile()) {
             Log.info("================ The excel document has been generated ================");
         }
 

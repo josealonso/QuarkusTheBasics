@@ -21,7 +21,7 @@ class DocumentGenerationTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        var document = new DocumentGeneration().generateWordFile();
+        var document = new DocumentGenerationService().generateWordFile();
         var finalDocument = Path.of("proposal.docx");
         paragraphs = convertToXWPFDocument(finalDocument).getParagraphs();
         document.close();
