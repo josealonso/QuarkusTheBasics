@@ -1,7 +1,7 @@
 package org.acme.controller;
 
 import io.quarkus.logging.Log;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static org.acme.service.Constants.*;
 
-@ApplicationScoped
+@RequestScoped
 @Path("/document")
 public class DocumentResourceController {
 

@@ -1,6 +1,6 @@
 package org.acme.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static org.acme.service.Constants.*;
 
-@ApplicationScoped
+@RequestScoped
 public class DocumentGenerationService {
 
 //	private DocumentResourceController documentResourceController;

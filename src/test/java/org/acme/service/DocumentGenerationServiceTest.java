@@ -62,14 +62,14 @@ class DocumentGenerationServiceTest {
     @Test
     void testTheExcelDocumentHasBeenGenerated() throws IOException {
         new DocumentGenerationService().generateExcelFile("prueba");
-        var excelDocument = Path.of(EXCEL_DOCUMENT_NAME).toFile();
+        var excelDocument = Path.of("prueba").toFile();
         assertTrue(excelDocument.exists());
     }
 
     @Test
     void testTheGeneratedExcelDocumentHasTheExpectedContent() throws IOException {
         var document = new DocumentGenerationService().generateExcelFile("prueba");
-        var excelDocument = Path.of(EXCEL_DOCUMENT_NAME).toFile();
+        var excelDocument = Path.of("prueba").toFile();
         var workbook = convertFileToXSSFWorkbook(excelDocument).getCTWorkbook();
         document.close();
 
