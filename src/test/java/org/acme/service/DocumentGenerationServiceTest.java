@@ -32,15 +32,15 @@ class DocumentGenerationServiceTest {
 
     @Test
     void testTheWordDocumentHasBeenGenerated() throws IOException {
-        new DocumentGenerationService().generateWordFile();
-        var wordDocument = Path.of(WORD_DOCUMENT_NAME).toFile();
+        new DocumentGenerationService().generateWordFile("prueba");
+        var wordDocument = Path.of("prueba").toFile();
         assertTrue(wordDocument.exists());
     }
 
     @Test
     void testTheGeneratedWordDocumentHasTheExpectedContent() throws IOException {
-        var document = new DocumentGenerationService().generateWordFile();
-        var wordDocument = Path.of(WORD_DOCUMENT_NAME).toFile();
+        var document = new DocumentGenerationService().generateWordFile("prueba");
+        var wordDocument = Path.of("prueba").toFile();
         var paragraphs = convertFileToXWPFDocument(wordDocument).getParagraphs();
         document.close();
 
@@ -61,14 +61,14 @@ class DocumentGenerationServiceTest {
 
     @Test
     void testTheExcelDocumentHasBeenGenerated() throws IOException {
-        new DocumentGenerationService().generateExcelFile();
+        new DocumentGenerationService().generateExcelFile("prueba");
         var excelDocument = Path.of(EXCEL_DOCUMENT_NAME).toFile();
         assertTrue(excelDocument.exists());
     }
 
     @Test
     void testTheGeneratedExcelDocumentHasTheExpectedContent() throws IOException {
-        var document = new DocumentGenerationService().generateExcelFile();
+        var document = new DocumentGenerationService().generateExcelFile("prueba");
         var excelDocument = Path.of(EXCEL_DOCUMENT_NAME).toFile();
         var workbook = convertFileToXSSFWorkbook(excelDocument).getCTWorkbook();
         document.close();

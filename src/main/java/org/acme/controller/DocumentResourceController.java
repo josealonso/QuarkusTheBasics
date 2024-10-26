@@ -9,6 +9,8 @@ import jakarta.ws.rs.core.Response;
 import org.acme.service.DocumentGenerationService;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.acme.service.Constants.*;
 
@@ -27,21 +29,23 @@ public class DocumentResourceController {
     @Produces(WORD_CONTENT_TYPE)
     public Response getWordDocument() throws IOException {
 
-        try (FileOutputStream wordFile = documentGenerationService.generateWordFile()) {
+        var wordFileName = createFileNameWithTimestampSuffix(WORD_DOCUMENT_NAME) + ".docx";
+
+        try (FileOutputStream wordFile = documentGenerationService.generateWordFile(wordFileName)) {
             Log.info("================ The word document has been generated ================");
         }
 
-        var file = new File(WORD_DOCUMENT_NAME);
-
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+        var file = new File(wordFileName);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {   // this code block caused an exception
             byte[] fileContent = new byte[(int) file.length()];
-            fileInputStream.read(fileContent);
+            fileInputStream.read(fileContent);   // This line is needed
 
             return Response.ok(fileContent)
-                    .header("Content-Disposition", "attachment; filename=\"" + WORD_DOCUMENT_NAME + "\"")
+                    .header("Content-Disposition", "attachment; filename=\"" + wordFileName + "\"")
                     .build();
         } catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error generating Word file").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error generating Word file")
+                    .build();
         }
     }
 
@@ -50,19 +54,42 @@ public class DocumentResourceController {
     @Produces(EXCEL_CONTENT_TYPE)
     public Response getExcelDocument() throws IOException {
 
-        try (FileOutputStream excelFile = documentGenerationService.generateExcelFile()) {
+        var excelFileName = createFileNameWithTimestampSuffix(EXCEL_DOCUMENT_NAME) + ".xlsx";
+
+        try (FileOutputStream excelFile = documentGenerationService.generateExcelFile(excelFileName)) {
             Log.info("================ The excel document has been generated ================");
         }
 
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            byte[] excelBytes = outputStream.toByteArray();
+        var file = new File(excelFileName);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            byte[] fileContent = new byte[(int) file.length()];
+            fileInputStream.read(fileContent);
 
-            return Response.ok(excelBytes)
-                    .header("Content-Disposition", "attachment; filename=\"" + EXCEL_DOCUMENT_NAME + "\"")
+//        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {  // this code block generated an empty file
+//            byte[] excelBytes = outputStream.toByteArray();
+
+            return Response.ok(fileContent)
+                    .header("Content-Disposition", "attachment; filename=\"" + excelFileName + "\"")
                     .build();
         } catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error generating Excel file").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error generating Excel file")
+                    .build();
         }
     }
 
+    private String createFileNameWithTimestampSuffix(String baseFileName) {
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timestamp = dateFormat.format(now);
+        return baseFileName + "_" + timestamp;
+    }
+
 }
+
+
+
+
+
+
+
+

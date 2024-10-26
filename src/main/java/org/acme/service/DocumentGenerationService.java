@@ -16,13 +16,13 @@ import static org.acme.service.Constants.*;
 @ApplicationScoped
 public class DocumentGenerationService {
 
-	private final XWPFDocument document;
+//	private DocumentResourceController documentResourceController;
 
 	public DocumentGenerationService() {
-		document = new XWPFDocument();
+//		documentResourceController = DocumentResourceController(this);
 	}
 
-    /**
+	/**
      * Generates a Word document and returns it as a FileOutputStream.
      * The document includes the title and subtitle centered and in color,
      * followed by a paragraph with the given content.
@@ -32,21 +32,33 @@ public class DocumentGenerationService {
      * @return the FileOutputStream containing the generated document
      * @throws IOException if the document could not be generated
      */
-    public FileOutputStream generateWordFile() throws IOException {
-	    formatTitle();
-		formatSubtitle();
-		String content = WORD_FIRST_LINE;
-	    var finalDocument = formatParagraphs(content);
-	    return composeWordFile(finalDocument);
+    public FileOutputStream generateWordFile(String wordFileName) throws IOException {
+        XWPFDocument document = new XWPFDocument();
+		formatTitle(document);
+		formatSubtitle(document);
+        var finalDocument = formatParagraphs(document, WORD_FIRST_LINE);
+	    return composeWordFile(finalDocument, wordFileName);
 	}
 
-    /**
+	private FileOutputStream composeWordFile(XWPFDocument document, String wordFileName) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(wordFileName);
+		try {
+			document.write(outputStream);
+			outputStream.close();
+			document.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return outputStream;
+	}
+
+	/**
      * Formats the title of the Word document by creating a centered paragraph
      * with specified text, color, boldness, font family, and font size.
 	 *
      * @return the XWPFDocument with the formatted title paragraph
      */
-	private XWPFDocument formatTitle() {
+	private XWPFDocument formatTitle(XWPFDocument document) {
 		XWPFParagraph titleParagraph = document.createParagraph();
 		titleParagraph.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun titleRun = titleParagraph.createRun();
@@ -58,7 +70,7 @@ public class DocumentGenerationService {
 		return document;
 	}
 
-	private XWPFDocument formatSubtitle() {
+	private XWPFDocument formatSubtitle(XWPFDocument document) {
 		XWPFParagraph subTitleParagraph = document.createParagraph();
 		subTitleParagraph.setAlignment(ParagraphAlignment.CENTER);
 		XWPFRun subTitleRun = subTitleParagraph.createRun();
@@ -71,7 +83,7 @@ public class DocumentGenerationService {
 		return document;
 	}
 
-	private XWPFDocument formatParagraphs(String content) {
+	private XWPFDocument formatParagraphs(XWPFDocument document, String content) {
 		XWPFParagraph firstParagraph = document.createParagraph();
 		firstParagraph.setAlignment(ParagraphAlignment.BOTH);
 		XWPFRun firstParagraphRun = firstParagraph.createRun();
@@ -79,23 +91,11 @@ public class DocumentGenerationService {
 		return document;
 	}
 
-	private FileOutputStream composeWordFile(XWPFDocument document) throws IOException {
-		FileOutputStream outputStream = new FileOutputStream(WORD_DOCUMENT_NAME);
-        try {
-            document.write(outputStream);
-			outputStream.close();
-			document.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-	    }
-		return outputStream;
-	}
-
 	/****************************************************************************************************/
 	/*************************** This will be the Excel microservice  ***********************************/
 	/****************************************************************************************************/
 
-	public FileOutputStream generateExcelFile() throws IOException {
+	public FileOutputStream generateExcelFile(String excelFileName) throws IOException {
 		Workbook workbook = new XSSFWorkbook();
 		Sheet sheet = workbook.createSheet(EXCEL_FIRST_SHEET);
 		Row row = sheet.createRow(0);
@@ -103,11 +103,11 @@ public class DocumentGenerationService {
 		row.setHeight((short) 500);
 		Cell cell = row.createCell(0);
 		cell.setCellValue(EXCEL_FIRST_CELL);
-		return composeExcelFile(workbook);
+		return composeExcelFile(workbook, excelFileName);
 	}
 
-	private FileOutputStream composeExcelFile(Workbook document) throws IOException {
-		FileOutputStream outputStream = new FileOutputStream(EXCEL_DOCUMENT_NAME);
+	private FileOutputStream composeExcelFile(Workbook document, String excelFileName) throws IOException {
+		FileOutputStream outputStream = new FileOutputStream(excelFileName);
 		try {
 			document.write(outputStream);
 			outputStream.close();
