@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>DOCUMENT GENERATION</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:panel header="Select Document Type">
+            <p:selectOneRadio value="#{formBean.selectedForm}">
+                <f:selectItem itemLabel="Invoice" itemValue="invoice" />
+                <f:selectItem itemLabel="Other" itemValue="other" />
+                <p:ajax update="formPanel" />
+            </p:selectOneRadio>
+        </p:panel>
+
+        <p:panel id="formPanel">
+            <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}">
+                <h:outputLabel for="invoiceNumber" value="Invoice Number:" />
+                <p:inputText id="invoiceNumber" />
+
+                <h:outputLabel for="invoiceDate" value="Invoice Date:" />
+                <p:calendar id="invoiceDate" />
+            </p:panelGrid>
+
+            <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'other'}">
+                <h:outputLabel for="otherType" value="Other Type:" />
+                <p:inputText id="otherType" />
+
+                <h:outputLabel for="description" value="Description:" />
+                <p:inputTextarea id="description" />
+            </p:panelGrid>
+        </p:panel>
+
+        <p:commandButton value="Submit" update="@form" />
+    </h:form>
+</h:body>
+</html>

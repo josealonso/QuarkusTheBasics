@@ -13,6 +13,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.15.1</quarkus.platform.version>
+        <primefaces-quarkus.version>3.14.5</primefaces-quarkus.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.3.1</surefire-plugin.version>
     </properties>
@@ -69,6 +70,22 @@
 <!--            <groupId>io.quarkiverse.jasperreports</groupId>-->
 <!--            <artifactId>quarkus-jasperreports</artifactId>-->
 <!--            <version>0.0.5</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>io.quarkiverse.primefaces</groupId>
+            <artifactId>quarkus-primefaces</artifactId>
+            <version>${primefaces-quarkus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.primefaces</groupId>
+            <artifactId>quarkus-primefaces-extensions</artifactId>
+            <version>${primefaces-quarkus.version}</version>
+        </dependency>
+        <!-- OmniFaces is a utility library for Faces -->
+<!--        <dependency>-->
+<!--            <groupId>io.quarkiverse.omnifaces</groupId>-->
+<!--            <artifactId>quarkus-omnifaces</artifactId>-->
+<!--            <version>${omnifaces.version}</version>-->
 <!--        </dependency>-->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -146,16 +163,15 @@
                         <groupId>com.pro-crafting.tools</groupId>
                         <artifactId>jasperreports-maven-plugin</artifactId>
                         <version>4.0.0</version>
-                        <executions>
-                            <execution>
-                                <phase>process-sources</phase>
-                                <goals>
-                                    <goal>jasper</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <phase>process-sources</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>jasper</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
                         <configuration>
-                            <!-- These are the default configurations: -->
                             <compiler>net.sf.jasperreports.jdt.JRJdtCompiler</compiler>
                             <sourceDirectory>src/main/resources/reports</sourceDirectory>
                             <outputDirectory>src/main/resources/reportsCompiled</outputDirectory>

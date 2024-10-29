@@ -1,9 +1,9 @@
 package org.acme.service;
 
 import jakarta.enterprise.context.RequestScoped;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.acme.jasperreports.JasperInvoiceBean;
 
 import java.io.FileNotFoundException;
@@ -21,17 +21,17 @@ public class PdfDocumentGenerationService {
             JasperCompileManager.compileReportToFile(jasperReportTemplate, pdfFileName);
 
             // Load the compiled .jasper file
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(compiledJasperReport);
+            // JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(compiledJasperReport);
             // Create parameters map
             Map<String, Object> parameters = Map.of("ReportTitle", pdfFileName);
             // Create a JRBeanCollectionDataSource
             var invoiceBeanList = List.of(new JasperInvoiceBean("José", "España"));
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(invoiceBeanList);
             // Fill the report with data
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+            // JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
             // Export the report to PDF
-            JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFileName);
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFileName);
 
 //            JRPdfExporter exporter = new JRPdfExporter();
 //            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
