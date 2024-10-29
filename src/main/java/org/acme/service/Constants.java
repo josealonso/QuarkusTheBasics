@@ -3,7 +3,8 @@ package org.acme.service;
 public class Constants {
     public static final String WORD_DOCUMENT_NAME = "proposal";
     public static final String EXCEL_DOCUMENT_NAME = "proposal-in-Excel";
-    public static final String WORD_DOCUMENT_TITLE = "Ubinova Proposal";
+    public static final String PDF_DOCUMENT_NAME = "Entrada";
+    public static final String WORD_DOCUMENT_TITLE = "Proposal";
     public static final String WORD_DOCUMENT_SUBTITLE = "My subtitle";
     public static final String WORD_TITLE_COLOR = "009933";
     public static final int WORD_TITLE_FONT_SIZE = 20;

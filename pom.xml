@@ -17,6 +17,13 @@
         <surefire-plugin.version>3.3.1</surefire-plugin.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jaspersoft-third-party</id>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -31,6 +38,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
         </dependency>
@@ -44,6 +61,16 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-jdt</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.quarkiverse.jasperreports</groupId>-->
+<!--            <artifactId>quarkus-jasperreports</artifactId>-->
+<!--            <version>0.0.5</version>-->
+<!--        </dependency>-->
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
@@ -52,6 +79,11 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.30.jaspersoft.2</version>
         </dependency>
     </dependencies>
 
@@ -109,6 +141,55 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <!-- JasperReports plugin: https://github.com/pro-crafting/Jasper-report-maven-plugin -->
+            <plugin>
+                        <groupId>com.pro-crafting.tools</groupId>
+                        <artifactId>jasperreports-maven-plugin</artifactId>
+                        <version>4.0.0</version>
+                        <executions>
+                            <execution>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>jasper</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <!-- These are the default configurations: -->
+                            <compiler>net.sf.jasperreports.jdt.JRJdtCompiler</compiler>
+                            <sourceDirectory>src/main/resources/reports</sourceDirectory>
+                            <outputDirectory>src/main/resources/reportsCompiled</outputDirectory>
+                            <outputFileExt>.jasper</outputFileExt>
+                            <verbose>false</verbose>
+                            <numberOfThreads>4</numberOfThreads>
+                            <failOnMissingSourceDirectory>true</failOnMissingSourceDirectory>
+                            <sourceScanner>org.codehaus.plexus.compiler.util.scan.StaleSourceScanner</sourceScanner>
+                            <additionalProperties>
+                                <net.sf.jasperreports.awt.ignore.missing.font>true</net.sf.jasperreports.awt.ignore.missing.font>
+                                <net.sf.jasperreports.default.pdf.font.name>Courier</net.sf.jasperreports.default.pdf.font.name>
+                                <net.sf.jasperreports.default.pdf.encoding>UTF-8</net.sf.jasperreports.default.pdf.encoding>
+                                <net.sf.jasperreports.default.pdf.embedded>true</net.sf.jasperreports.default.pdf.embedded>
+                            </additionalProperties>
+                        </configuration>
+            </plugin>
+
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>jasperreports-maven-plugin</artifactId>-->
+<!--                <version>1.0-beta-2</version>-->
+<!--                <configuration>-->
+<!--                    <sourceDirectory>src/main/resources/reports</sourceDirectory>-->
+<!--                    <outputDirectory>src/main/resources/reportsCompiled</outputDirectory>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>compile-reports</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>compile</phase>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
