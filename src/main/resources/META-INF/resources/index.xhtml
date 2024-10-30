@@ -23,10 +23,22 @@
         <p:panel id="formPanel" styleClass="form-panel">
             <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}" styleClass="custom-panel-grid">
                 <h:outputLabel for="invoiceNumber" value="Invoice Number:" />
-                <p:inputText id="invoiceNumber" />
+                <p:inputNumber id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number">
+                </p:inputNumber>
 
                 <h:outputLabel for="invoiceDate" value="Invoice Date:" />
-                <p:calendar id="invoiceDate" />
+                <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" required="true"/>
+
+                <h:outputLabel for="customerName" value="Customer Name:" />
+                <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name"
+                             regex="/^[a-zA-Z\s]*$/">
+<!--                    <p:keyfilter regEx="/[a-z]/i" />-->
+                </p:inputText>
+
+                <h:outputLabel for="amount" value="Amount in euros:" />
+                <p:inputNumber id="amount" value="#{invoiceBean.amount}"
+                               symbolPosition="p" decimalPlaces="2" placeholder="Amount" />
+
             </p:panelGrid>
 
             <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'other'}">
@@ -38,7 +50,35 @@
             </p:panelGrid>
         </p:panel>
 
-        <p:commandButton styleClass="custom-button" value="Submit" update="@form" />
+        <p:commandButton styleClass="custom-button" value="Submit" update="@form"
+                         action="#{invoiceBean.submitInvoice}"
+                              onclick = "PF('statusDialog').show()"
+                              oncomplete="PF('statusDialog').hide()" />
+        <p:messages id="messages" showDetail="true" closable="true" styleClass="form-panel" />
+
     </h:form>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/images/ajaxloadingbar.gif" />
+        <h:outputText value="Generating invoice...." />
+    </p:dialog>
+
 </h:body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
