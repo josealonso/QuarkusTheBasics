@@ -1,0 +1,28 @@
+.page-title {
+    text-align: center;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+}
+
+.custom-panel {
+    width: 70%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
+.form-panel {
+    width: 70%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+}
+
+.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.custom-button {
+    text-color: green;
+    margin-left: 15%;
+    margin-bottom: 2rem;
+}
+
