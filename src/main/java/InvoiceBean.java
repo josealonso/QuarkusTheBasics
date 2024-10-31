@@ -2,26 +2,36 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Named
 @ViewScoped
 public class InvoiceBean implements Serializable {
-    private String invoiceNumber;
+
+    @NotEmpty
+    @Pattern(regexp = "[0-9]+")
+    private Integer invoiceNumber;
+
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
     private LocalDate invoiceDate;
+
+    @Pattern(regexp = "[a-zA-Z\\s]+")
     private String customerName;
+
+    @Pattern(regexp = "[0-9]+\\.[0-9]{2}")
     private BigDecimal amount;
 
-    public String getInvoiceNumber() {
+    public Integer getInvoiceNumber() {
         return invoiceNumber;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
+    public void setInvoiceNumber(Integer invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
 
@@ -50,7 +60,7 @@ public class InvoiceBean implements Serializable {
     }
 
     public void submitInvoice() {
-        if (allTheFieldsAreFilledAndValid()) {
+        if (1 == 1) { // allTheFieldsAreFilledAndValid()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -63,59 +73,8 @@ public class InvoiceBean implements Serializable {
             PrimeFaces.current()
                     .executeScript("setTimeout(function() { window.location.href = 'result.xhtml';}, 1000)");
         }
-
     }
 
-    private boolean allTheFieldsAreFilledAndValid() {
-        boolean validNumber = false;
-        boolean validDate = true;  // TODO   // date validation is not working
-        boolean validName = false;
-        boolean validAmount = false;
-
-        if (getInvoiceNumber().matches("[0-9].00*")) {
-            validNumber = true;
-        }
-        try {
-            LocalDate.parse(getInvoiceDate().toString(), DateTimeFormatter.ISO_DATE);
-            validDate = true;
-        } catch (Exception ignored) {
-
-        }
-
-        if (getCustomerName().matches("[a-zA-Z\\s]+")) {
-            validName = true;
-        }
-        if (getAmount().toString().matches("[0-9]+\\.[0-9]{2}")) {
-            validAmount = true;
-        }
-
-        if (validNumber && validDate && validName && validAmount) {
-            return true;
-        }
-        else {
-            var errorMessage = buildErrorMessage(validNumber, validDate, validName, validAmount);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR, errorMessage, null));
-            return false;
-        }
-    }
-
-    private String buildErrorMessage(boolean validNumber, boolean validDate, boolean validName, boolean validAmount) {
-        StringBuilder sb = new StringBuilder();
-        if (!validAmount) {
-            sb.append("Error - Invalid amount\n");
-        }
-        if (!validName) {
-            sb.append("Error - Invalid customer name\n");
-        }
-        if (!validDate) {
-            sb.append("Error - Invalid invoice date\n");
-        }
-        if (!validNumber) {
-            sb.append("Error - Invalid invoice number\n");
-        }
-        return sb.toString();
-    }
 }
 
 

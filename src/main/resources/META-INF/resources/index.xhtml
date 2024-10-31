@@ -22,22 +22,28 @@
 
         <p:panel id="formPanel" styleClass="form-panel">
             <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}" styleClass="custom-panel-grid">
-                <h:outputLabel for="invoiceNumber" value="Invoice Number:" />
-                <p:inputNumber id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number">
-                </p:inputNumber>
 
-                <h:outputLabel for="invoiceDate" value="Invoice Date:" />
-                <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" required="true"/>
+                <h:outputLabel for="@next" value="Invoice Number:" />
+                <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number" />
+<!--                <p:message for = "@previous" />-->
+                <p:message for = "invoiceNumber" />
+                <h:outputText value="#{invoiceBean.invoiceNumber}" />
 
-                <h:outputLabel for="customerName" value="Customer Name:" />
-                <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name"
-                             regex="/^[a-zA-Z\s]*$/">
-<!--                    <p:keyfilter regEx="/[a-z]/i" />-->
+                <h:outputLabel for="@next" value="Invoice Date:" />
+                <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" />
+                <p:message for = "invoiceDate" />
+                <h:outputText value="#{invoiceBean.invoiceDate}" />
+
+                <h:outputLabel for="@next" value="Customer Name:" />
+                <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name">
                 </p:inputText>
+                <p:message for = "customerName" />
+                <h:outputText value="#{invoiceBean.customerName}" />
 
-                <h:outputLabel for="amount" value="Amount in euros:" />
-                <p:inputNumber id="amount" value="#{invoiceBean.amount}"
-                               symbolPosition="p" decimalPlaces="2" placeholder="Amount" />
+                <h:outputLabel for="@next" value="Amount in euros:" />
+                <p:inputText id="amount" value="#{invoiceBean.amount}" placeholder="Amount" />
+                <p:message for = "amount" />
+                <h:outputText value="#{invoiceBean.amount}" />
 
             </p:panelGrid>
 
@@ -54,7 +60,7 @@
                          action="#{invoiceBean.submitInvoice}"
                               onclick = "PF('statusDialog').show()"
                               oncomplete="PF('statusDialog').hide()" />
-        <p:messages id="messages" showDetail="true" closable="true" styleClass="form-panel" />
+<!--        <p:messages id="messages" showDetail="true" closable="true" styleClass="form-panel" />-->
 
     </h:form>
 
