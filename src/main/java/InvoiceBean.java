@@ -3,35 +3,39 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.primefaces.PrimeFaces;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Named
 @ViewScoped
 public class InvoiceBean implements Serializable {
 
-    @NotEmpty
-    @Pattern(regexp = "[0-9]+")
-    private Integer invoiceNumber;
+    @NotEmpty(message = "Invoice Number cannot not be empty")
+    @Pattern(regexp = "^\\d+$", message = "Invoice number must contain only digits")
+    private String invoiceNumber;
 
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
+    @NotNull(message = "Invoice Date cannot be empty")
+    // @Pattern(regexp = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", message = "Date must be in format yyyy-MM-dd")
+    // IMPORTANT: @Pattern is not valid for LocalDate
     private LocalDate invoiceDate;
 
-    @Pattern(regexp = "[a-zA-Z\\s]+")
+    @NotEmpty(message = "Customer name cannot be empty")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Customer name must contain only letters and spaces")
     private String customerName;
 
-    @Pattern(regexp = "[0-9]+\\.[0-9]{2}")
-    private BigDecimal amount;
+    @NotEmpty(message = "Invoice Amount cannot be empty")
+    @Pattern(regexp = "^[0-9]+(\\.[0-9]{1,2})?$", message = "Amount must be a number with up to two decimal places")
+    private String amount;
 
-    public Integer getInvoiceNumber() {
+    public String getInvoiceNumber() {
         return invoiceNumber;
     }
 
-    public void setInvoiceNumber(Integer invoiceNumber) {
+    public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
 
@@ -51,11 +55,11 @@ public class InvoiceBean implements Serializable {
         this.customerName = customerName;
     }
 
-    public BigDecimal getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -75,6 +79,9 @@ public class InvoiceBean implements Serializable {
         }
     }
 
+    public Integer getInvoiceNumberAsInteger() {
+        return Integer.parseInt(getInvoiceNumber());
+    }
 }
 
 
