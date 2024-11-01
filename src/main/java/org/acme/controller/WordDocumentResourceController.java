@@ -2,9 +2,11 @@ package org.acme.controller;
 
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.Utilities;
 import org.acme.service.WordDocumentGenerationService;
@@ -14,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.acme.service.Constants.WORD_CONTENT_TYPE;
 import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
 
 /*****************************************************************************
@@ -22,7 +23,7 @@ import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
  * @ApplicationScoped annotation requires thread-safe implementation if you maintain any state.
  */
 @ApplicationScoped
-@Path("/document")
+@Path("/document/word")
 public class WordDocumentResourceController {
 
     private final WordDocumentGenerationService documentGenerationService;
@@ -32,14 +33,28 @@ public class WordDocumentResourceController {
         this.documentGenerationService = documentGenerationService;
     }
 
-    @GET
-    @Path("/word")
-    @Produces(WORD_CONTENT_TYPE)
-    public Response getWordDocument() throws IOException {
+    @POST
+    // @Produces(WORD_CONTENT_TYPE)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
+                               @FormParam("invoiceDate") String invoiceDate,
+                               @FormParam("customerName") String customerName,
+                               @FormParam("amount") String amount) throws IOException {
 
         var wordFileName = createFileNameWithTimestampSuffix();
 
-        try (FileOutputStream wordFile = documentGenerationService.generateWordFile(wordFileName)) {
+        System.out.println("AAAAA - Invoice number: " + invoiceNumber);
+        System.out.println("AAAAA - Invoice date: " + invoiceDate);
+        System.out.println("AAAAA - Customer name: " + customerName);
+        System.out.println("AAAAA - Amount: " + amount);
+        var invoice = Invoice.builder()
+                .invoiceNumber(invoiceNumber)
+                .invoiceDate(invoiceDate)
+                .customerName(customerName)
+                .amount(amount)
+                .build();
+
+        try (FileOutputStream wordFile = documentGenerationService.generateWordFile(wordFileName, invoice)) {
             Log.info("================ The word document has been generated ================");
         }
 

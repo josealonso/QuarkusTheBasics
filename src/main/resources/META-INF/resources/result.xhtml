@@ -4,12 +4,20 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
+<f:metadata>
+    <f:viewParam name="paramInvoiceNumber" value="#{resultBean.invoiceNumber}" />
+    <f:viewParam name="paramInvoiceDate" value="#{resultBean.invoiceDate}" />
+    <f:viewParam name="paramCustomerName" value="#{resultBean.customerName}" />
+    <f:viewParam name="paramInvoiceAmount" value="#{resultBean.amount}" />
+</f:metadata>
+
 <h:head>
     <title>Result Page</title>
 </h:head>
 
 <h:body>
     <p:panel header="Result">
+
         <h:form>
             <p:messages id="messages" showDetail="true" closable="true" />
 
@@ -25,6 +33,11 @@
 
             <p:commandButton value="Back to Form" action="index?faces-redirect=true" />
         </h:form>
+
+        <p:messages id="messages" showDetail="true" closable="true">
+                <p:autoUpdate />
+        </p:messages>
+
     </p:panel>
 </h:body>
 </html>

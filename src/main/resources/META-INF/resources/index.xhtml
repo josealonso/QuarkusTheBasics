@@ -59,9 +59,16 @@
         <p:commandButton styleClass="custom-button" value="Submit" update="@form"
                          action="#{invoiceBean.submitInvoice}"
                               onclick = "PF('statusDialog').show()"
-                              oncomplete="PF('statusDialog').hide()" />
-<!--        <p:messages id="messages" showDetail="true" closable="true" styleClass="form-panel" />-->
+                              oncomplete="PF('statusDialog').hide()" >
 
+            <f:param name="paramInvoiceNumber" value="#{invoiceBean.invoiceNumber}" />
+            <f:param name="paramInvoiceDate" value="#{invoiceBean.invoiceDate}" />
+            <f:param name="paramCustomerName" value="#{invoiceBean.customerName}" />
+            <f:param name="paramInvoiceAmount" value="#{invoiceBean.amount}" />
+        </p:commandButton>
+
+        <!-- For global messages, use null as the first parameter. For field-specific messages, use the component ID -->
+        <h:messages id="messages" showDetail="true" globalOnly="true" />
     </h:form>
 
     <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">

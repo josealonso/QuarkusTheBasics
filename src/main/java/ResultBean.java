@@ -1,4 +1,6 @@
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
@@ -14,9 +16,18 @@ public class ResultBean implements Serializable {
     private String endpointResponse;
     private Date submissionTime;
 
+    private String invoiceNumber;
+    private Date invoiceDate;
+    private String customerName;
+    private String amount;
+
     @PostConstruct
     public void init() {
         submissionTime = new Date();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Message Summary: " + getInvoiceNumber(), ""));
+
         callEndpoint();
     }
 
@@ -48,4 +59,37 @@ public class ResultBean implements Serializable {
     public void setSubmissionTime(Date submissionTime) {
         this.submissionTime = submissionTime;
     }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public Date getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(Date invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
 }

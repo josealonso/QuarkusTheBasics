@@ -32,14 +32,14 @@ class DocumentGenerationServiceTest {
 
     @Test
     void testTheWordDocumentHasBeenGenerated() throws IOException {
-        new WordDocumentGenerationService().generateWordFile("prueba");
+        new WordDocumentGenerationService().generateWordFile("prueba", invoice);
         var wordDocument = Path.of("prueba").toFile();
         assertTrue(wordDocument.exists());
     }
 
     @Test
     void testTheGeneratedWordDocumentHasTheExpectedContent() throws IOException {
-        var document = new WordDocumentGenerationService().generateWordFile("prueba");
+        var document = new WordDocumentGenerationService().generateWordFile("prueba", invoice);
         var wordDocument = Path.of("prueba").toFile();
         var paragraphs = convertFileToXWPFDocument(wordDocument).getParagraphs();
         document.close();

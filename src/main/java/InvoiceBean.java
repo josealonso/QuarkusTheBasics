@@ -5,10 +5,15 @@ import jakarta.inject.Named;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.acme.controller.WordDocumentResourceController;
+import org.acme.service.WordDocumentGenerationService;
 import org.primefaces.PrimeFaces;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -64,24 +69,60 @@ public class InvoiceBean implements Serializable {
     }
 
     public void submitInvoice() {
-        if (1 == 1) { // allTheFieldsAreFilledAndValid()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+        try {
+            if (invoiceNumber.isBlank()) {
+                throw new Exception("Invoice number is required.");
             }
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Success", "- Invoice submitted successfully"));
-            // Update messages component
-            PrimeFaces.current().ajax().update("messages");
-            PrimeFaces.current()
-                    .executeScript("setTimeout(function() { window.location.href = 'result.xhtml';}, 1000)");
+            if (invoiceDate == null) {
+                throw new Exception("Invoice date is required.");
+            }
+            if (customerName.isBlank()) {
+                throw new Exception("Customer name is required.");
+            }
+            if (amount.isBlank() ||
+                    new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0) {
+                throw new Exception("Amount is required.");
+            }
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+//            throw new RuntimeException(e);
+        }
+
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Success", "- Invoice submitted successfully with these data: "
+        + "\nInvoice Number: " + invoiceNumber
+        + "\nInvoice Date: " + invoiceDate
+        + "\nCustomer Name: " + customerName
+        + "\nAmount: " + amount));
+        PrimeFaces.current().ajax().update("messages");
+        callEndpoint(invoiceNumber, invoiceDate, customerName, amount);
+//            PrimeFaces.current()
+//                    .executeScript("setTimeout(function() { window.location.href = 'result.xhtml';}, 1000)");
+    }
+
+    private void callEndpoint(String invoiceNumber, LocalDate invoiceDate, String customerName, String amount) {
+        try {
+            new WordDocumentResourceController(new WordDocumentGenerationService())
+                    .submitForm(invoiceNumber, String.valueOf(invoiceDate), customerName, amount);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public Integer getInvoiceNumberAsInteger() {
         return Integer.parseInt(getInvoiceNumber());
     }
+
+    private void clearForm() {
+        invoiceNumber = null;
+        invoiceDate = null;
+        customerName = null;
+        amount = null;
+    }
+
 }
 
 

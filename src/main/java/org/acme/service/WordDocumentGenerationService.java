@@ -1,6 +1,7 @@
 package org.acme.service;
 
 import jakarta.enterprise.context.RequestScoped;
+import org.acme.controller.Invoice;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.FileOutputStream;
@@ -27,11 +28,11 @@ public class WordDocumentGenerationService {
      * @return the FileOutputStream containing the generated document
      * @throws IOException if the document could not be generated
      */
-    public FileOutputStream generateWordFile(String wordFileName) throws IOException {
+    public FileOutputStream generateWordFile(String wordFileName, Invoice invoice) throws IOException {
         XWPFDocument document = new XWPFDocument();
 		formatTitle(document);
 		formatSubtitle(document);
-        var finalDocument = formatParagraphs(document, WORD_FIRST_LINE);
+        var finalDocument = formatParagraphs(document, invoice);
 	    return composeWordFile(finalDocument, wordFileName);
 	}
 
@@ -78,15 +79,24 @@ public class WordDocumentGenerationService {
 		return document;
 	}
 
-	private XWPFDocument formatParagraphs(XWPFDocument document, String content) {
-		XWPFParagraph firstParagraph = document.createParagraph();
-		firstParagraph.setAlignment(ParagraphAlignment.BOTH);
-		XWPFRun firstParagraphRun = firstParagraph.createRun();
-		firstParagraphRun.setText(content);
+	private XWPFDocument formatParagraphs(XWPFDocument document, Invoice invoice) {
+		var document1 = composeLine(document, invoice.getInvoiceDate());
+		var document2 = composeLine(document1, invoice.getInvoiceNumber());
+		var document3 = composeLine(document2, invoice.getCustomerName());
+        return composeLine(document3, invoice.getAmount());
+	}
+
+	private XWPFDocument composeLine(XWPFDocument document, String content) {
+		var line = document.createParagraph();
+		line.setAlignment(ParagraphAlignment.BOTH);
+		var lineRun = line.createRun();
+		lineRun.setText((WORD_FIRST_LINE + content));
 		return document;
 	}
 
 }
+
+
 
 
 
