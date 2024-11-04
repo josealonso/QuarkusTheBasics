@@ -98,13 +98,13 @@ public class WordDocumentGenerationService {
 
 	private XWPFDocument formatParagraphs(XWPFDocument document, Invoice invoice) {
 		MyDocString docString = new MyDocString(document, EMPTY_STRING);
-		docString.addLine(invoice.getInvoiceDate())
+		docString.addLine(invoice.invoiceDate())
 				.addLine(EMPTY_STRING)
-				.addLine("INVOICE #" + invoice.getInvoiceNumber())
+				.addLine("INVOICE #" + invoice.invoiceNumber())
 				.addLine(EMPTY_STRING)
 				.addLine(EMPTY_STRING)
-				.addLine(invoice.getCustomerName().toUpperCase() + " has paid the amount of " +
-						invoice.getAmount() + " euros");
+				.addLine(invoice.customerName().toUpperCase() + " has paid the amount of " +
+						invoice.amount() + " euros");
 		return docString.getDocument();
 	}
 

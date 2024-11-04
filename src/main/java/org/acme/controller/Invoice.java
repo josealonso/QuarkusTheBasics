@@ -1,23 +1,6 @@
 package org.acme.controller;
 
-public class Invoice {
-    private final String invoiceNumber;
-    private final String invoiceDate;
-    private final String customerName;
-    private final String amount;
-
-    private Invoice(Builder builder) {
-        this.invoiceNumber = builder.invoiceNumber;
-        this.invoiceDate = builder.invoiceDate;
-        this.customerName = builder.customerName;
-        this.amount = builder.amount;
-    }
-
-    // Getters
-    public String getInvoiceNumber() { return invoiceNumber; }
-    public String getInvoiceDate() { return invoiceDate; }
-    public String getCustomerName() { return customerName; }
-    public String getAmount() { return amount; }
+public record Invoice(String invoiceNumber, String invoiceDate, String customerName, String amount) {
 
     public static class Builder {
         private String invoiceNumber;
@@ -46,7 +29,7 @@ public class Invoice {
         }
 
         public Invoice build() {
-            return new Invoice(this);
+            return new Invoice(invoiceNumber, invoiceDate, customerName, amount);
         }
     }
 

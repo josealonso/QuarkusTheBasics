@@ -6,7 +6,7 @@ public class CompileReport {
     public static void main(String[] args) {
         try {
             JasperCompileManager.compileReportToFile("tuReporte.jrxml", "tuReporte.jasper");
-            System.out.println("Reporte compilado correctamente.");
+            System.out.println("Informe compilado correctamente.");
         } catch (Exception e) {
             e.printStackTrace();
         }

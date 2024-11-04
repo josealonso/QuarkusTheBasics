@@ -81,8 +81,8 @@ class DocumentGenerationServiceTest {
                 .map(XWPFParagraph::getText)
                 .collect(Collectors.joining("\n"));
 
-        assertThat(lines).contains(invoice.getInvoiceDate(), invoice.getInvoiceNumber(),
-                invoice.getCustomerName().toUpperCase(), invoice.getAmount());
+        assertThat(lines).contains(invoice.invoiceDate(), invoice.invoiceNumber(),
+                invoice.customerName().toUpperCase(), invoice.amount());
 
         paragraphs.forEach(paragraph -> System.out.println("Line: " + paragraph.getText()));
     }
