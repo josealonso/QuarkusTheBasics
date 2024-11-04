@@ -68,7 +68,9 @@
         </p:commandButton>
 
         <!-- For global messages, use null as the first parameter. For field-specific messages, use the component ID -->
-        <h:messages id="messages" showDetail="true" globalOnly="true" />
+        <div>
+            <h:messages id="messages" showDetail="true" globalOnly="true" />
+        </div>
     </h:form>
 
     <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
