@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
 
@@ -34,7 +35,6 @@ public class WordDocumentResourceController {
     }
 
     @POST
-    // @Produces(WORD_CONTENT_TYPE)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
                                @FormParam("invoiceDate") String invoiceDate,
@@ -63,7 +63,8 @@ public class WordDocumentResourceController {
             byte[] fileContent = new byte[(int) file.length()];
             fileInputStream.read(fileContent);   // This line is needed
 
-            return Response.ok(fileContent)
+            return Response.created(URI.create(wordFileName))
+                    .entity(fileContent)
                     .header("Content-Disposition", "attachment; filename=\"" + wordFileName + "\"")
                     .build();
         } catch (IOException e) {

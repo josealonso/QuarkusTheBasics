@@ -1,20 +1,28 @@
 package org.acme.service;
 
+import org.acme.controller.Invoice;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 
 import static org.acme.service.Constants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DocumentGenerationServiceTest {
+
+    private Invoice invoice;
 
     private XWPFDocument convertFileToXWPFDocument(File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
@@ -28,6 +36,16 @@ class DocumentGenerationServiceTest {
         var xssfDocument = new XSSFWorkbook(fis);
         fis.close();
         return xssfDocument;
+    }
+
+    @BeforeAll
+    void prepareInvoiceData() {
+        invoice = Invoice.builder()
+                .invoiceNumber(String.valueOf(1))
+                .invoiceDate(String.valueOf(LocalDate.of(2023, 8, 1)))
+                .customerName("user")
+                .amount(String.valueOf(145.00))
+                .build();
     }
 
     @Test
@@ -56,7 +74,8 @@ class DocumentGenerationServiceTest {
 
         assertEquals(WORD_DOCUMENT_SUBTITLE, subTitle.getText());
 
-        assertEquals(WORD_FIRST_LINE, paragraphs.get(FIRST_LINE_PARAGRAPH_NUMBER).getText());
+        assertEquals(invoice.getInvoiceDate(),
+                paragraphs.get(FIRST_LINE_PARAGRAPH_NUMBER).getText());
     }
 
     @Test
