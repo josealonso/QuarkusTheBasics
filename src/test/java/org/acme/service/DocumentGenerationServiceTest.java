@@ -14,8 +14,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 import static org.acme.service.Constants.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -50,15 +52,15 @@ class DocumentGenerationServiceTest {
 
     @Test
     void testTheWordDocumentHasBeenGenerated() throws IOException {
-        new WordDocumentGenerationService().generateWordFile("prueba", invoice);
-        var wordDocument = Path.of("prueba").toFile();
+        new WordDocumentGenerationService().generateWordFile("prueba.docx", invoice);
+        var wordDocument = Path.of("prueba.docx").toFile();
         assertTrue(wordDocument.exists());
     }
 
     @Test
     void testTheGeneratedWordDocumentHasTheExpectedContent() throws IOException {
-        var document = new WordDocumentGenerationService().generateWordFile("prueba", invoice);
-        var wordDocument = Path.of("prueba").toFile();
+        var document = new WordDocumentGenerationService().generateWordFile("prueba.docx", invoice);
+        var wordDocument = Path.of("prueba.docx").toFile();
         var paragraphs = convertFileToXWPFDocument(wordDocument).getParagraphs();
         document.close();
 
@@ -74,21 +76,28 @@ class DocumentGenerationServiceTest {
 
         assertEquals(WORD_DOCUMENT_SUBTITLE, subTitle.getText());
 
-        assertEquals(invoice.getInvoiceDate(),
-                paragraphs.get(FIRST_LINE_PARAGRAPH_NUMBER).getText());
+        // Make sure the document contains the invoice data
+        var lines = paragraphs.stream()
+                .map(XWPFParagraph::getText)
+                .collect(Collectors.joining("\n"));
+
+        assertThat(lines).contains(invoice.getInvoiceDate(), invoice.getInvoiceNumber(),
+                invoice.getCustomerName().toUpperCase(), invoice.getAmount());
+
+        paragraphs.forEach(paragraph -> System.out.println("Line: " + paragraph.getText()));
     }
 
     @Test
     void testTheExcelDocumentHasBeenGenerated() throws IOException {
-        new ExcelDocumentGenerationService().generateExcelFile("prueba");
-        var excelDocument = Path.of("prueba").toFile();
+        new ExcelDocumentGenerationService().generateExcelFile("prueba.xlsx");
+        var excelDocument = Path.of("prueba.xlsx").toFile();
         assertTrue(excelDocument.exists());
     }
 
     @Test
     void testTheGeneratedExcelDocumentHasTheExpectedContent() throws IOException {
-        var document = new ExcelDocumentGenerationService().generateExcelFile("prueba");
-        var excelDocument = Path.of("prueba").toFile();
+        var document = new ExcelDocumentGenerationService().generateExcelFile("prueba.xlsx");
+        var excelDocument = Path.of("prueba.xlsx").toFile();
         var workbook = convertFileToXSSFWorkbook(excelDocument).getCTWorkbook();
         document.close();
 

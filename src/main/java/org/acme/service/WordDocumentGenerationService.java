@@ -97,15 +97,18 @@ public class WordDocumentGenerationService {
 	}
 
 	private XWPFDocument formatParagraphs(XWPFDocument document, Invoice invoice) {
-		var document1 = composeLine(document, invoice.getInvoiceDate(), RIGHT_ALIGNMENT);
-		var document2 = composeLine(document1, EMPTY_STRING, JUSTIFY_ALIGNMENT);
-		var document3 = composeLine(document2, invoice.getInvoiceNumber(), LEFT_ALIGNMENT);
-		var document4 = composeLine(document3, EMPTY_STRING, JUSTIFY_ALIGNMENT);
-		var document5 = composeLine(document4,
-				invoice.getCustomerName() + " has paid the amount of ", JUSTIFY_ALIGNMENT);
-        return composeLine(document5, invoice.getAmount() + " euros", LEFT_ALIGNMENT);
+		MyDocString docString = new MyDocString(document, EMPTY_STRING);
+		docString.addLine(invoice.getInvoiceDate())
+				.addLine(EMPTY_STRING)
+				.addLine("INVOICE #" + invoice.getInvoiceNumber())
+				.addLine(EMPTY_STRING)
+				.addLine(EMPTY_STRING)
+				.addLine(invoice.getCustomerName().toUpperCase() + " has paid the amount of " +
+						invoice.getAmount() + " euros");
+		return docString.getDocument();
 	}
 
+	// Unused
 	private XWPFDocument composeLine(XWPFDocument document, String content, int paragraphAlignment) {
 		var line = document.createParagraph();
 		line.setAlignment(ParagraphAlignment.valueOf(paragraphAlignment));
