@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Named
 @ViewScoped
-public class InvoiceBean implements Serializable {
+public class InvoiceBeanController implements Serializable {
 
     @NotEmpty(message = "Invoice Number cannot not be empty")
     @Pattern(regexp = "^\\d+$", message = "Invoice number must contain only digits")
@@ -98,6 +98,7 @@ public class InvoiceBean implements Serializable {
         + "\nCustomer Name: " + customerName
         + "\nAmount: " + amount));
         PrimeFaces.current().ajax().update("messages");
+        clearForm();
         callEndpoint(invoiceNumber, invoiceDate, customerName, amount);
 //            PrimeFaces.current()
 //                    .executeScript("setTimeout(function() { window.location.href = 'result.xhtml';}, 1000)");

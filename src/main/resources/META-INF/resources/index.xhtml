@@ -3,17 +3,17 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-<h:head>
+<h:head id="head">
     <f:facet name="last">
         <h:outputStylesheet name="css/style.css" />
     </f:facet>
     <title>DOCUMENT GENERATION</title>
 </h:head>
 <h:body>
-    <h2 class="page-title">DOCUMENT GENERATION FORM</h2>
+    <h2 id="bodyTtitle" class="page-title">DOCUMENT GENERATION FORM</h2>
     <h:form>
-        <p:panel header="Select Document Type" styleClass="custom-panel">
-            <p:selectOneRadio value="#{formBean.selectedForm}" styleClass="select-one-radio">
+        <p:panel id="selectPanel" header="Select Document Type" styleClass="custom-panel">
+            <p:selectOneRadio id="selectedForm" value="#{formBean.selectedForm}" styleClass="select-one-radio">
                 <f:selectItem itemLabel="Invoice" itemValue="invoice" />
                 <f:selectItem itemLabel="Other" itemValue="other" />
                 <p:ajax update="formPanel" />
@@ -23,27 +23,27 @@
         <p:panel id="formPanel" styleClass="form-panel">
             <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}" styleClass="custom-panel-grid">
 
-                <h:outputLabel for="@next" value="Invoice Number:" />
+                <h:outputLabel id="invoiceNumberLabel" for="@next" value="Invoice Number:" />
                 <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number" />
 <!--                <p:message for = "@previous" />-->
-                <p:message for = "invoiceNumber" />
-                <h:outputText value="#{invoiceBean.invoiceNumber}" />
+                <p:message id="invoiceNumberMessage" for = "invoiceNumber" />
+                <h:outputText id="invoiceNumberOutput" value="#{invoiceBean.invoiceNumber}" />
 
-                <h:outputLabel for="@next" value="Invoice Date:" />
+                <h:outputLabel id="invoiceDateLabel" for="@next" value="Invoice Date:" />
                 <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" />
-                <p:message for = "invoiceDate" />
-                <h:outputText value="#{invoiceBean.invoiceDate}" />
+                <p:message id="invoiceDateMessage" for = "invoiceDate" />
+                <h:outputText id="invoiceDateOutput" value="#{invoiceBean.invoiceDate}" />
 
-                <h:outputLabel for="@next" value="Customer Name:" />
+                <h:outputLabel id="customerNameLabel" for="@next" value="Customer Name:" />
                 <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name">
                 </p:inputText>
-                <p:message for = "customerName" />
-                <h:outputText value="#{invoiceBean.customerName}" />
+                <p:message id="customerNameMessage" for = "customerName" />
+                <h:outputText id="customerNameOutput" value="#{invoiceBean.customerName}" />
 
-                <h:outputLabel for="@next" value="Amount in euros:" />
+                <h:outputLabel id="amountLabel" for="@next" value="Amount in euros:" />
                 <p:inputText id="amount" value="#{invoiceBean.amount}" placeholder="Amount" />
-                <p:message for = "amount" />
-                <h:outputText value="#{invoiceBean.amount}" />
+                <p:message id="amountMessage" for = "amount" />
+                <h:outputText id="amountOutput" value="#{invoiceBean.amount}" />
 
             </p:panelGrid>
 
@@ -56,7 +56,7 @@
             </p:panelGrid>
         </p:panel>
 
-        <p:commandButton styleClass="custom-button" value="Submit" update="@form"
+        <p:commandButton id="submitButton" styleClass="custom-button" value="Submit" update="@form"
                          action="#{invoiceBean.submitInvoice}"
                               onclick = "PF('statusDialog').show()"
                               oncomplete="PF('statusDialog').hide()" >
@@ -73,9 +73,10 @@
         </div>
     </h:form>
 
-    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
-        <p:graphicImage name="/images/ajaxloadingbar.gif" />
-        <h:outputText value="Generating invoice...." />
+    <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false">
+        <p:graphicImage id="ajaxLoadingBar" name="/images/ajaxloadingbar.gif" />
+        <h:outputText id="statusText" value="Generating invoice...." />
     </p:dialog>
 
 </h:body>

@@ -16,12 +16,12 @@
 </h:head>
 
 <h:body>
-    <p:panel header="Result">
+    <p:panel id="resultPanel" header="Result">
 
         <h:form>
             <p:messages id="messages" showDetail="true" closable="true" />
 
-            <h:panelGrid columns="2" cellpadding="5">
+            <h:panelGrid id="resultPanelGrid" columns="2" cellpadding="5">
                 <h:outputText value="Endpoint Response:" />
                 <h:outputText value="#{resultBean.endpointResponse}" />
 

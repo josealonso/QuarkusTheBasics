@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class InvoiceBeanTest {
+class InvoiceBeanControllerTest {
 
     @Inject
     private Validator validator;
@@ -23,20 +23,20 @@ class InvoiceBeanTest {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 
     //    @InjectMock
-    private InvoiceBean invoiceBean;
+    private InvoiceBeanController invoiceBeanController;
 
     @BeforeEach
     void setUp() {
         validator = factory.getValidator();
-        invoiceBean = new InvoiceBean();
+        invoiceBeanController = new InvoiceBeanController();
     }
 
     /*********************** Invoice number field ************************************/
 
     @Test
     void testValidInvoiceNumber() {
-        invoiceBean.setInvoiceNumber("12");
-        var violations = validator.validateProperty(invoiceBean, "invoiceNumber");
+        invoiceBeanController.setInvoiceNumber("12");
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceNumber");
         violations.forEach(violation ->
                 System.out.println(" ===================  " + violation.getMessage()));
         assertTrue(violations.isEmpty(), "Expected no violations");
@@ -44,8 +44,8 @@ class InvoiceBeanTest {
 
     @Test
     void testEmptyInvoiceNumber() {
-        invoiceBean.setInvoiceNumber("");
-        var violations = validator.validateProperty(invoiceBean, "invoiceNumber");
+        invoiceBeanController.setInvoiceNumber("");
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceNumber");
         violations.forEach(violation ->
                 System.out.println(" ===================  " + violation.getMessage()));
         assertEquals(2, violations.size());
@@ -54,16 +54,16 @@ class InvoiceBeanTest {
 
     @Test
     void testNullInvoiceNumber() {
-        invoiceBean.setInvoiceNumber(null);
-        var violations = validator.validateProperty(invoiceBean, "invoiceNumber");
+        invoiceBeanController.setInvoiceNumber(null);
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceNumber");
         assertEquals(1, violations.size());
         assertEquals("Invoice Number cannot not be empty", violations.iterator().next().getMessage());
     }
 
     @Test
     void testNonDigitInvoiceNumber() {
-        invoiceBean.setInvoiceNumber("12a3");
-        var violations = validator.validateProperty(invoiceBean, "invoiceNumber");
+        invoiceBeanController.setInvoiceNumber("12a3");
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceNumber");
         assertEquals(1, violations.size());
         assertEquals("Invoice number must contain only digits", violations.iterator().next().getMessage());
     }
@@ -71,28 +71,28 @@ class InvoiceBeanTest {
     @Test
     void testInvoiceNumberGetterAndSetter() {
         String testValue = "456";
-        invoiceBean.setInvoiceNumber(testValue);
-        assertEquals(testValue, invoiceBean.getInvoiceNumber());
+        invoiceBeanController.setInvoiceNumber(testValue);
+        assertEquals(testValue, invoiceBeanController.getInvoiceNumber());
     }
 
     @Test
     void testGetInvoiceNumberAsInteger() {
-        invoiceBean.setInvoiceNumber("789");
-        assertEquals(Integer.valueOf(789), invoiceBean.getInvoiceNumberAsInteger());
+        invoiceBeanController.setInvoiceNumber("789");
+        assertEquals(Integer.valueOf(789), invoiceBeanController.getInvoiceNumberAsInteger());
     }
 
     /********************** Invoice date field ************************************/
 
     @Test
     void testValidInvoiceDate() {
-        invoiceBean.setInvoiceDate(LocalDate.of(2023, 8, 1));
-        var violations = validator.validateProperty(invoiceBean, "invoiceDate");
+        invoiceBeanController.setInvoiceDate(LocalDate.of(2023, 8, 1));
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceDate");
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void testEmptyInvoiceDate() {
-        var violations = validator.validateProperty(invoiceBean, "invoiceDate");
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceDate");
         assertEquals(1, violations.size());
         assertThrows(DateTimeParseException.class, () -> LocalDate.parse(""));
         assertEquals("Invoice Date cannot be empty", violations.iterator().next().getMessage());
@@ -100,8 +100,8 @@ class InvoiceBeanTest {
 
     @Test
     void testNullInvoiceDate() {
-        invoiceBean.setInvoiceDate(null);
-        var violations = validator.validateProperty(invoiceBean, "invoiceDate");
+        invoiceBeanController.setInvoiceDate(null);
+        var violations = validator.validateProperty(invoiceBeanController, "invoiceDate");
         assertEquals(1, violations.size());
         assertEquals("Invoice Date cannot be empty", violations.iterator().next().getMessage());
     }
@@ -109,23 +109,23 @@ class InvoiceBeanTest {
     @Test
     void testInvoiceDateGetterAndSetter() {
         LocalDate testValue = LocalDate.of(2023, 8, 1);
-        invoiceBean.setInvoiceDate(testValue);
-        assertEquals(testValue, invoiceBean.getInvoiceDate());
+        invoiceBeanController.setInvoiceDate(testValue);
+        assertEquals(testValue, invoiceBeanController.getInvoiceDate());
     }
 
     /********************** Customer name field ************************************/
 
     @Test
     void testValidCustomerName() {
-        invoiceBean.setCustomerName("John Doe");
-        var violations = validator.validateProperty(invoiceBean, "customerName");
+        invoiceBeanController.setCustomerName("John Doe");
+        var violations = validator.validateProperty(invoiceBeanController, "customerName");
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void testEmptyCustomerName() {
-        invoiceBean.setCustomerName("");
-        var violations = validator.validateProperty(invoiceBean, "customerName");
+        invoiceBeanController.setCustomerName("");
+        var violations = validator.validateProperty(invoiceBeanController, "customerName");
         violations.forEach(violation -> System.out.println(violation.getMessage()));
         assertEquals(2, violations.size());
 //        assertEquals("Customer name cannot be empty", violations.iterator().next().getMessage());
@@ -134,16 +134,16 @@ class InvoiceBeanTest {
 
     @Test
     void testNullCustomerName() {
-        invoiceBean.setCustomerName(null);
-        var violations = validator.validateProperty(invoiceBean, "customerName");
+        invoiceBeanController.setCustomerName(null);
+        var violations = validator.validateProperty(invoiceBeanController, "customerName");
         assertEquals(1, violations.size());
         assertEquals("Customer name cannot be empty", violations.iterator().next().getMessage());
     }
 
     @Test
     void testInvalidCustomerName() {
-        invoiceBean.setCustomerName("John Doe123");
-        var violations = validator.validateProperty(invoiceBean, "customerName");
+        invoiceBeanController.setCustomerName("John Doe123");
+        var violations = validator.validateProperty(invoiceBeanController, "customerName");
         assertEquals(1, violations.size());
         assertEquals("Customer name must contain only letters and spaces", violations.iterator().next().getMessage());
     }
@@ -151,31 +151,31 @@ class InvoiceBeanTest {
     @Test
     void testCustomerNameGetterAndSetter() {
         String testValue = "Jane Doe";
-        invoiceBean.setCustomerName(testValue);
-        assertEquals(testValue, invoiceBean.getCustomerName());
+        invoiceBeanController.setCustomerName(testValue);
+        assertEquals(testValue, invoiceBeanController.getCustomerName());
     }
 
     /********************** Amount field ************************************/
 
     @Test
     void testInvoiceAmount() {
-        invoiceBean.setAmount("123.45");
-        var violations = validator.validateProperty(invoiceBean, "amount");
+        invoiceBeanController.setAmount("123.45");
+        var violations = validator.validateProperty(invoiceBeanController, "amount");
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void testEmptyInvoiceAmount() {
-        invoiceBean.setAmount("");
-        var violations = validator.validateProperty(invoiceBean, "amount");
+        invoiceBeanController.setAmount("");
+        var violations = validator.validateProperty(invoiceBeanController, "amount");
         violations.forEach(violation -> System.out.println(violation.getMessage()));
         assertEquals(2, violations.size());
     }
 
     @Test
     void testNullInvoiceAmount() {
-        invoiceBean.setAmount(null);
-        var violations = validator.validateProperty(invoiceBean, "amount");
+        invoiceBeanController.setAmount(null);
+        var violations = validator.validateProperty(invoiceBeanController, "amount");
         violations.forEach(violation -> System.out.println(violation.getMessage()));
         assertEquals(1, violations.size());
         assertEquals("Invoice Amount cannot be empty", violations.iterator().next().getMessage());
@@ -183,8 +183,8 @@ class InvoiceBeanTest {
 
     @Test
     void testInvalidInvoiceAmount() {
-        invoiceBean.setAmount("123.456");
-        var violations = validator.validateProperty(invoiceBean, "amount");
+        invoiceBeanController.setAmount("123.456");
+        var violations = validator.validateProperty(invoiceBeanController, "amount");
         violations.forEach(violation -> System.out.println(violation.getMessage()));
         assertEquals(1, violations.size());
         assertEquals("Amount must be a number with up to two decimal places",
@@ -194,8 +194,8 @@ class InvoiceBeanTest {
     @Test
     void testInvoiceAmountGetterAndSetter() {
         String testValue = "123.45";
-        invoiceBean.setAmount(testValue);
-        assertEquals(testValue, invoiceBean.getAmount());
+        invoiceBeanController.setAmount(testValue);
+        assertEquals(testValue, invoiceBeanController.getAmount());
     }
 
     @AfterAll
