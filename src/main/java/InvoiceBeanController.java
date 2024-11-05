@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-@Named
+@Named("invoiceBean")
 @ViewScoped
 public class InvoiceBeanController implements Serializable {
 
