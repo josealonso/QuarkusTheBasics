@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-@Named("invoiceBean")
+@Named(value = "invoiceBean")    //("invoiceBean")
 @ViewScoped
 public class InvoiceBeanController implements Serializable {
 
@@ -92,14 +92,14 @@ public class InvoiceBeanController implements Serializable {
         }
 
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Success", "- Invoice submitted successfully with these data: "
+                    "Success", "- EEEEEEE - Invoice submitted successfully with these data: "
         + "\nInvoice Number: " + invoiceNumber
         + "\nInvoice Date: " + invoiceDate
         + "\nCustomer Name: " + customerName
         + "\nAmount: " + amount));
         PrimeFaces.current().ajax().update("messages");
-        clearForm();
         callEndpoint(invoiceNumber, invoiceDate, customerName, amount);
+        clearForm();
 //            PrimeFaces.current()
 //                    .executeScript("setTimeout(function() { window.location.href = 'result.xhtml';}, 1000)");
     }

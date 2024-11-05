@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 
 import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
 
@@ -36,17 +37,22 @@ public class WordDocumentResourceController {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
+        public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
                                @FormParam("invoiceDate") String invoiceDate,
                                @FormParam("customerName") String customerName,
                                @FormParam("amount") String amount) throws IOException {
 
+            writeLogs("AAAAA - Invoice number: " + invoiceNumber + "\n" +
+                "AAAAA - Invoice date: " + invoiceDate + "\n" +
+                "AAAAA - Customer name: " + customerName + "\n" +
+                "AAAAA - Amount: " + amount);
+
+        if (invoiceNumber == null || invoiceDate == null || customerName == null || amount == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invoice number is required").build();
+        }
+
         var wordFileName = createFileNameWithTimestampSuffix();
 
-        System.out.println("AAAAA - Invoice number: " + invoiceNumber);
-        System.out.println("AAAAA - Invoice date: " + invoiceDate);
-        System.out.println("AAAAA - Customer name: " + customerName);
-        System.out.println("AAAAA - Amount: " + amount);
         var invoice = Invoice.builder()
                 .invoiceNumber(invoiceNumber)
                 .invoiceDate(invoiceDate)
@@ -77,6 +83,15 @@ public class WordDocumentResourceController {
         return utilities.createFileNameWithTimestampSuffix(WORD_DOCUMENT_NAME) + ".docx";
     }
 
+    public void writeLogs(String content) {
+//        String content = "Hello, this is some text written to a file.";
+        try {
+            Files.writeString(java.nio.file.Path.of("logs.txt"), content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
 
 
