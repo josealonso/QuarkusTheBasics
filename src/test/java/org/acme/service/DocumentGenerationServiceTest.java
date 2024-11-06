@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 import static org.acme.service.Constants.*;
@@ -42,12 +41,7 @@ class DocumentGenerationServiceTest {
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice = Invoice.builder()
-                .invoiceNumber(String.valueOf(1))
-                .invoiceDate(String.valueOf(LocalDate.of(2023, 8, 1)))
-                .customerName("user")
-                .amount(String.valueOf(145.00))
-                .build();
+        invoice = new Invoice(0, "1", "2023-06-01", "John Doe", "100.00");
     }
 
     @Test
@@ -81,8 +75,8 @@ class DocumentGenerationServiceTest {
                 .map(XWPFParagraph::getText)
                 .collect(Collectors.joining("\n"));
 
-        assertThat(lines).contains(invoice.invoiceDate(), invoice.invoiceNumber(),
-                invoice.customerName().toUpperCase(), invoice.amount());
+        assertThat(lines).contains(invoice.getInvoiceDate(), invoice.getInvoiceNumber(),
+                invoice.getCustomerName().toUpperCase(), invoice.getAmount());
 
         paragraphs.forEach(paragraph -> System.out.println("Line: " + paragraph.getText()));
     }

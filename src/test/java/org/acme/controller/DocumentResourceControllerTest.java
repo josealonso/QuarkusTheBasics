@@ -20,12 +20,8 @@ class DocumentResourceControllerTest {
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice2 = Invoice.builder()
-                .invoiceNumber(String.valueOf(1))
-                .invoiceDate(String.valueOf(LocalDate.of(2023, 8, 1)))
-                .customerName("user")
-                .amount(String.valueOf(145.00))
-                .build();
+        invoice2 = new Invoice(1, "1", "Jose", String.valueOf(LocalDate.now()), "256.25");
+
     }
 
     @Test
@@ -34,10 +30,10 @@ class DocumentResourceControllerTest {
         ValidatableResponse response =
                 given()
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .formParam("invoiceNumber", invoice2.invoiceNumber())
-                        .formParam("invoiceDate", invoice2.invoiceDate())
-                        .formParam("customerName", invoice2.customerName())
-                        .formParam("amount", invoice2.amount())
+                        .formParam("invoiceNumber", invoice2.getInvoiceNumber())
+                        .formParam("invoiceDate", invoice2.getInvoiceDate())
+                        .formParam("customerName", invoice2.getCustomerName())
+                        .formParam("amount", invoice2.getAmount())
                         .when()
                         .post("/document/word/")
                         .then()
@@ -52,10 +48,10 @@ class DocumentResourceControllerTest {
     @Test
     void testExcelEndpoint() {
         given()
-                .formParam("invoiceNumber", invoice2.invoiceNumber())
-                .formParam("invoiceDate", invoice2.invoiceDate())
-                .formParam("customerName", invoice2.customerName())
-                .formParam("amount", invoice2.amount())
+                .formParam("invoiceNumber", invoice2.getInvoiceNumber())
+                .formParam("invoiceDate", invoice2.getInvoiceDate())
+                .formParam("customerName", invoice2.getCustomerName())
+                .formParam("amount", invoice2.getAmount())
                 .when()
                 .get("/document/excel/")
                 .then()

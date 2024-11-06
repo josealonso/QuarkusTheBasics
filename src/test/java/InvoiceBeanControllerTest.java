@@ -23,12 +23,12 @@ class InvoiceBeanControllerTest {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 
     //    @InjectMock
-    private InvoiceBeanController invoiceBeanController;
+    private InvoiceBean invoiceBeanController;
 
     @BeforeEach
     void setUp() {
         validator = factory.getValidator();
-        invoiceBeanController = new InvoiceBeanController();
+        invoiceBeanController = new InvoiceBean();
     }
 
     /*********************** Invoice number field ************************************/
