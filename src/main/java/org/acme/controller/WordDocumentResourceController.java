@@ -84,14 +84,13 @@ public class WordDocumentResourceController {
     }
 
     public void writeLogs(String content) {
-//        String content = "Hello, this is some text written to a file.";
         try {
-            Files.writeString(java.nio.file.Path.of("logs.txt"), content);
+            Files.writeString(java.nio.file.Path.of("logs.txt"), content + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
 }
 
 

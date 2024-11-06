@@ -2,99 +2,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
-<h:head id="head">
-    <f:facet name="last">
-        <h:outputStylesheet name="css/style.css" />
-    </f:facet>
-    <title>DOCUMENT GENERATION</title>
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+
+<h:head>
+    <title>User Invoices</title>
 </h:head>
+
 <h:body>
-    <h2 id="bodyTtitle" class="page-title">DOCUMENT GENERATION FORM</h2>
-    <h:form>
-        <p:panel id="selectPanel" header="Select Document Type" styleClass="custom-panel">
-            <p:selectOneRadio id="selectedForm" value="#{formBean.selectedForm}" styleClass="select-one-radio">
-                <f:selectItem itemLabel="Invoice" itemValue="invoice" />
-                <f:selectItem itemLabel="Other" itemValue="other" />
-                <p:ajax update="formPanel" />
-            </p:selectOneRadio>
-        </p:panel>
+    <h:form id="invoiceForm">
+        <h2 style="text-align: center; margin-top: 5rem;"> Your Invoices</h2>
 
-        <p:panel id="formPanel" styleClass="form-panel">
-            <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}" styleClass="custom-panel-grid">
+        <p:messages id="messages" showDetail="true" closable="true" />
 
-                <h:outputLabel id="invoiceNumberLabel" for="@next" value="Invoice Number:" />
-                <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number" />
-<!--                <p:message for = "@previous" />-->
-                <p:message id="invoiceNumberMessage" for = "invoiceNumber" />
-                <h:outputText id="invoiceNumberOutput" value="#{invoiceBean.invoiceNumber}" />
+        <p:dataTable id="invoiceTable" value="#{userInvoiceOptionsBean.userInvoices}" var="invoice"
+                     emptyMessage="No invoices found" rowKey="#{invoice.id}"
+                     paginator="true" rows="10"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="Showing {startRecord}-{endRecord} of {totalRecords} invoices"
+                     rowsPerPageTemplate="5,10,15">
 
-                <h:outputLabel id="invoiceDateLabel" for="@next" value="Invoice Date:" />
-                <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" />
-                <p:message id="invoiceDateMessage" for = "invoiceDate" />
-                <h:outputText id="invoiceDateOutput" value="#{invoiceBean.invoiceDate}" />
+            <p:column headerText="Invoice Number">
+                <h:outputText value="#{invoiceBean.invoiceNumber}" />
+            </p:column>
 
-                <h:outputLabel id="customerNameLabel" for="@next" value="Customer Name:" />
-                <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name">
-                </p:inputText>
-                <p:message id="customerNameMessage" for = "customerName" />
-                <h:outputText id="customerNameOutput" value="#{invoiceBean.customerName}" />
+            <p:column headerText="Date">
+                <h:outputText value="#{invoiceBean.invoiceDate}">
+                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                </h:outputText>
+            </p:column>
 
-                <h:outputLabel id="amountLabel" for="@next" value="Amount in euros:" />
-                <p:inputText id="amount" value="#{invoiceBean.amount}" placeholder="Amount" />
-                <p:message id="amountMessage" for = "amount" />
-                <h:outputText id="amountOutput" value="#{invoiceBean.amount}" />
+            <p:column headerText="Customer Name">
+                <h:outputText value="#{invoiceBean.customerName}" />
+            </p:column>
 
-            </p:panelGrid>
+            <p:column headerText="Amount">
+                <h:outputText value="#{invoiceBean.amount}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                </h:outputText>
+            </p:column>
 
-            <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'other'}">
-                <h:outputLabel for="otherType" value="Other Type:" />
-                <p:inputText id="otherType" />
+            <p:column headerText="Actions">
+                <p:commandButton value="See" action="#{userInvoiceOptionsBean.viewInvoice(invoice.id)}"
+                                 update=":invoiceForm:messages" icon="pi pi-search"
+                                 style="margin-right: 10%;" />
+                <p:commandButton value="Delete" action="#{userInvoiceOptionsBean.deleteInvoice(invoice.id)}"
+                                 update=":invoiceForm:messages :invoiceForm:invoiceTable"
+                                 icon="pi pi-trash"
+                                 onclick="return confirm('Are you sure you want to delete this invoice?');" />
+            </p:column>
+        </p:dataTable>
 
-                <h:outputLabel for="description" value="Description:" />
-                <p:inputTextarea id="description" />
-            </p:panelGrid>
-        </p:panel>
-
-        <p:commandButton id="submitButton" styleClass="custom-button" value="Submit" update="@form"
-                         action="#{invoiceBean.submitInvoice}"
-                              onclick = "PF('statusDialog').show()"
-                              oncomplete="PF('statusDialog').hide()" >
-
-            <f:param name="paramInvoiceNumber" value="#{invoiceBean.invoiceNumber}" />
-            <f:param name="paramInvoiceDate" value="#{invoiceBean.invoiceDate}" />
-            <f:param name="paramCustomerName" value="#{invoiceBean.customerName}" />
-            <f:param name="paramInvoiceAmount" value="#{invoiceBean.amount}" />
-        </p:commandButton>
-
-        <!-- For global messages, use null as the first parameter. For field-specific messages, use the component ID -->
-        <div>
-            <h:messages id="messages" showDetail="true" globalOnly="true" />
-        </div>
+        <p:commandButton value="New Invoice" action="#{userInvoiceOptionsBean.prepareNewInvoice}"
+                         update=":invoiceForm:messages" icon="pi pi-plus"
+                         style="margin-top: 5rem; margin-left: 45%;" />
     </h:form>
-
-    <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false"
-              closable="false" resizable="false" showHeader="false">
-        <p:graphicImage id="ajaxLoadingBar" name="/images/ajaxloadingbar.gif" />
-        <h:outputText id="statusText" value="Generating invoice...." />
-    </p:dialog>
-
 </h:body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

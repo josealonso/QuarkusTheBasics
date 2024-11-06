@@ -2,6 +2,10 @@ package org.acme.controller;
 
 public record Invoice(String invoiceNumber, String invoiceDate, String customerName, String amount) {
 
+    public Object getId() {
+        return null;
+    }
+
     public static class Builder {
         private String invoiceNumber;
         private String invoiceDate;
