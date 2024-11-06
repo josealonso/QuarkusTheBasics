@@ -15,9 +15,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-@Named(value = "invoiceBean")    //("invoiceBean")
+@Named(value = "invoiceBean")
 @ViewScoped
-public class InvoiceBeanController implements Serializable {
+public class InvoiceBean implements Serializable {
 
     @NotEmpty(message = "Invoice Number cannot not be empty")
     @Pattern(regexp = "^\\d+$", message = "Invoice number must contain only digits")
