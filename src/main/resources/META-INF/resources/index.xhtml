@@ -15,29 +15,29 @@
 
         <p:messages id="messages" showDetail="true" closable="true" />
 
-        <p:dataTable id="invoiceTable" value="#{userInvoiceOptionsBean.userInvoices}" var="invoice"
-                     emptyMessage="No invoices found" rowKey="#{invoice.id}"
+        <p:dataTable id="invoiceTable" value="#{userInvoiceOptionsBean.userInvoices}" var="userInvoice"
+                     emptyMessage="No invoices found" rowKey="#{userInvoice.id}"
                      paginator="true" rows="10"
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                      currentPageReportTemplate="Showing {startRecord}-{endRecord} of {totalRecords} invoices"
                      rowsPerPageTemplate="5,10,15">
 
             <p:column headerText="Invoice Number">
-                <h:outputText value="#{invoiceBean.invoiceNumber}" />
+                <h:outputText value="#{userInvoice.invoiceNumber}" />
             </p:column>
 
             <p:column headerText="Date">
-                <h:outputText value="#{invoiceBean.invoiceDate}">
+                <h:outputText value="#{userInvoice.invoiceDate}">
                     <f:convertDateTime pattern="dd-MM-yyyy" />
                 </h:outputText>
             </p:column>
 
             <p:column headerText="Customer Name">
-                <h:outputText value="#{invoiceBean.customerName}" />
+                <h:outputText value="#{userInvoice.customerName}" />
             </p:column>
 
             <p:column headerText="Amount">
-                <h:outputText value="#{invoiceBean.amount}">
+                <h:outputText value="#{userInvoice.amount}">
                     <f:convertNumber type="currency" currencySymbol="$" />
                 </h:outputText>
             </p:column>

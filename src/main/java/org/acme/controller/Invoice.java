@@ -1,43 +1,39 @@
 package org.acme.controller;
 
-public record Invoice(String invoiceNumber, String invoiceDate, String customerName, String amount) {
+public class Invoice {
 
-    public Object getId() {
-        return null;
+    private int id;
+    private String invoiceNumber;
+    private String invoiceDate;
+    private String customerName;
+    private String amount;
+
+    public Invoice(int id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
+        this.id = id;
+        this.amount = amount;
+        this.customerName = customerName;
+        this.invoiceDate = invoiceDate;
+        this.invoiceNumber = invoiceNumber;
     }
 
-    public static class Builder {
-        private String invoiceNumber;
-        private String invoiceDate;
-        private String customerName;
-        private String amount;
-
-        public Builder invoiceNumber(String invoiceNumber) {
-            this.invoiceNumber = invoiceNumber;
-            return this;
-        }
-
-        public Builder invoiceDate(String invoiceDate) {
-            this.invoiceDate = invoiceDate;
-            return this;
-        }
-
-        public Builder customerName(String customerName) {
-            this.customerName = customerName;
-            return this;
-        }
-
-        public Builder amount(String amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public Invoice build() {
-            return new Invoice(invoiceNumber, invoiceDate, customerName, amount);
-        }
+    public int getId() {
+        return id;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public String getAmount() {
+        return amount;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
     }
 }
+

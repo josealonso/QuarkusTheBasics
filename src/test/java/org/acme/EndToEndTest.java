@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EndToEndTest {
 
     public static final String BASE_URL = "http://localhost:8080";
-    public static final String DOCUMENT_GENERATION_ENDPOINT = "/new_invoice.xhtml";
+    public static final String DOCUMENT_GENERATION_ENDPOINT = "/newInvoice.xhtml";
 
     private Playwright playwright;
     private static Browser browser;

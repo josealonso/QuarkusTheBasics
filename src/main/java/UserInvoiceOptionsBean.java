@@ -31,8 +31,8 @@ public class UserInvoiceOptionsBean implements Serializable {
 //            userInvoices = invoiceService.getUserInvoices();
 //            return userInvoices;
         return List.of(
-                Invoice.builder().invoiceNumber("1").invoiceDate("2023-06-01").customerName("John Doe").amount("100.00").build(),
-                Invoice.builder().invoiceNumber("2").invoiceDate("2023-06-02").customerName("Alice Doe").amount("200.00").build()
+            new Invoice(0, "1", "2023-06-01", "John Doe", "100.00"),
+            new Invoice(1, "2", "2023-06-02", "Alice Doe", "200.00")
         );
     }
 
@@ -47,8 +47,7 @@ public class UserInvoiceOptionsBean implements Serializable {
         try {
             invoiceService.deleteInvoice(id);
             userInvoices.removeIf(invoice -> {
-                assert invoice.getId() != null;
-                return invoice.getId().equals(id);
+                return invoice.getId() == id;
             });
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
         } catch (Exception e) {
@@ -57,8 +56,7 @@ public class UserInvoiceOptionsBean implements Serializable {
     }
 
     public String prepareNewInvoice() {
-        // Logic to prepare for creating a new invoice
-        // This could navigate to a new page or open a dialog
-        return "createInvoice.xhtml?faces-redirect=true";
+        // Navigate to a page where there is a form to create the invoice
+        return "newInvoice.xhtml?faces-redirect=true";
     }
 }

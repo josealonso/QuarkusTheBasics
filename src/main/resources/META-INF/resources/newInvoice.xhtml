@@ -14,7 +14,7 @@
     <h:form>
 
         <p:panel id="formPanel" styleClass="form-panel">
-            <p:panelGrid columns="2" rendered="#{formBean.selectedForm eq 'invoice'}" styleClass="custom-panel-grid">
+            <p:panelGrid columns="2" styleClass="custom-panel-grid">
 
                 <h:outputLabel id="invoiceNumberLabel" for="@next" value="Invoice Number:" />
                 <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number" />
