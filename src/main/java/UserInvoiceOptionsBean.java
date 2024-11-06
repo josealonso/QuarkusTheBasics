@@ -28,12 +28,12 @@ public class UserInvoiceOptionsBean implements Serializable {
     }
 
     public List<Invoice> getUserInvoices() {
-//            userInvoices = invoiceService.getUserInvoices();
-//            return userInvoices;
-        return List.of(
-            new Invoice(0, "1", "2023-06-01", "John Doe", "100.00"),
-            new Invoice(1, "2", "2023-06-02", "Alice Doe", "200.00")
-        );
+            userInvoices = invoiceService.getUserInvoices();
+            return userInvoices;
+//        return List.of(
+//            new Invoice(0, "1", "2023-06-01", "John Doe", "100.00"),
+//            new Invoice(1, "2", "2023-06-02", "Alice Doe", "200.00")
+//        );
     }
 
     public String viewInvoice(Long id) {

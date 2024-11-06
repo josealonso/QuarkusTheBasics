@@ -53,12 +53,7 @@ public class WordDocumentResourceController {
 
         var wordFileName = createFileNameWithTimestampSuffix();
 
-        var invoice = Invoice.builder()
-                .invoiceNumber(invoiceNumber)
-                .invoiceDate(invoiceDate)
-                .customerName(customerName)
-                .amount(amount)
-                .build();
+        var invoice = new Invoice(24, amount, customerName, invoiceDate, invoiceNumber);
 
         try (FileOutputStream wordFile = documentGenerationService.generateWordFile(wordFileName, invoice)) {
             Log.info("================ The word document has been generated ================");
