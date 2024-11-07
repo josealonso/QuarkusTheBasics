@@ -1,6 +1,6 @@
 package org.acme.service;
 
-import org.acme.controller.Invoice;
+import org.acme.controller.InvoiceDTO;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DocumentGenerationServiceTest {
 
-    private Invoice invoice;
+    private InvoiceDTO invoice;
 
     private XWPFDocument convertFileToXWPFDocument(File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
@@ -41,7 +41,7 @@ class DocumentGenerationServiceTest {
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice = new Invoice(0L, "1", "2023-06-01", "John Doe", "100.00");
+        invoice = new InvoiceDTO(0L, "1", "2023-06-01", "John Doe", "100.00");
     }
 
     @Test

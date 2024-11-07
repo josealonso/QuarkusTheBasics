@@ -1,9 +1,3 @@
-# code-with-quarkus
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
-
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
@@ -11,8 +5,40 @@ You can run your application in dev mode that enables live coding using:
 ```shell script
 ./mvnw compile quarkus:dev
 ```
-
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+
+As for the database, you can start dev mode using a custom profile:
+
+```shell script
+quarkus dev -Dquarkus.profile=dev-with-data
+```
+
+## Format of import.sql
+
+When importing a import.sql to set up your database, keep in mind that Quarkus reconfigures Hibernate ORM so to require
+a semicolon (;) to terminate each statement. The default in Hibernate is to have a statement per line, without requiring
+a terminator other than newline: remember to convert your scripts to use the ; terminator character if you’re reusing
+existing scripts. This is useful so to allow multi-line statements and human friendly formatting.
+
+## Caching
+
+
+## Interceotors
+
+Quarkus provides an interceptor that can be used to intercept the execution of a method.
+Either extends org.hibernate.EmptyInterceptor or implements org.hibernate.Interceptor directly.
+
+```java
+@PersistenceUnitExtension
+public static class MyInterceptor extends EmptyInterceptor {
+    @Override
+    public boolean onLoad(Object entity, Serializable id, Object[] state,
+                          String[] propertyNames, Type[] types) {
+        // ...
+        return false;
+    }
+}
+```
 
 ## Packaging and running the application
 

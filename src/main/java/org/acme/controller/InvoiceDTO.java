@@ -1,6 +1,6 @@
 package org.acme.controller;
 
-public class Invoice {
+public class InvoiceDTO {
 
     private Long id;
     private String invoiceNumber;
@@ -8,7 +8,7 @@ public class Invoice {
     private String customerName;
     private String amount;
 
-    public Invoice(Long id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
+    public InvoiceDTO(Long id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
         this.id = id;
         this.amount = amount;
         this.customerName = customerName;

@@ -3,7 +3,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.acme.controller.Invoice;
+import org.acme.controller.InvoiceDTO;
 import org.acme.service.InvoiceService;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Invoice> userInvoices;
+    private List<InvoiceDTO> userInvoices;
 
     //@Inject
     private InvoiceService invoiceService;
@@ -32,16 +32,12 @@ public class UserInvoiceOptionsBean implements Serializable {
         this.invoiceService = invoiceService;
     }
 
-    public void setUserInvoices(List<Invoice> userInvoices) {
+    public void setUserInvoices(List<InvoiceDTO> userInvoices) {
         this.userInvoices = userInvoices;
     }
 
-    public List<Invoice> getUserInvoices() {
-        if (isFirstListing) {
-            invoiceService.init();
-        }
-        isFirstListing = false;
-        userInvoices = invoiceService.getUserInvoices();
+    public List<InvoiceDTO> getUserInvoices() {
+        userInvoices = invoiceService.getAllInvoices();
         return userInvoices;
     }
 

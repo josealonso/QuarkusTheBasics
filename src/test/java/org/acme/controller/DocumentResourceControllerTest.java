@@ -16,11 +16,11 @@ import static org.acme.service.Constants.EXCEL_CONTENT_TYPE;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DocumentResourceControllerTest {
 
-    private Invoice invoice2;
+    private InvoiceDTO invoice2;
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice2 = new Invoice(1L, "1", "Jose", String.valueOf(LocalDate.now()), "256.25");
+        invoice2 = new InvoiceDTO(1L, "1", "Jose", String.valueOf(LocalDate.now()), "256.25");
 
     }
 

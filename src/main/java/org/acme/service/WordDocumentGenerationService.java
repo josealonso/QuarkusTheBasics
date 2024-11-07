@@ -1,7 +1,7 @@
 package org.acme.service;
 
 import jakarta.enterprise.context.RequestScoped;
-import org.acme.controller.Invoice;
+import org.acme.controller.InvoiceDTO;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import java.io.FileOutputStream;
@@ -45,7 +45,7 @@ public class WordDocumentGenerationService {
      * @return the FileOutputStream containing the generated document
      * @throws IOException if the document could not be generated
      */
-    public FileOutputStream generateWordFile(String wordFileName, Invoice invoice) throws IOException {
+    public FileOutputStream generateWordFile(String wordFileName, InvoiceDTO invoice) throws IOException {
         XWPFDocument document = new XWPFDocument();
 		formatTitle(document);
 		formatSubtitle(document);
@@ -96,7 +96,7 @@ public class WordDocumentGenerationService {
 		return document;
 	}
 
-	private XWPFDocument formatParagraphs(XWPFDocument document, Invoice invoice) {
+	private XWPFDocument formatParagraphs(XWPFDocument document, InvoiceDTO invoice) {
 		MyDocString docString = new MyDocString(document, EMPTY_STRING);
 		docString.addLine(invoice.getInvoiceDate())
 				.addLine(EMPTY_STRING)
