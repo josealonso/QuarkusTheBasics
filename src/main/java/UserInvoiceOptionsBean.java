@@ -6,7 +6,9 @@ import jakarta.inject.Named;
 import org.acme.controller.Invoice;
 import org.acme.service.InvoiceService;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.List;
 
 @Named("userInvoiceOptionsBean")
@@ -17,23 +19,30 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     private List<Invoice> userInvoices;
 
-    @Inject
+    //@Inject
     private InvoiceService invoiceService;
 
     @Inject
     private FacesContext facesContext;
+
+    boolean isFirstListing = true;
+    
+    @Inject
+    public UserInvoiceOptionsBean(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
+    }
 
     public void setUserInvoices(List<Invoice> userInvoices) {
         this.userInvoices = userInvoices;
     }
 
     public List<Invoice> getUserInvoices() {
-            userInvoices = invoiceService.getUserInvoices();
-            return userInvoices;
-//        return List.of(
-//            new Invoice(0, "1", "2023-06-01", "John Doe", "100.00"),
-//            new Invoice(1, "2", "2023-06-02", "Alice Doe", "200.00")
-//        );
+        if (isFirstListing) {
+            invoiceService.init();
+        }
+        isFirstListing = false;
+        userInvoices = invoiceService.getUserInvoices();
+        return userInvoices;
     }
 
     public String viewInvoice(Long id) {
@@ -43,13 +52,14 @@ public class UserInvoiceOptionsBean implements Serializable {
         return "viewInvoice.xhtml?faces-redirect=true&id=" + id;
     }
 
+    // TODO - Bug: This method is only called for the first deletion, not for subsequent ones.
+    // This should be fixed.
     public void deleteInvoice(Long id) {
         try {
+            writeLogs("FFFFFFFFFFF - Going to delete invoice with ID: " + id);
             invoiceService.deleteInvoice(id);
-            userInvoices.removeIf(invoice -> {
-                return invoice.getId() == id;
-            });
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+//            getUserInvoices();
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
         }
@@ -59,4 +69,13 @@ public class UserInvoiceOptionsBean implements Serializable {
         // Navigate to a page where there is a form to create the invoice
         return "newInvoice.xhtml?faces-redirect=true";
     }
+
+    private void writeLogs(String text) {
+        try {
+            Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

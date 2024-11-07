@@ -20,7 +20,7 @@ class DocumentResourceControllerTest {
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice2 = new Invoice(1, "1", "Jose", String.valueOf(LocalDate.now()), "256.25");
+        invoice2 = new Invoice(1L, "1", "Jose", String.valueOf(LocalDate.now()), "256.25");
 
     }
 

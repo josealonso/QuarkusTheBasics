@@ -2,13 +2,13 @@ package org.acme.controller;
 
 public class Invoice {
 
-    private int id;
+    private Long id;
     private String invoiceNumber;
     private String invoiceDate;
     private String customerName;
     private String amount;
 
-    public Invoice(int id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
+    public Invoice(Long id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
         this.id = id;
         this.amount = amount;
         this.customerName = customerName;
@@ -16,7 +16,7 @@ public class Invoice {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

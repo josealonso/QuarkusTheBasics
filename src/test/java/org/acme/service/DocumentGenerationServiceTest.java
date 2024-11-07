@@ -41,7 +41,7 @@ class DocumentGenerationServiceTest {
 
     @BeforeAll
     void prepareInvoiceData() {
-        invoice = new Invoice(0, "1", "2023-06-01", "John Doe", "100.00");
+        invoice = new Invoice(0L, "1", "2023-06-01", "John Doe", "100.00");
     }
 
     @Test
