@@ -18,6 +18,12 @@ public class UserInvoiceOptionsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private List<InvoiceDTO> userInvoices;
+    private int firstIndex;
+    private int rowsPerPage = 5;
+    private int startRecord;
+    private int endRecord;
+    private int totalRecords;
+
 
     @Inject
     private InvoiceService invoiceService;
@@ -32,6 +38,40 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     public void setUserInvoices(List<InvoiceDTO> userInvoices) {
         this.userInvoices = userInvoices;
+    }
+
+    public void setFirstIndex(int firstIndex) {
+        this.firstIndex = firstIndex;
+    }
+
+    public void setRowsPerPage(int rowsPerPage) {
+        this.rowsPerPage = rowsPerPage;
+    }
+
+    public int getRowsPerPage() {
+        return rowsPerPage;
+    }
+
+    public int getStartRecord() {
+        return firstIndex + 1;
+    }
+
+    public void setStartRecord(int startRecord) {
+        this.startRecord = startRecord;
+    }
+
+    public void setEndRecord(int endRecord) {
+        this.endRecord = endRecord;
+    }
+
+    public int getEndRecord() {
+        int end = firstIndex + getRowsPerPage();
+        int total = userInvoices.size();
+        return Math.min(end, total);
+    }
+
+    public int getTotalRecords() {
+        return userInvoices.size();
     }
 
     public List<InvoiceDTO> getUserInvoices() {
