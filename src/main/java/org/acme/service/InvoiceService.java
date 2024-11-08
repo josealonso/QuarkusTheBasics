@@ -1,6 +1,5 @@
 package org.acme.service;
 
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -17,14 +16,13 @@ import java.util.Optional;
 @ApplicationScoped
 public class InvoiceService {
 
-    private List<InvoiceDTO> userInvoices;
-
     @Inject
-    @PersistenceUnit("invoices")
+    // @PersistenceContext(unitName = "invoices") // This annotation causes an
+    // exception.
     EntityManager entityManager;
 
     public InvoiceService() {
-//        init();
+
     }
 
     @Transactional
@@ -42,6 +40,9 @@ public class InvoiceService {
     }
 
     public List<InvoiceDTO> getAllInvoices() {
+        // writeLogs("DDDDDDDDDDD - Fetching all invoices");
+        assert entityManager != null;
+        // writeLogs("DDDDDDDDDDD - entityManager is not null");
         return entityManager.createQuery("SELECT i FROM Invoice i", Invoice.class).getResultList()
                 .stream().map(this::convertToInvoiceDTO).toList();
     }
@@ -65,7 +66,9 @@ public class InvoiceService {
                 .getResultList();
     }
 
-    /******************** DTO to/from ENTITY CONVERSION METHODS **********************/
+    /********************
+     * DTO to/from ENTITY CONVERSION METHODS
+     **********************/
 
     private InvoiceDTO convertToInvoiceDTO(Invoice invoice) {
         return new InvoiceDTO(invoice.getId(), invoice.getInvoiceNumber(), invoice.getInvoiceDate(),
@@ -77,6 +80,9 @@ public class InvoiceService {
                 invoiceDTO.getCustomerName(), invoiceDTO.getAmount());
     }
 
+    /************************
+     * Temporary LOGGING METHODS
+     *********************************************/
     private void writeLogs(String text) {
         try {
             Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
@@ -85,6 +91,3 @@ public class InvoiceService {
         }
     }
 }
-
-
-

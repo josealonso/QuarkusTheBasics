@@ -1,13 +1,11 @@
 package org.acme.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "invoices")
 public class Invoice {
     private Long id;
     private String invoiceNumber;
@@ -17,6 +15,9 @@ public class Invoice {
     private String status;
     private LocalDate createdAt;
     private LocalDate updatedAt;
+
+    // default constructor
+    public Invoice() {}  // This default constructor is required by JPA/Hibernate
 
     public Invoice(Long id, String invoiceNumber, String invoiceDate, String customerName, String amount) {
         this.id = id;

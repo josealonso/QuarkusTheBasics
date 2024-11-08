@@ -19,14 +19,12 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     private List<InvoiceDTO> userInvoices;
 
-    //@Inject
+    @Inject
     private InvoiceService invoiceService;
 
     @Inject
     private FacesContext facesContext;
 
-    boolean isFirstListing = true;
-    
     @Inject
     public UserInvoiceOptionsBean(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
@@ -38,26 +36,31 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     public List<InvoiceDTO> getUserInvoices() {
         userInvoices = invoiceService.getAllInvoices();
+        writeLogs("FFFF11111FFFFFFF - Got " + userInvoices.size() + " invoices");
         return userInvoices;
     }
 
     public String viewInvoice(Long id) {
         // Logic to view an invoice
         // This could navigate to a new page or open a dialog
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Viewing invoice", "Invoice ID: " + id));
+        facesContext.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Viewing invoice", "Invoice ID: " + id));
         return "viewInvoice.xhtml?faces-redirect=true&id=" + id;
     }
 
-    // TODO - Bug: This method is only called for the first deletion, not for subsequent ones.
+    // TODO - Bug: This method is only called for the first deletion, not for
+    // subsequent ones.
     // This should be fixed.
     public void deleteInvoice(Long id) {
         try {
             writeLogs("FFFFFFFFFFF - Going to delete invoice with ID: " + id);
             invoiceService.deleteInvoice(id);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
-//            getUserInvoices();
+            facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+            // getUserInvoices();
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
+            facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
         }
     }
 
