@@ -1,6 +1,7 @@
 package org.acme.controller;
 
 import io.quarkus.logging.Log;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
@@ -37,6 +38,7 @@ public class WordDocumentResourceController {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @RolesAllowed("registered_user")
         public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
                                @FormParam("invoiceDate") String invoiceDate,
                                @FormParam("customerName") String customerName,

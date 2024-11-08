@@ -1,6 +1,7 @@
 package org.acme.controller;
 
 import io.quarkus.logging.Log;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -35,6 +36,7 @@ public class ExcelDocumentResourceController {
     @GET
     @Path("/excel")
     @Produces(EXCEL_CONTENT_TYPE)
+    @RolesAllowed("registered_user")
     public Response getExcelDocument() throws IOException {
 
         var excelFileName = createFileNameWithTimestampSuffix();

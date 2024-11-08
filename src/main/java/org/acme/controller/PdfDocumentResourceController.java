@@ -1,6 +1,7 @@
 package org.acme.controller;
 
 import io.quarkus.logging.Log;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -35,6 +36,7 @@ public class PdfDocumentResourceController {
     @GET
     @Path("/pdf")
     @Produces("application/pdf")
+    @RolesAllowed("registered_user")
     public Response getPdf() throws JRException {
 
         var pdfFileName = createFileNameWithTimestampSuffix();

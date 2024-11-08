@@ -16,7 +16,7 @@ public class RegistrationBean {
     private UserService userService;
 
     public String register() {
-        if (userService.registerUser(username, password, email)) {
+        if (userService.addUser(username, password, email)) {
             return "login?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
