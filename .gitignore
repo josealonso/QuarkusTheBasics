@@ -47,5 +47,5 @@ nb-configuration.xml
 *.docx
 *.xlsx
 
-
+*.sh
 logs.txt
