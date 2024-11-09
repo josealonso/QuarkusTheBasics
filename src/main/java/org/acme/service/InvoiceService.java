@@ -22,7 +22,6 @@ public class InvoiceService {
     EntityManager entityManager;
 
     public InvoiceService() {
-
     }
 
     @Transactional
@@ -55,6 +54,9 @@ public class InvoiceService {
 
     @Transactional
     public void deleteInvoice(Long id) throws InvoiceNotFoundException {
+        if (entityManager.find(Invoice.class, id) == null) {
+            throw new InvoiceNotFoundException("Invoice with ID " + id + " not found");
+        }
         writeLogs("DDDDDDDDDDD - Deleting invoice with ID: " + id);
         var invoiceDTO = getInvoiceById(id).get();
         entityManager.remove(convertFromInvoiceDTO(invoiceDTO));

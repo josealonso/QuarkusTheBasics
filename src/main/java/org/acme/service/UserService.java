@@ -5,22 +5,20 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.acme.exceptions.UserNotFoundException;
 import org.acme.model.User;
+
+import java.util.List;
 
 @ApplicationScoped
 public class UserService {
 
-    public static final int MIN_PASSWORD_LENGTH = 8;
+    public static final int MIN_PASSWORD_LENGTH = 4;
+
     @Inject
     EntityManager entityManager;
 
-//    Map<String, String> users;
-
     public UserService() {
-//        users = Map.of(
-//                "admin", "admin", "user", "user",
-//                "guest", "guest", "jose", "jose"
-//        );
     }
 
     // Quarkus will handle the authentication process automatically based on your configuration.
@@ -29,24 +27,65 @@ public class UserService {
         return BcryptUtil.matches(plainPassword, hashedPassword);
     }
 
-    @Transactional
-    public boolean addUser(String username, String password, String role) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(BcryptUtil.bcryptHash(password));
-        user.setRole(role);
-        entityManager.persist(user);
-        return true;
+    public User getUserById(Long id) {
+        return entityManager.find(User.class, id);
     }
 
-    public boolean authenticate(String username, String password) {
-        var hashedPassword = entityManager.createQuery("SELECT u.password FROM User u WHERE u.username = :username",
-                        String.class)
+    public User getUserByEmail(String email) {
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
+
+    public List<User> getAllUsers() {
+        assert entityManager != null;
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
+
+    @Transactional
+    public User createUser(User newUser) throws UserNotFoundException {
+        if (isPasswordValid(newUser.getPassword()) && emailDoesNotExist(newUser.getEmail())) {
+            User user = new User();
+            user.setId(newUser.getId());
+            user.setUsername(newUser.getUsername());
+            user.setPassword(BcryptUtil.bcryptHash(newUser.getPassword()));
+            user.setEmail(newUser.getEmail());
+            user.setRole(newUser.getRole());
+            entityManager.persist(user);
+            return user;
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
+    }
+
+    @Transactional
+    public void createUser(long id, String admin, String admin1, String admin2, String admin3) {
+        var newUse = new User(id, admin, admin1, admin2, admin3);
+        entityManager.persist(newUse);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = entityManager.find(User.class, id);
+        if (user != null) {
+            entityManager.remove(user);
+        }
+    }
+
+    public User authenticate(String username, String email, String password) {
+        return entityManager.createQuery("SELECT u.password FROM User u WHERE u.username = :username",
+                        User.class)
                 .setParameter("username", username)
                 .getSingleResult();
-        return verifyPassword(password, hashedPassword);
+        // verifyPassword(password, password);
     }
 
+
+    public boolean isTheRightPassword(User user, String password) {
+        var hashedPassword = BcryptUtil.bcryptHash(password);
+//        return BcryptUtil.matches(password, hashedPassword);
+        return user.getPassword().equals(hashedPassword);
+    }
 
     public void changePassword(String username, String newPassword) {
         User user = entityManager.find(User.class, "username");
@@ -58,10 +97,14 @@ public class UserService {
 
     public boolean isPasswordValid(String password) {
         return password.length() >= MIN_PASSWORD_LENGTH &&
-                password.matches(".*[A-Z].*") &&
-                password.matches(".*[a-z].*") &&
-                password.matches(".*\\d.*") &&
-                password.matches(".*[!@#$%^&*()].*");
+                password.matches(".*[A-Z].*");  // &&
+//                password.matches(".*[a-z].*") &&
+//                password.matches(".*\\d.*") &&
+//                password.matches(".*[!@#$%^&*()].*");
+    }
+
+    public boolean emailDoesNotExist(String email) {
+        return getUserByEmail(email) == null;
     }
 
 }

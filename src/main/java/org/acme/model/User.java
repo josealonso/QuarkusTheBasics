@@ -1,5 +1,9 @@
 package org.acme.model;
 
+import io.quarkus.security.jpa.Password;
+import io.quarkus.security.jpa.Roles;
+import io.quarkus.security.jpa.UserDefinition;
+import io.quarkus.security.jpa.Username;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -7,22 +11,26 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@UserDefinition
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "email", unique = true, nullable = false)
+    @Username
     private String email;
 
     @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
+    @Password
     private String password;  // This will store the bcrypt hashed password
 
-    @Column(name = "role")
+    @Column(name = "roles")
+    @Roles
     private String role;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -40,6 +48,13 @@ public class User {
     public User() {
     }
 
+    public User(Long id, String email, String username, String password, String role) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
     // Getters and setters
 
     public Long getId() {

@@ -13,7 +13,7 @@
 
     <h:form id="registrationForm">
         <p:panel header="Registration">
-            <h:panelGrid columns="2">
+            <h:panelGrid columns="3">
                 <p:outputLabel for="username" value="Username:"/>
                 <p:inputText id="username" value="#{registrationBean.username}" required="true"/>
 
@@ -26,6 +26,10 @@
                 <p:commandButton value="Register" action="#{registrationBean.register}" update="@form"/>
             </h:panelGrid>
         </p:panel>
+
+<!--        <p:messages id="messages" showDetail="true" closable="true" />-->
+        <h:messages id="messages" showDetail="true" globalOnly="true" />
+
     </h:form>
 
 </h:body>

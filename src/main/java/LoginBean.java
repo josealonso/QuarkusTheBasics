@@ -5,17 +5,28 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.acme.service.UserService;
 
+import static java.lang.Thread.sleep;
+
 @Named
 @RequestScoped
 public class LoginBean {
     private String username;
     private String password;
+    private String email;
+    private boolean rememberMe;
 
     @Inject
     private UserService userService;
 
-    public String login() {
-        if (userService.authenticate(username, password)) {
+    public String login() throws InterruptedException {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Logging in", null));
+        sleep(1000);
+        var user = userService.getUserByEmail(email);
+        if (user != null) {
+            userService.isTheRightPassword(user, password);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Login successful", null));
             return "index?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -40,6 +51,14 @@ public class LoginBean {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public UserService getUserService() {
         return userService;
     }
@@ -48,4 +67,11 @@ public class LoginBean {
         this.userService = userService;
     }
 
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 }

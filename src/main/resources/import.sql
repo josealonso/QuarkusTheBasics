@@ -9,3 +9,6 @@ INSERT INTO invoices (id, invoice_number, customer_name, invoice_date, amount, s
 (6, '9', 'David Lee', '2023-04-01', 4500.00, 'PAID', '2023-04-01 12:15:00', '2023-04-01 12:15:00'),
 (7, '3', 'Emily Davis', '2023-04-15', 2000.50, 'PENDING', '2023-04-15 10:30:00', '2023-04-15 10:30:00');
 
+INSERT INTO users (id, username, password, email, roles) VALUES
+(1, 'alice', '$2a$10$7BXE8bpTQsA6ZgZvqP5wEeq1eSIbBQjxs7Q2nUMXSGQIVCGHBULCu', 'alice', 'ROLE_ADMIN'),
+(2, 'john', '$2a$10$0pQoVTkLzPnuGJCkAYzm0.Yl9g2bKF4/9xEUqCeXj7NAjgcfLhMZe', 'john', 'ROLE_USER');
