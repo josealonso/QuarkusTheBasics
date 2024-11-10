@@ -6,6 +6,7 @@ import jakarta.inject.Named;
 import org.acme.exceptions.UserNotFoundException;
 import org.acme.model.User;
 import org.acme.service.UserService;
+import org.omnifaces.util.Faces;
 
 import static java.lang.Thread.sleep;
 
@@ -22,18 +23,45 @@ public class RegistrationBean {
     private UserService userService;
 
     public String register() throws UserNotFoundException, InterruptedException {
-        id = 5L;  roles = "user";
-        var newUser = new User(id, email, username, password, roles);
-        if (userService.createUser(newUser) != null) {
+        try {
+            // Check if email already exists
+            // if (userService.getUserByEmail(email) != null) {
+            // FacesContext.getCurrentInstance().addMessage(null,
+            // new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email already exists", null));
+            // return null;
+            // }
+
+            // Create new user
+            id = 5L;
+            roles = "user";
+            User newUser = new User();
+            newUser.setId(id);
+            newUser.setUsername(username);
+            newUser.setPassword(password);
+            newUser.setEmail(email);
+            newUser.setRole(roles);
+
+            userService.createUser(newUser);
             sleep(1000);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration successful", null));
-            return "login?faces-redirect=true";
-        } else {
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Registration successful",
+                            "You can now log in with your new credentials."));
+
+            clearForm();
+
+            // Redirect to login page
+            return "login.xhtml?faces-redirect=true";
+        } catch (UserNotFoundException e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Registration failed", null));
             return null;
         }
+    }
+
+    private void clearForm() {
+        username = null;
+        password = null;
+        email = null;
     }
 
     public Long getId() {

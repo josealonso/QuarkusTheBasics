@@ -21,7 +21,8 @@ public class UserService {
     public UserService() {
     }
 
-    // Quarkus will handle the authentication process automatically based on your configuration.
+    // Quarkus will handle the authentication process automatically based on your
+    // configuration.
     // You don't need to manually verify passwords.
     public boolean verifyPassword(String plainPassword, String hashedPassword) {
         return BcryptUtil.matches(plainPassword, hashedPassword);
@@ -74,16 +75,15 @@ public class UserService {
 
     public User authenticate(String username, String email, String password) {
         return entityManager.createQuery("SELECT u.password FROM User u WHERE u.username = :username",
-                        User.class)
+                User.class)
                 .setParameter("username", username)
                 .getSingleResult();
         // verifyPassword(password, password);
     }
 
-
     public boolean isTheRightPassword(User user, String password) {
         var hashedPassword = BcryptUtil.bcryptHash(password);
-//        return BcryptUtil.matches(password, hashedPassword);
+        // return BcryptUtil.matches(password, hashedPassword);
         return user.getPassword().equals(hashedPassword);
     }
 
@@ -97,15 +97,15 @@ public class UserService {
 
     public boolean isPasswordValid(String password) {
         return password.length() >= MIN_PASSWORD_LENGTH &&
-                password.matches(".*[A-Z].*");  // &&
-//                password.matches(".*[a-z].*") &&
-//                password.matches(".*\\d.*") &&
-//                password.matches(".*[!@#$%^&*()].*");
+                password.matches(".*[A-Z].*"); // &&
+        // password.matches(".*[a-z].*") &&
+        // password.matches(".*\\d.*") &&
+        // password.matches(".*[!@#$%^&*()].*");
     }
 
     public boolean emailDoesNotExist(String email) {
-        return getUserByEmail(email) == null;
+        return true;
+        // return getUserByEmail(email) == null;
     }
 
 }
-
