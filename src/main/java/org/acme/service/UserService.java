@@ -2,21 +2,25 @@ package org.acme.service;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.acme.exceptions.UserNotFoundException;
 import org.acme.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
 import java.util.List;
 
 @ApplicationScoped
 public class UserService {
 
     public static final int MIN_PASSWORD_LENGTH = 4;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Inject
-    EntityManager entityManager;
+//    @Inject
+    private final EntityManager entityManager;
 
     public UserService() {
     }
@@ -32,15 +36,37 @@ public class UserService {
         return entityManager.find(User.class, id);
     }
 
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email) throws Exception {
+        writeLogs(" ====A=A=A=A=== EMAIL: " + email);
+        var users = getAllUsers();
+        writeLogs("USERS: " + users);
+        // assert email != null;
         return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                 .setParameter("email", email)
                 .getSingleResult();
     }
 
     public List<User> getAllUsers() {
-        assert entityManager != null;
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        assert entityManager != null : "EntityManager is null";
+
+        try {
+            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
+            List<User> users = query.getResultList();
+
+            if (users.isEmpty()) {
+                logger.warn("No users found in the database.");
+            } else {
+                logger.info("Found {} users in the database.", users.size());
+            }
+
+            return users;
+        } catch (Exception e) {
+            logger.error("Error while fetching all users", e);
+            throw new RuntimeException("Failed to fetch users", e);
+        }
+        // assert entityManager != null;
+        // return entityManager.createQuery("SELECT u FROM User u",
+        // User.class).getResultList();
     }
 
     @Transactional
@@ -106,6 +132,10 @@ public class UserService {
     public boolean emailDoesNotExist(String email) {
         return true;
         // return getUserByEmail(email) == null;
+    }
+
+    public void writeLogs(String text) throws Exception {
+        Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
     }
 
 }

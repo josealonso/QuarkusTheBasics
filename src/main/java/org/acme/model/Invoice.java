@@ -2,7 +2,6 @@ package org.acme.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,25 +31,24 @@ public class Invoice {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private User user;
+
     public Invoice() {
 
     } // This default constructor is required by JPA/Hibernate
 
-    public Invoice(Long id, String invoiceNumber, String invoiceDate, String customerName, String amount) {
+    public Invoice(Long id, String invoiceNumber, String invoiceDate, String customerName, String amount, User user) {
         this.id = id;
-
         this.invoiceNumber = invoiceNumber;
-
         this.invoiceDate = invoiceDate;
-
         this.customerName = customerName;
-
         this.amount = amount;
         this.status = "CREATED";
-
         this.createdAt = LocalDateTime.now();
-
         this.updatedAt = LocalDateTime.now();
+        this.user = user;
     }
 
     public Long getId() {
@@ -113,4 +111,11 @@ public class Invoice {
         this.updatedAt = updatedAt;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

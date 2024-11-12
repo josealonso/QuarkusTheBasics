@@ -6,8 +6,7 @@ import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -33,18 +32,10 @@ public class User {
     @Roles
     private String role;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_invoices",
-            joinColumns = @JoinColumn(name = "invoice_id")
-//            inverseJoinColumns = @JoinColumn(name = "follower_id")
-    )
-    private Set<User> userInvoices = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invoice> invoices;  // This will store the list of invoices associated with the user
 
-//    @ManyToMany(mappedBy = "invoices")
-//    private Set<Invoice> userInvoices = new HashSet<>();
-
-    // Default constructor
+    // Default constructor (required by Hibernate)
     public User() {
     }
 
@@ -96,17 +87,26 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-    // Helper methods for managing relationships
 
-//    public void addFollower(User follower) {
-//        followers.add(follower);
-//        follower.getFollowing().add(this);
-//    }
-//
-//    public void removeFollower(User follower) {
-//        followers.remove(follower);
-//        follower.getFollowing().remove(this);
-//    }
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    // Utility methods for managing the tables relations
+
+    public void addInvoice(Invoice invoice) {
+        invoices.add(invoice);
+        invoice.setUser(this);
+    }
+
+    public void removeInvoice(Invoice invoice) {
+        invoices.remove(invoice);
+        invoice.setUser(null);
+    }
 
     // Equals and hashCode methods
 

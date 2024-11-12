@@ -7,9 +7,11 @@ import jakarta.transaction.Transactional;
 import org.acme.controller.InvoiceDTO;
 import org.acme.exceptions.InvoiceNotFoundException;
 import org.acme.model.Invoice;
+import org.acme.model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +48,16 @@ public class InvoiceService {
                 .stream().map(this::convertToInvoiceDTO).toList();
     }
 
+    // Assume the user id always exists
+    public List<InvoiceDTO> getInvoicesByUser(User user) {
+        var invoices = entityManager.createQuery("SELECT i FROM Invoice i WHERE i.user.id = :userId",
+                        Invoice.class)
+                .setParameter("userId", user.getId())
+                .getResultList();
+        return invoices.isEmpty() ? Collections.emptyList() :
+                invoices.stream().map(this::convertToInvoiceDTO).toList();
+    }
+
     @Transactional
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO) {
         Invoice invoice = convertFromInvoiceDTO(invoiceDTO);
@@ -79,7 +91,7 @@ public class InvoiceService {
 
     private Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
         return new Invoice(invoiceDTO.getId(), invoiceDTO.getInvoiceNumber(), invoiceDTO.getInvoiceDate(),
-                invoiceDTO.getCustomerName(), invoiceDTO.getAmount());
+                invoiceDTO.getCustomerName(), invoiceDTO.getAmount(), new User());
     }
 
     /************************

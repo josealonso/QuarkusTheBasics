@@ -1,15 +1,19 @@
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.acme.controller.InvoiceDTO;
+import org.acme.model.User;
 import org.acme.service.InvoiceService;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 
 @Named("userInvoiceOptionsBean")
 @ViewScoped
@@ -24,6 +28,7 @@ public class UserInvoiceOptionsBean implements Serializable {
     private int endRecord;
     private int totalRecords;
 
+    private User currentUser;
 
     @Inject
     private InvoiceService invoiceService;
@@ -74,10 +79,22 @@ public class UserInvoiceOptionsBean implements Serializable {
         return userInvoices.size();
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
     public List<InvoiceDTO> getUserInvoices() {
-        userInvoices = invoiceService.getAllInvoices();
-        writeLogs("FFFF11111FFFFFFF - Got " + userInvoices.size() + " invoices");
+//        userInvoices = invoiceService.getInvoicesByUser(user.getId());
+//        writeLogs("FFFF11111FFFFFFF - Got " + userInvoices.size() + " invoices");
         return userInvoices;
+    }
+
+    @PostConstruct
+    public void init() {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map<String, Object> sessionMap = externalContext.getSessionMap();
+        currentUser = (User) sessionMap.get("user");
+        userInvoices = invoiceService.getInvoicesByUser(currentUser);
     }
 
     public String viewInvoice(Long id) {
