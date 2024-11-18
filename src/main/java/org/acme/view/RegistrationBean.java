@@ -1,3 +1,5 @@
+package org.acme.view;
+
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -6,7 +8,6 @@ import jakarta.inject.Named;
 import org.acme.exceptions.UserNotFoundException;
 import org.acme.model.User;
 import org.acme.service.UserService;
-import org.omnifaces.util.Faces;
 
 import static java.lang.Thread.sleep;
 

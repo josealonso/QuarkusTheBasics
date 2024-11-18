@@ -1,3 +1,5 @@
+package org.acme.view;
+
 public class ListItem {
     private String property1;
     private String property2;

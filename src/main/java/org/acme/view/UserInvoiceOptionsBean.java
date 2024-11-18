@@ -1,3 +1,5 @@
+package org.acme.view;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
@@ -86,7 +88,9 @@ public class UserInvoiceOptionsBean implements Serializable {
     public List<InvoiceDTO> getUserInvoices() {
 //        userInvoices = invoiceService.getInvoicesByUser(user.getId());
 //        writeLogs("FFFF11111FFFFFFF - Got " + userInvoices.size() + " invoices");
-        return userInvoices;
+//        return userInvoices;
+        return invoiceService.getInvoicesByUser(currentUser);
+//                .map(currentUser.getInvoices());   // Michael
     }
 
     @PostConstruct

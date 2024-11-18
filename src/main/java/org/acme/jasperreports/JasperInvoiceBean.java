@@ -29,6 +29,6 @@ public class JasperInvoiceBean {
 
     @Override
     public String toString() {
-        return "InvoiceBean [name=" + name + ", country=" + country + "]";
+        return "org.acme.view.InvoiceBean [name=" + name + ", country=" + country + "]";
     }
 }

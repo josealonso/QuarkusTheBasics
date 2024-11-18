@@ -13,14 +13,16 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.util.List;
 
+import jakarta.inject.Inject;
+
 @ApplicationScoped
 public class UserService {
 
     public static final int MIN_PASSWORD_LENGTH = 4;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-//    @Inject
-    private final EntityManager entityManager;
+    @Inject
+    private EntityManager entityManager;
 
     public UserService() {
     }

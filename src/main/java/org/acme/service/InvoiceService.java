@@ -11,6 +11,8 @@ import org.acme.model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,12 +52,44 @@ public class InvoiceService {
 
     // Assume the user id always exists
     public List<InvoiceDTO> getInvoicesByUser(User user) {
-        var invoices = entityManager.createQuery("SELECT i FROM Invoice i WHERE i.user.id = :userId",
-                        Invoice.class)
-                .setParameter("userId", user.getId())
+        try {
+   /*         writeLogs("Getting invoices for user: " + user);
+            
+            // First check if the invoices table exists and has data
+            var nativeQuery = entityManager.createNativeQuery("SELECT COUNT(*) FROM invoices");
+            var totalCount = ((Number) nativeQuery.getSingleResult()).longValue();
+            writeLogs("Total invoices in database: " + totalCount);
+            
+            // Check invoices for this specific user
+            var userInvoicesCount = entityManager.createNativeQuery(
+                "SELECT COUNT(*) FROM invoices WHERE user_id = ?1")
+                .setParameter(1, user.getId())
+                .getSingleResult();
+            writeLogs("Total invoices for user " + user.getId() + ": " + userInvoicesCount);
+            
+            // List all user_ids in invoices table
+            var userIds = entityManager.createNativeQuery(
+                "SELECT DISTINCT user_id FROM invoices ORDER BY user_id")
                 .getResultList();
-        return invoices.isEmpty() ? Collections.emptyList() :
-                invoices.stream().map(this::convertToInvoiceDTO).toList();
+            writeLogs("All user_ids in invoices table: " + userIds);
+            */
+            
+            var query = "SELECT i FROM Invoice i WHERE i.user.id = :userId";
+            writeLogs("JPA Query: " + query);
+            writeLogs("User ID: " + user.getId()); 
+            
+            List<Invoice> invoices = entityManager.createQuery(query, Invoice.class)
+                    .setParameter("userId", user.getId())
+                    .getResultList();
+            
+            writeLogs("Found " + invoices.size() + " invoices");
+            return invoices.isEmpty() ? Collections.emptyList() :
+                    invoices.stream().map(this::convertToInvoiceDTO).toList();
+        } catch (Exception e) {
+            writeLogs("Error getting invoices: " + e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
     @Transactional
@@ -84,12 +118,12 @@ public class InvoiceService {
      * DTO to/from ENTITY CONVERSION METHODS
      **********************/
 
-    private InvoiceDTO convertToInvoiceDTO(Invoice invoice) {
+    public InvoiceDTO convertToInvoiceDTO(Invoice invoice) {
         return new InvoiceDTO(invoice.getId(), invoice.getInvoiceNumber(), invoice.getInvoiceDate(),
                 invoice.getCustomerName(), invoice.getAmount());
     }
 
-    private Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
+    public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
         return new Invoice(invoiceDTO.getId(), invoiceDTO.getInvoiceNumber(), invoiceDTO.getInvoiceDate(),
                 invoiceDTO.getCustomerName(), invoiceDTO.getAmount(), new User());
     }
@@ -99,7 +133,9 @@ public class InvoiceService {
      *********************************************/
     private void writeLogs(String text) {
         try {
-            Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
+            Files.writeString(Path.of("logs.txt"), text + "\n", 
+                StandardOpenOption.CREATE, 
+                StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -108,7 +108,18 @@ public class User {
         invoice.setUser(null);
     }
 
-    // Equals and hashCode methods
+    // toString, equals and hashCode methods
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
