@@ -7,7 +7,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import org.acme.controller.InvoiceDTO;
+import org.acme.model.Invoice;
 import org.acme.model.User;
 import org.acme.service.InvoiceService;
 
@@ -16,6 +18,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Named("userInvoiceOptionsBean")
 @ViewScoped
@@ -85,12 +88,17 @@ public class UserInvoiceOptionsBean implements Serializable {
         return currentUser;
     }
 
+    /* The @Transactional annotation ensures we have an active session when accessing the invoices. 
+     * We only load the invoices once and cache them in the bean.
+     */
+    @Transactional
     public List<InvoiceDTO> getUserInvoices() {
-//        userInvoices = invoiceService.getInvoicesByUser(user.getId());
-//        writeLogs("FFFF11111FFFFFFF - Got " + userInvoices.size() + " invoices");
-//        return userInvoices;
-        return invoiceService.getInvoicesByUser(currentUser);
-//                .map(currentUser.getInvoices());   // Michael
+        if (userInvoices == null) {
+            userInvoices = currentUser.getInvoices().stream()
+                .map((Invoice invoice) -> invoiceService.convertToInvoiceDTO(invoice))
+                .collect(Collectors.toList());
+        }
+        return userInvoices;
     }
 
     @PostConstruct
