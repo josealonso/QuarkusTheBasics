@@ -68,6 +68,11 @@
             <artifactId>jasperreports-jdt</artifactId>
             <version>7.0.0</version>
         </dependency>
+        <!-- OIDC -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>io.quarkiverse.jasperreports</groupId>-->
 <!--            <artifactId>quarkus-jasperreports</artifactId>-->
