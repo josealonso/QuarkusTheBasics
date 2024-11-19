@@ -6,6 +6,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.acme.service.UserService;
+import org.acme.service.EmailService;
+import java.util.UUID;
 
 @Named
 @RequestScoped
@@ -16,14 +18,31 @@ public class ForgotPasswordBean {
     @Inject
     private UserService userService;
     
+    @Inject
+    private EmailService emailService;
+    
     public String requestPasswordReset() {
         try {
             var user = userService.getUserByEmail(email);
             if (user != null) {
-                // In a real application, you would:
-                // 1. Generate a reset token
-                // 2. Save it to the database with an expiration
-                // 3. Send an email with a reset link
+                // Generate a reset token
+                String resetToken = UUID.randomUUID().toString();
+                
+                // TODO: Save the token to the database with an expiration time
+                // userService.saveResetToken(user.getId(), resetToken, expirationTime);
+                
+                // Create the reset link
+                String resetLink = "http://localhost:8080/reset-password.xhtml?token=" + resetToken;
+                
+                // Create HTML email content
+                String htmlContent = formEmailContent(resetLink);
+                
+                // Send the email
+                emailService.sendHtmlEmail(
+                    email,
+                    "Password Reset Request",
+                    htmlContent
+                );
                 
                 FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, 
@@ -52,5 +71,32 @@ public class ForgotPasswordBean {
     
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    private String formEmailContent(String resetLink) {
+      
+        return """
+                    <html>
+                        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                            <h2>Password Reset Request</h2>
+                            <p>Hello,</p>
+                            <p>We received a request to reset your password. Click the link below to set a new password:</p>
+                            <p>
+                                <a href="%s" 
+                                   style="background-color: #007bff; 
+                                          color: white; 
+                                          padding: 10px 20px; 
+                                          text-decoration: none; 
+                                          border-radius: 5px; 
+                                          display: inline-block;">
+                                    Reset Password
+                                </a>
+                            </p>
+                            <p>If you didn't request this, you can safely ignore this email.</p>
+                            <p>This link will expire in 24 hours.</p>
+                            <p>Best regards,<br>Your Application Team</p>
+                        </body>
+                    </html>
+                    """.formatted(resetLink);
     }
 }

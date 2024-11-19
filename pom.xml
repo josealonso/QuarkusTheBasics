@@ -78,7 +78,6 @@
 <!--            <artifactId>quarkus-jasperreports</artifactId>-->
 <!--            <version>0.0.5</version>-->
 <!--        </dependency>-->
-
         <!-- Primefaces is a component library for Faces -->
         <dependency>
             <groupId>io.quarkiverse.primefaces</groupId>
@@ -183,6 +182,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-security-jpa</artifactId>
+        </dependency>
+        <!-- Jakarta Mail API-->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mailer</artifactId>
         </dependency>
 
     </dependencies>
