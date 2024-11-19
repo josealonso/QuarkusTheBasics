@@ -3,6 +3,7 @@ package org.acme.service;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.acme.exceptions.UserNotFoundException;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 import jakarta.inject.Inject;
@@ -42,10 +45,13 @@ public class UserService {
         writeLogs(" ====A=A=A=A=== EMAIL: " + email);
         var users = getAllUsers();
         writeLogs("USERS: " + users);
-        // assert email != null;
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                .setParameter("email", email)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public List<User> getAllUsers() {
@@ -110,9 +116,13 @@ public class UserService {
     }
 
     public boolean isTheRightPassword(User user, String password) {
-        var hashedPassword = BcryptUtil.bcryptHash(password);
-        // return BcryptUtil.matches(password, hashedPassword);
-        return user.getPassword().equals(hashedPassword);
+        try {
+            writeLogs("password: " + password + "\n user password: " + user.getPassword());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return BcryptUtil.matches(password, user.getPassword());
     }
 
     public void changePassword(String username, String newPassword) {
@@ -137,7 +147,8 @@ public class UserService {
     }
 
     public void writeLogs(String text) throws Exception {
-        Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
+        System.out.println("LOG: " + text);  // Print to console
+        Files.writeString(Paths.get("UserService-logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
 }

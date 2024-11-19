@@ -8,9 +8,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.acme.service.UserService;
 
-import static java.lang.Thread.sleep;
-
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 @Named
 @RequestScoped
@@ -25,24 +25,35 @@ public class LoginBean {
     @Inject
     private UserService userService;
 
+    private static boolean isFirstWrite = true;
+
     public String login() throws Exception {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Logging in", null));
-        sleep(1000);
-        writeLogs("FFFFFFFFFFF - Going to call getUserByEmail with EMAIL: " + email);
-        // System.out.println(" ====A=A=A=A=== About to call getUserByEmail with EMAIL:
-        // " + email);
-        var user = userService.getUserByEmail(email);
-        writeLogs("user: " + user);
-        if (user != null) {
-            userService.isTheRightPassword(user, password);
-            externalContext.getSessionMap().put("user", user);
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Login successful", null));
-            return "listing?faces-redirect=true";
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
+        var context = FacesContext.getCurrentInstance();
+        try {
+            writeLogs("Login attempt with email: " + email);
+            var user = userService.getUserByEmail(email);
+            writeLogs("Found user: " + (user != null ? user.getUsername() : "null"));
+            
+            if (user != null) {
+                boolean passwordCorrect = userService.isTheRightPassword(user, password);
+                writeLogs("Password check result: " + passwordCorrect);
+                
+                if (passwordCorrect) {
+                    externalContext.getSessionMap().put("user", user);
+                    context.addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Login successful", null));
+                    return "listing?faces-redirect=true";
+                }
+            }
+            
+            context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials", null));
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            writeLogs("Login error: " + e.getMessage());
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error occurred during login", null));
             return null;
         }
     }
@@ -87,8 +98,13 @@ public class LoginBean {
         this.rememberMe = rememberMe;
     }
 
-    private void writeLogs(String message) throws Exception {
-        Files.writeString(java.nio.file.Path.of("logs.txt"), message
-                + "\n");
+    private void writeLogs(String text) throws Exception {
+        System.out.println("LOG: " + text);
+        if (isFirstWrite) {
+            Files.writeString(Paths.get("logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            isFirstWrite = false;
+        } else {
+            Files.writeString(Paths.get("logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
     }
 }

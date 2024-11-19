@@ -14,30 +14,24 @@
     <h:form id="loginForm">
         <p:panel header="Login">
             <h:panelGrid columns="1">
-                <!--                <p:outputLabel for="username" value="Username:"/>-->
-                <!--                <p:inputText id="username" value="#{loginBean.username}" placeholder="Username" required="true"-->
-                <!--                             requiredMessage="Username is required"/>-->
                 <p:outputLabel for="email" value="Email:"/>
                 <p:inputText id="email" value="#{loginBean.email}" placeholder="Email" required="true"
                              requiredMessage="Email is required"/>
-                <p:message id="emailMessage" for="email"/>
 
                 <p:outputLabel for="password" value="Password:"/>
                 <p:password id="password" value="#{loginBean.password}" placeholder="Password" required="true"
                             autoComplete="off" requiredMessage="Password is required"/>
-                <p:message id="passwordMessage" for="password"/>
 
                 <p:selectBooleanCheckbox id="rememberMe" value="#{loginBean.rememberMe}"/>
                 <h:outputLabel for="rememberMe" value="Remember me"/>
 
                 <p:commandButton value="Login" action="#{loginBean.login}" update="@form"/>
             </h:panelGrid>
+            
+            <p:messages id="messages" showDetail="false" closable="true" style="margin-top: 1em;"/>
         </p:panel>
 
-        <h:messages id="messages" showDetail="true" globalOnly="true"/>
-
        <p:button value="Go to Registration" outcome="registration" style="margin-top: 2rem; margin-left: 45%;"/>
-
     </h:form>
 
 </h:body>
