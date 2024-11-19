@@ -1,45 +1,81 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui">
 
-<h:head>
-    <title>Registration</title>
-</h:head>
+<ui:composition template="/templates/template.xhtml">
+    <ui:define name="title">Registration</ui:define>
+    
+    <ui:define name="content">
+        <div class="flex align-items-center justify-content-center min-h-screen">
+            <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+                <h:form id="registrationForm">
+                    <div class="text-center mb-5">
+                        <div class="text-900 text-3xl font-medium mb-3">Create Account</div>
+                        <span class="text-600 font-medium line-height-3">Already have an account?</span>
+                        <p:link outcome="/login.xhtml" value="Sign In" styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
+                    </div>
 
-<h:body>
+                    <div>
+                        <p:messages id="messages" showDetail="true" closable="true">
+                            <p:autoUpdate />
+                        </p:messages>
 
-    <h:form id="registrationForm">
-        <p:panel header="Registration">
-            <h:panelGrid columns="1">
-                <p:outputLabel for="username" value="Username:"/>
-                <p:inputText id="username" value="#{registrationBean.username}" placeholder="Username" required="true"/>
-                <p:message id="usernameMessage" for="username"/>
+                        <div class="flex flex-column gap-2 mb-3">
+                            <p:outputLabel for="username" value="Username" styleClass="text-900 font-medium"/>
+                            <p:inputText id="username" value="#{registrationBean.username}" 
+                                       required="true"
+                                       requiredMessage="Username is required"
+                                       styleClass="w-full"/>
+                            <p:message for="username"/>
+                        </div>
 
-                <p:outputLabel for="password" value="Password:"/>
-                <p:password id="password" value="#{registrationBean.password}" placeholder="Password" autocomplete="off" required="true"/>
-                <p:message id="passwordMessage" for="password"/>
+                        <div class="flex flex-column gap-2 mb-3">
+                            <p:outputLabel for="email" value="Email" styleClass="text-900 font-medium"/>
+                            <p:inputText id="email" value="#{registrationBean.email}" 
+                                       required="true"
+                                       requiredMessage="Email is required"
+                                       validatorMessage="Please enter a valid email"
+                                       styleClass="w-full">
+                                <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@(.+)$"/>
+                            </p:inputText>
+                            <p:message for="email"/>
+                        </div>
 
-                <p:outputLabel for="email" value="Email:"/>
-                <p:inputText id="email" value="#{registrationBean.email}" placeholder="Email" required="true"/>
-                <p:message id="emailMessage" for="email"/>
-
-                <p:commandButton value="Register" action="#{registrationBean.register}" update="@form" process="@form">
-                <p:blockUI block="registrationForm" trigger="@this">
-                    <p:graphicImage name="/images/loading.gif"/>
-                </p:blockUI>
-                </p:commandButton>
-
-            </h:panelGrid>
-
-        </p:panel>
-
-        <p:messages id="messages" showDetail="true" globalOnly="true" />
-
-    </h:form>
-
-</h:body>
+                        <div class="flex flex-column gap-2 mb-4">
+                            <p:outputLabel for="password" value="Password" styleClass="text-900 font-medium"/>
+                            <p:password id="password" value="#{registrationBean.password}" 
+                                      required="true"
+                                      requiredMessage="Password is required"
+                                      toggleMask="true"
+                                      styleClass="w-full"/>
+                            <p:message for="password"/>
+                        </div>
+                        
+                        <div class="flex flex-column gap-2">
+                            <p:commandButton value="Register" 
+                                           action="#{registrationBean.register}" 
+                                           update="@form" 
+                                           styleClass="w-full"
+                                           icon="pi pi-user-plus">
+                                <p:blockUI block="registrationForm" trigger="@this">
+                                    <p:graphicImage name="/images/loading.gif"/>
+                                </p:blockUI>
+                            </p:commandButton>
+                            <p:button value="Back to Login" 
+                                    outcome="/login.xhtml" 
+                                    styleClass="ui-button-secondary w-full"
+                                    icon="pi pi-sign-in"/>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </html>
-

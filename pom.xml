@@ -90,6 +90,12 @@
             <artifactId>quarkus-primefaces-extensions</artifactId>
             <version>${primefaces-quarkus.version}</version>
         </dependency>
+        <!-- PrimeFlex is a layout library for Primefaces, similar to TailwindCSS -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>primeflex</artifactId>
+            <version>3.3.1</version>
+        </dependency>
         <!-- MyFaces is a core implementation of the JSF specification -->
         <dependency>
             <groupId>org.apache.myfaces.core.extensions.quarkus</groupId>

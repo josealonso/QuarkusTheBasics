@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.acme.service.UserService;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -26,6 +27,16 @@ public class LoginBean {
     private UserService userService;
 
     private static boolean isFirstWrite = true;
+
+    public void checkLoggedIn() {
+        if (externalContext.getSessionMap().get("user") == null) {
+            try {
+                externalContext.redirect(externalContext.getRequestContextPath() + "/login.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public String login() throws Exception {
         var context = FacesContext.getCurrentInstance();

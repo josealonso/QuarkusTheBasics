@@ -7,31 +7,38 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-    <title><ui:insert name="title">Invoices App</ui:insert></title>
-    <h:outputStylesheet library="webjars" name="primeflex/3.3.0/primeflex.min.css" />
-</h:head>
+<f:view>
+    <f:metadata>
+        <ui:insert name="metadata"/>
+    </f:metadata>
 
-<h:body>
-    <ui:include src="/templates/header.xhtml" />
-    
-    <div class="container">
-        <ui:insert name="content">
-            <p>Default content</p>
-        </ui:insert>
-    </div>
+    <h:head>
+        <title><ui:insert name="title">Invoices App</ui:insert></title>
+        <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css" />
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head>
 
-    <h:outputStylesheet>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        body {
-            margin: 0;
-            font-family: var(--font-family);
-            background-color: var(--surface-ground);
-        }
-    </h:outputStylesheet>
-</h:body>
+    <h:body>
+        <ui:include src="/templates/header.xhtml" />
+        
+        <div class="container">
+            <ui:insert name="content">
+                <p>Default content</p>
+            </ui:insert>
+        </div>
+
+        <h:outputStylesheet>
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 15px;
+            }
+            body {
+                margin: 0;
+                font-family: var(--font-family);
+                background-color: var(--surface-ground);
+            }
+        </h:outputStylesheet>
+    </h:body>
+</f:view>
 </html>

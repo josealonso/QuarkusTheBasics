@@ -13,15 +13,14 @@
             <p:menuitem value="Invoices" outcome="/listing.xhtml" icon="pi pi-file"/>
             
             <f:facet name="options">
-                <h:form rendered="#{not empty user}" styleClass="flex align-items-center gap-3">
-                    <p:outputLabel value="Welcome, #{user.username}!" styleClass="mr-2"/>
-                    <p:commandButton value="Logout" 
-                                   action="#{loginBean.logout}" 
-                                   icon="pi pi-sign-out"
-                                   styleClass="ui-button-danger"/>
-                </h:form>
-                <h:form rendered="#{empty user}">
-                    <p:button value="Login" outcome="/login.xhtml" icon="pi pi-sign-in"/>
+                <h:form rendered="#{not empty user}">
+                    <div class="flex align-items-center gap-3">
+                        <p:outputLabel value="Welcome, #{user.username}!" styleClass="mr-2"/>
+                        <p:commandButton value="Logout" 
+                                       action="#{loginBean.logout}" 
+                                       icon="pi pi-sign-out"
+                                       styleClass="ui-button-danger"/>
+                    </div>
                 </h:form>
             </f:facet>
         </p:menubar>
