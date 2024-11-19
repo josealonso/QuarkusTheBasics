@@ -1,38 +1,56 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:o="http://omnifaces.org/ui">
+      xmlns:p="http://primefaces.org/ui">
 
-<h:head>
-    <title>Login</title>
-</h:head>
+<ui:composition template="/templates/template.xhtml">
+    <ui:define name="title">Login</ui:define>
+    
+    <ui:define name="content">
+        <div class="flex align-items-center justify-content-center min-h-screen">
+            <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+                <h:form id="loginForm">
+                    <div class="text-center mb-5">
+                        <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
+                        <span class="text-600 font-medium line-height-3">Don't have an account?</span>
+                        <p:link outcome="register" value="Register" styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
+                    </div>
 
-<h:body>
-
-    <h:form id="loginForm">
-        <p:panel header="Login">
-            <h:panelGrid columns="1">
-                <p:outputLabel for="email" value="Email:"/>
-                <p:inputText id="email" value="#{loginBean.email}" placeholder="Email" required="true"
-                             requiredMessage="Email is required"/>
-
-                <p:outputLabel for="password" value="Password:"/>
-                <p:password id="password" value="#{loginBean.password}" placeholder="Password" required="true"
-                            autoComplete="off" requiredMessage="Password is required"/>
-
-                <p:selectBooleanCheckbox id="rememberMe" value="#{loginBean.rememberMe}"/>
-                <h:outputLabel for="rememberMe" value="Remember me"/>
-
-                <p:commandButton value="Login" action="#{loginBean.login}" update="@form"/>
-            </h:panelGrid>
-            
-            <p:messages id="messages" showDetail="false" closable="true" style="margin-top: 1em;"/>
-        </p:panel>
-
-       <p:button value="Go to Registration" outcome="registration" style="margin-top: 2rem; margin-left: 45%;"/>
-    </h:form>
-
-</h:body>
+                    <div>
+                        <p:messages id="messages" showDetail="true" closable="true">
+                            <p:autoUpdate />
+                        </p:messages>
+                        
+                        <div class="mb-4">
+                            <p:outputLabel for="email" styleClass="block text-900 font-medium mb-2" value="Email"/>
+                            <p:inputText id="email" value="#{loginBean.email}" styleClass="w-full mb-3" required="true" requiredMessage="Email is required"/>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p:outputLabel for="password" styleClass="block text-900 font-medium mb-2" value="Password"/>
+                            <p:password id="password" value="#{loginBean.password}" toggleMask="true" styleClass="w-full mb-3" required="true" requiredMessage="Password is required" autoComplete="off"/>
+                        </div>
+                        
+                        <div class="flex align-items-center justify-content-between mb-4">
+                            <div class="flex align-items-center">
+                                <p:selectBooleanCheckbox id="rememberme" value="#{loginBean.rememberMe}"/>
+                                <p:outputLabel for="rememberme" styleClass="ml-2" value="Remember me"/>
+                            </div>
+                            <p:link outcome="forgot-password" value="Forgot password?" styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
+                        </div>
+                        
+                        <div class="flex flex-column gap-2">
+                            <p:commandButton value="Sign In" action="#{loginBean.login}" update="@form" styleClass="w-full" />
+                            <p:button value="Register" outcome="/registration.xhtml" styleClass="ui-button-secondary w-full" />
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
 </html>

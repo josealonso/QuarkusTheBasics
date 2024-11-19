@@ -101,10 +101,15 @@ public class LoginBean {
     private void writeLogs(String text) throws Exception {
         System.out.println("LOG: " + text);
         if (isFirstWrite) {
-            Files.writeString(Paths.get("logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(Paths.get("LoginBean-logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             isFirstWrite = false;
         } else {
-            Files.writeString(Paths.get("logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            Files.writeString(Paths.get("LoginBean-logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
+    }
+
+    public String logout() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "/login.xhtml?faces-redirect=true";
     }
 }
