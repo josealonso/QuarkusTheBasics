@@ -1,89 +1,103 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-<h:head id="head">
-    <f:facet name="last">
-        <h:outputStylesheet name="css/style.css" />
-    </f:facet>
-    <title>DOCUMENT GENERATION</title>
-</h:head>
-<h:body>
-    <h2 id="bodyTitle" class="page-title">DOCUMENT GENERATION FORM</h2>
-    <h:form>
 
-        <p:panel id="formPanel" styleClass="form-panel">
-            <p:panelGrid columns="2" styleClass="custom-panel-grid">
+<ui:composition template="/templates/template.xhtml">
+    <ui:define name="title">New Invoice</ui:define>
+    
+    <ui:define name="content">
+        <div class="card">
+            <h2 class="text-900 text-3xl font-medium mb-3">Document Generation Form</h2>
+            
+            <h:form>
+                <p:panel id="formPanel" styleClass="form-panel">
+                    <p:messages id="messages" showDetail="false" closable="true" globalOnly="true">
+                        <p:autoUpdate />
+                    </p:messages>
 
-                <h:outputLabel id="invoiceNumberLabel" for="@next" value="Invoice Number:" />
-                <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" placeholder="Invoice Number" />
-<!--                <p:message for = "@previous" />-->
-                <p:message id="invoiceNumberMessage" for = "invoiceNumber" />
-                <h:outputText id="invoiceNumberOutput" value="#{invoiceBean.invoiceNumber}" />
+                    <p:panelGrid columns="2" styleClass="custom-panel-grid">
 
-                <h:outputLabel id="invoiceDateLabel" for="@next" value="Invoice Date:" />
-                <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" placeholder="Invoice Date" />
-                <p:message id="invoiceDateMessage" for = "invoiceDate" />
-                <h:outputText id="invoiceDateOutput" value="#{invoiceBean.invoiceDate}" />
+                        <div class="flex flex-column gap-2">
+                        <p:outputLabel id="invoiceNumberLabel" for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium"/>
+                            <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" 
+                                placeholder="Invoice Number" required="true"
+                                requiredMessage="Invoice Number is required">
+                            </p:inputText>
+                            <p:message for="invoiceNumber" styleClass="text-red-500"/>
+                        </div>
 
-                <h:outputLabel id="customerNameLabel" for="@next" value="Customer Name:" />
-                <p:inputText id="customerName" value="#{invoiceBean.customerName}" placeholder="Customer Name">
-                </p:inputText>
-                <p:message id="customerNameMessage" for = "customerName" />
-                <h:outputText id="customerNameOutput" value="#{invoiceBean.customerName}" />
+                        <div class="flex flex-column gap-2">
+                        <h:outputLabel id="invoiceDateLabel" for="invoiceDate" value="Invoice Date:" styleClass="text-900 font-medium"/>
+                            <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" 
+                                placeholder="Invoice Date" required="true"
+                                requiredMessage="Invoice Date is required"
+                                pattern="dd-MM-yyyy">
+                            </p:calendar>
+                            <p:message for="invoiceDate" styleClass="text-red-500"/>
+                        </div>
 
-                <h:outputLabel id="amountLabel" for="@next" value="Amount in euros:" />
-                <p:inputText id="amount" value="#{invoiceBean.amount}" placeholder="Amount" />
-                <p:message id="amountMessage" for = "amount" />
-                <h:outputText id="amountOutput" value="#{invoiceBean.amount}" />
+                        <div class="flex flex-column gap-2">
+                        <h:outputLabel id="customerNameLabel" for="customerName" value="Customer Name:" styleClass="text-900 font-medium"/>
+                            <p:inputText id="customerName" value="#{invoiceBean.customerName}"
+                                placeholder="Customer Name" required="true"
+                                requiredMessage="Customer Name is required"
+                                validatorMessage="Please enter a valid name">
+                            </p:inputText>
+                            <p:message for="customerName" styleClass="text-red-500"/>
+                        </div>
 
-            </p:panelGrid>
+                        <div class="flex flex-column gap-2">
+                        <h:outputLabel id="amountLabel" for="amount" value="Amount in euros:" styleClass="text-900 font-medium"/>
+                            <p:inputText id="amount" value="#{invoiceBean.amount}" 
+                                placeholder="Amount" required="true" 
+                                requiredMessage="Amount is required">
+                            </p:inputText>
+                            <p:message for="amount" styleClass="text-red-500"/>
+                        </div>
 
-        </p:panel>
+                    </p:panelGrid>
 
-        <p:commandButton id="submitButton" styleClass="custom-button" value="Submit" update="@form"
-                         action="#{invoiceBean.submitInvoice}"
-                              onclick = "PF('statusDialog').show()"
-                              oncomplete="PF('statusDialog').hide()" >
+                    <div class="flex justify-content-between mt-3">
+                        <p:commandButton id="submitButton" 
+                                       value="Generate Invoice" 
+                                       action="#{invoiceBean.submitInvoice}"
+                                       update="@form"
+                                       styleClass="ui-button-raised"
+                                       icon="pi pi-file-export"
+                                       onclick="PF('statusDialog').show()"
+                                       oncomplete="PF('statusDialog').hide()">
+                            <f:param name="paramInvoiceNumber" value="#{invoiceBean.invoiceNumber}" />
+                            <f:param name="paramInvoiceDate" value="#{invoiceBean.invoiceDate}" />
+                            <f:param name="paramCustomerName" value="#{invoiceBean.customerName}" />
+                            <f:param name="paramInvoiceAmount" value="#{invoiceBean.amount}" />
+                        </p:commandButton>
 
-            <f:param name="paramInvoiceNumber" value="#{invoiceBean.invoiceNumber}" />
-            <f:param name="paramInvoiceDate" value="#{invoiceBean.invoiceDate}" />
-            <f:param name="paramCustomerName" value="#{invoiceBean.customerName}" />
-            <f:param name="paramInvoiceAmount" value="#{invoiceBean.amount}" />
-        </p:commandButton>
+                        <p:button value="Back to Invoices" 
+                                outcome="listing"
+                                styleClass="ui-button-secondary"
+                                icon="pi pi-arrow-left"/>
+                    </div>
+                </p:panel>
+            </h:form>
 
-        <!-- For global messages, use null as the first parameter. For field-specific messages, use the component ID -->
-        <div>
-            <h:messages id="messages" showDetail="true" globalOnly="true" />
+            <p:dialog id="statusDialog" 
+                      widgetVar="statusDialog" 
+                      modal="true" 
+                      draggable="false"
+                      closable="false" 
+                      resizable="false" 
+                      showHeader="false">
+                <div class="flex align-items-center gap-2">
+                    <p:graphicImage name="/images/ajaxloadingbar.gif" />
+                    <span>Generating invoice...</span>
+                </div>
+            </p:dialog>
         </div>
-    </h:form>
-
-    <p:button value="Back to My Invoices" outcome="listing"
-              style="margin-top: 3rem; margin-left: 45%;" />
-
-    <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false"
-              closable="false" resizable="false" showHeader="false">
-        <p:graphicImage id="ajaxLoadingBar" name="/images/ajaxloadingbar.gif" />
-        <h:outputText id="statusText" value="Generating invoice...." />
-    </p:dialog>
-
-</h:body>
+    </ui:define>
+</ui:composition>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
