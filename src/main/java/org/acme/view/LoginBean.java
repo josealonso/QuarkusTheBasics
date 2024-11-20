@@ -21,17 +21,24 @@ public class LoginBean {
     private String email;
     private boolean rememberMe;
 
-    ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+    private ExternalContext externalContext;
 
     @Inject
     private UserService userService;
 
     private static boolean isFirstWrite = true;
 
+    private ExternalContext getExternalContext() {
+        if (externalContext == null) {
+            externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        }
+        return externalContext;
+    }
+
     public void checkLoggedIn() {
-        if (externalContext.getSessionMap().get("user") == null) {
+        if (getExternalContext().getSessionMap().get("user") == null) {
             try {
-                externalContext.redirect(externalContext.getRequestContextPath() + "/login.xhtml");
+                getExternalContext().redirect(getExternalContext().getRequestContextPath() + "/login.xhtml");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -50,7 +57,7 @@ public class LoginBean {
                 writeLogs("Password check result: " + passwordCorrect);
                 
                 if (passwordCorrect) {
-                    externalContext.getSessionMap().put("user", user);
+                    getExternalContext().getSessionMap().put("user", user);
                     context.addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Login successful", null));
                     return "listing?faces-redirect=true";
