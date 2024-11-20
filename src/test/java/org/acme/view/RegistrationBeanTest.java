@@ -150,4 +150,13 @@ public class RegistrationBeanTest {
         registrationBean.setRoles(testRoles);
         assertThat(registrationBean.getRoles()).isEqualTo(testRoles);
     }
+
+    @Test
+    void testLoginButton() {
+        // When
+        String result = registrationBean.login();
+        
+        // Then
+        assertThat(result).isEqualTo("/login.xhtml?faces-redirect=true");
+    }
 }

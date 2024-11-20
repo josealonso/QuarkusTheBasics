@@ -105,4 +105,7 @@ public class RegistrationBean {
         this.roles = roles;
     }
 
+    public String login() {
+        return "/login.xhtml?faces-redirect=true";
+    }
 }

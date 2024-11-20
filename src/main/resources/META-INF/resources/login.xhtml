@@ -17,7 +17,8 @@
                     <div class="text-center mb-5">
                         <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
                         <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-                        <p:link outcome="registration" value="Register" styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
+                        <p:commandLink action="#{loginBean.registration()}" value="Register" immediate="true"
+                        styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
                     </div>
 
                     <div>
@@ -52,7 +53,8 @@
                                 <p:selectBooleanCheckbox id="rememberme" value="#{loginBean.rememberMe}"/>
                                 <p:outputLabel for="rememberme" styleClass="ml-2 text-900" value="Remember me"/>
                             </div>
-                            <p:link outcome="forgotPassword" value="Forgot password?" styleClass="font-medium no-underline text-blue-500 cursor-pointer hover:text-blue-700"/>
+                            <p:commandLink action="#{loginBean.forgotPassword()}" value="Forgot password?" immediate="true"
+                            styleClass="font-medium no-underline text-blue-500 cursor-pointer hover:text-blue-700"/>
                         </div>
                         
                         <div class="flex flex-column gap-2">

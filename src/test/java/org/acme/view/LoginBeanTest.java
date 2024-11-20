@@ -194,4 +194,36 @@ public class LoginBeanTest {
         // Assert
         verify(externalContext, never()).redirect(anyString());
     }
+
+    @Test
+    void testLogout() {
+        // Given
+        when(FacesContext.getCurrentInstance()).thenReturn(facesContext);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        
+        // When
+        String result = loginBean.logout();
+        
+        // Then
+        verify(externalContext).invalidateSession();
+        assertThat(result).isEqualTo("/login.xhtml?faces-redirect=true");
+    }
+
+    @Test
+    void testRegisterButton() {
+        // When
+        String result = loginBean.register();
+        
+        // Then
+        assertThat(result).isEqualTo("/register.xhtml?faces-redirect=true");
+    }
+
+    @Test
+    void testForgotPasswordButton() {
+        // When
+        String result = loginBean.forgotPassword();
+        
+        // Then
+        assertThat(result).isEqualTo("/forgotPassword.xhtml?faces-redirect=true");
+    }
 }

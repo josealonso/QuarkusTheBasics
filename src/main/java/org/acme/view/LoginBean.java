@@ -76,6 +76,19 @@ public class LoginBean {
         }
     }
 
+    public String logout() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "/login.xhtml?faces-redirect=true";
+    }
+
+    public String register() {
+        return "/register.xhtml?faces-redirect=true";
+    }
+
+    public String forgotPassword() {
+        return "/forgotPassword.xhtml?faces-redirect=true";
+    }
+    
     public String getPassword() {
         return password;
     }
@@ -116,6 +129,7 @@ public class LoginBean {
         this.rememberMe = rememberMe;
     }
 
+    
     private void writeLogs(String text) throws Exception {
         System.out.println("LOG: " + text);
         if (isFirstWrite) {
@@ -126,8 +140,4 @@ public class LoginBean {
         }
     }
 
-    public String logout() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "/login.xhtml?faces-redirect=true";
-    }
 }

@@ -18,7 +18,8 @@
                     <div class="text-center mb-5">
                         <div class="text-900 text-3xl font-medium mb-3">Create Account</div>
                         <span class="text-600 font-medium line-height-3">Already have an account?</span>
-                        <p:link outcome="/login.xhtml" value="Sign In" styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
+                        <p:commandLink action="#{loginBean.login()}" value="Sign In" immediate="true"
+                        styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
                     </div>
 
                     <div>
