@@ -13,17 +13,25 @@ import java.util.UUID;
 @RequestScoped
 public class ForgotPasswordBean {
     
-    private String email;
+    private String recipientEmail;
     
     @Inject
     private UserService userService;
     
     @Inject
     private EmailService emailService;
+
+    public String getEmail() {
+        return recipientEmail;
+    }
+
+    public void setEmail(String email) {
+        this.recipientEmail = email;
+    }
     
-    public String requestPasswordReset() {
+    public String requestPasswordReset() throws Exception {
         try {
-            var user = userService.getUserByEmail(email);
+            var user = userService.getUserByEmail(recipientEmail);
             if (user != null) {
                 // Generate a reset token
                 String resetToken = UUID.randomUUID().toString();
@@ -32,14 +40,14 @@ public class ForgotPasswordBean {
                 // userService.saveResetToken(user.getId(), resetToken, expirationTime);
                 
                 // Create the reset link
-                String resetLink = "http://localhost:8080/reset-password.xhtml?token=" + resetToken;
+                String resetLink = "http://localhost:8080/resetPassword.xhtml?token=" + resetToken;
                 
                 // Create HTML email content
                 String htmlContent = formEmailContent(resetLink);
                 
                 // Send the email
                 emailService.sendHtmlEmail(
-                    email,
+                    recipientEmail,
                     "Password Reset Request",
                     htmlContent
                 );
@@ -63,14 +71,6 @@ public class ForgotPasswordBean {
                     "An error occurred while processing your request."));
             return null;
         }
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     private String formEmailContent(String resetLink) {
