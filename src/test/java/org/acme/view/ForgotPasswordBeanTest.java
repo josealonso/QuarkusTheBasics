@@ -1,6 +1,5 @@
 package org.acme.view;
 
-import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.InjectMock;    // IMPORTANT!
 import jakarta.faces.application.FacesMessage;
@@ -13,16 +12,15 @@ import org.acme.service.EmailService;
 import org.acme.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class ForgotPasswordBeanTest {
@@ -142,9 +140,9 @@ public class ForgotPasswordBeanTest {
         );
         
         // Verify that a message was added
-        assert !messages.isEmpty() : "Expected FacesMessage to be added";
+        assertThat(messages).isNotEmpty();
         FacesMessage message = messages.get(0);
-        assert message.getSeverity() == FacesMessage.SEVERITY_INFO : "Expected INFO severity message";
+        assertThat(message.getSeverity()).isEqualTo(FacesMessage.SEVERITY_INFO);
     }
 
     @Test
@@ -167,12 +165,11 @@ public class ForgotPasswordBeanTest {
         
         // Verify that a message was added - Note: For security reasons, we show the same INFO message
         // even when the email doesn't exist
-        assert !messages.isEmpty() : "Expected FacesMessage to be added";
+        assertThat(messages).isNotEmpty();
         FacesMessage message = messages.get(0);
-        assert message.getSeverity() == FacesMessage.SEVERITY_INFO : "Expected INFO severity message";
-        assert message.getSummary().equals("Success") : "Expected 'Success' message summary";
-        assert message.getDetail().equals("If an account exists with this email, you will receive password reset instructions.") 
-            : "Expected generic message for security";
+        assertThat(message.getSeverity()).isEqualTo(FacesMessage.SEVERITY_INFO);
+        assertThat(message.getSummary()).isEqualTo("Success");
+        assertThat(message.getDetail()).isEqualTo("If an account exists with this email, you will receive password reset instructions.");
     }
 
     @Test
@@ -194,11 +191,10 @@ public class ForgotPasswordBeanTest {
         );
         
         // Verify that an error message was added
-        assert !messages.isEmpty() : "Expected FacesMessage to be added";
+        assertThat(messages).isNotEmpty();
         FacesMessage message = messages.get(0);
-        assert message.getSeverity() == FacesMessage.SEVERITY_ERROR : "Expected ERROR severity message";
-        assert message.getSummary().equals("Error") : "Expected 'Error' message summary";
-        assert message.getDetail().equals("An error occurred while processing your request.") 
-            : "Expected error message";
+        assertThat(message.getSeverity()).isEqualTo(FacesMessage.SEVERITY_ERROR);
+        assertThat(message.getSummary()).isEqualTo("Error");
+        assertThat(message.getDetail()).isEqualTo("An error occurred while processing your request.");
     }
 }
