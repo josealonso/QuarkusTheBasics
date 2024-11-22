@@ -3,6 +3,8 @@ package org.acme.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.acme.controller.InvoiceDTO;
 import org.acme.exceptions.InvoiceNotFoundException;
@@ -99,13 +101,30 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void deleteInvoice(Long id) throws InvoiceNotFoundException {
-        if (entityManager.find(Invoice.class, id) == null) {
-            throw new InvoiceNotFoundException("Invoice with ID " + id + " not found");
+    public void deleteInvoice(String invoiceNumber) throws InvoiceNotFoundException {
+        writeLogs("DDDDDDDDDDD - Deleting invoice with invoiceNumber: " + invoiceNumber);
+        
+        try {
+            TypedQuery<Invoice> query = entityManager
+                .createQuery("SELECT i FROM Invoice i WHERE i.invoiceNumber = :invoiceNumber", Invoice.class);
+            query.setParameter("invoiceNumber", invoiceNumber);
+            Invoice invoiceToBeRemoved = query.getSingleResult();
+                
+            if (invoiceToBeRemoved == null) {
+                writeLogs("DDDDDDDDDDD - Invoice is null");
+                throw new InvoiceNotFoundException("Invoice with number " + invoiceNumber + " not found");
+            }
+            
+            entityManager.remove(invoiceToBeRemoved);
+            writeLogs("DDDDDDDDDDD - Invoice removed successfully");
+            
+        } catch (NoResultException e) {
+            writeLogs("DDDDDDDDDDD - NoResultException caught: " + e.getMessage());
+            throw new InvoiceNotFoundException("Invoice with number " + invoiceNumber + " not found");
+        } catch (Exception e) {
+            writeLogs("DDDDDDDDDDD - Unexpected error: " + e.getClass().getName() + " - " + e.getMessage());
+            throw e;
         }
-        writeLogs("DDDDDDDDDDD - Deleting invoice with ID: " + id);
-        var invoiceDTO = getInvoiceById(id).get();
-        entityManager.remove(convertFromInvoiceDTO(invoiceDTO));
     }
 
     public List<Invoice> getInvoicesByStatus(String status) {
@@ -119,13 +138,13 @@ public class InvoiceService {
      **********************/
 
     public InvoiceDTO convertToInvoiceDTO(Invoice invoice) {
-        return new InvoiceDTO(invoice.getId(), invoice.getInvoiceNumber(), invoice.getInvoiceDate(),
-                invoice.getCustomerName(), invoice.getAmount());
+        return new InvoiceDTO(invoice.getId(), invoice.getAmount(), invoice.getCustomerName(),
+                invoice.getInvoiceDate(), invoice.getInvoiceNumber());
     }
 
     public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
         return new Invoice(invoiceDTO.getId(), invoiceDTO.getInvoiceNumber(), invoiceDTO.getInvoiceDate(),
-                invoiceDTO.getCustomerName(), invoiceDTO.getAmount(), new User());
+                invoiceDTO.getInvoiceCustomerName(), invoiceDTO.getInvoiceAmount(), new User());
     }
 
     /************************

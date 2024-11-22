@@ -19,10 +19,10 @@
             <h:form id="form">
                 <div class="flex justify-content-between align-items-center mb-4">
                     <h2 class="text-900 font-bold m-0">Your Invoices</h2>
-                    <p:commandButton value="Create Invoice" 
+                    <p:commandButton value="Create Invoice"  immediate="true"
                                    icon="pi pi-plus"
                                    styleClass="ui-button-success"
-                                   action="#{userInvoiceOptionsBean.goToCreateInvoice}"
+                                   action="#{userInvoiceOptionsBean.goToCreateInvoice()}"
                                    rendered="#{not empty user}"/>
                 </div>
 
@@ -43,41 +43,43 @@
                         <h:outputText value="#{invoice.invoiceNumber}" />
                     </p:column>
 
-                    <p:column headerText="Client Name" sortBy="#{invoice.clientName}">
-                        <h:outputText value="#{invoice.clientName}" />
+                    <p:column headerText="Customer Name" sortBy="#{invoice.invoiceCustomerName}">
+                        <h:outputText value="#{invoice.invoiceCustomerName}" />
                     </p:column>
 
-                    <p:column headerText="Amount" sortBy="#{invoice.amount}">
-                        <h:outputText value="#{invoice.amount}">
+                    <p:column headerText="Amount" sortBy="#{invoice.invoiceAmount}">
+                        <h:outputText value="#{invoice.invoiceAmount}">
                             <f:convertNumber type="currency" currencySymbol="€"/>
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Date" sortBy="#{invoice.date}">
-                        <h:outputText value="#{invoice.date}">
+                    <p:column headerText="Date" sortBy="#{invoice.invoiceDate}">
+                        <h:outputText value="#{invoice.invoiceDate}">
                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Actions" exportable="false" style="width:100px">
-                        <div class="flex justify-content-around">
+                    <p:column headerText="Actions" exportable="false" style="width:150px">
+                        <div class="flex align-items-center gap-2">
                             <p:commandButton icon="pi pi-file-pdf" 
-                                           styleClass="rounded-button ui-button-secondary" 
+                                           styleClass="rounded-button ui-button-secondary p-mr-2" 
                                            action="#{userInvoiceOptionsBean.downloadPdf(invoice)}"
                                            title="Download PDF"/>
                             
                             <p:commandButton icon="pi pi-pencil" 
-                                           styleClass="rounded-button ui-button-warning" 
+                                           styleClass="rounded-button ui-button-warning p-mr-2" 
                                            action="#{userInvoiceOptionsBean.editInvoice(invoice)}"
                                            title="Edit Invoice"
                                            rendered="#{not empty user}"/>
                             
                             <p:commandButton icon="pi pi-trash" 
                                            styleClass="rounded-button ui-button-danger" 
-                                           action="#{userInvoiceOptionsBean.deleteInvoice(invoice)}"
+                                           action="#{userInvoiceOptionsBean.deleteInvoice(invoice.invoiceNumber.toString())}"
                                            title="Delete Invoice"
                                            rendered="#{not empty user}"
-                                           onclick="return confirm('Are you sure you want to delete this invoice?')"/>
+                                           onclick="return confirm('Are you sure you want to delete this invoice?')"
+                                           update="@form">
+                            </p:commandButton>
                         </div>
                     </p:column>
                 </p:dataTable>

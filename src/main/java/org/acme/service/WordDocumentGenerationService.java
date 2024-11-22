@@ -103,8 +103,8 @@ public class WordDocumentGenerationService {
 				.addLine("INVOICE #" + invoice.getInvoiceNumber())
 				.addLine(EMPTY_STRING)
 				.addLine(EMPTY_STRING)
-				.addLine(invoice.getCustomerName().toUpperCase() + " has paid the amount of " +
-						invoice.getAmount() + " euros");
+				.addLine(invoice.getInvoiceCustomerName().toUpperCase() + " has paid the amount of " +
+						invoice.getInvoiceAmount() + " euros");
 		return docString.getDocument();
 	}
 

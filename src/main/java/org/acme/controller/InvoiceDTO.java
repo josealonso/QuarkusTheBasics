@@ -5,13 +5,13 @@ public class InvoiceDTO {
     private Long id;
     private String invoiceNumber;
     private String invoiceDate;
-    private String customerName;
-    private String amount;
+    private String invoiceCustomerName;
+    private String invoiceAmount;
 
     public InvoiceDTO(Long id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
         this.id = id;
-        this.amount = amount;
-        this.customerName = customerName;
+        this.invoiceAmount = amount;
+        this.invoiceCustomerName = customerName;
         this.invoiceDate = invoiceDate;
         this.invoiceNumber = invoiceNumber;
     }
@@ -20,12 +20,12 @@ public class InvoiceDTO {
         return id;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getInvoiceAmount() {
+        return invoiceAmount;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getInvoiceCustomerName() {
+        return invoiceCustomerName;
     }
 
     public String getInvoiceDate() {

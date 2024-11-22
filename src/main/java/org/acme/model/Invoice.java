@@ -63,6 +63,10 @@ public class Invoice {
         return invoiceNumber;
     }
 
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }   
+
     public String getInvoiceDate() {
         return invoiceDate;
     }

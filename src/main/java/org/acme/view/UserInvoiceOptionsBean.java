@@ -16,6 +16,8 @@ import org.acme.service.InvoiceService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class UserInvoiceOptionsBean implements Serializable {
     private int endRecord;
     private int totalRecords;
 
-    private User currentUser;
+    private User registeredUser;
 
     @Inject
     private InvoiceService invoiceService;
@@ -84,8 +86,8 @@ public class UserInvoiceOptionsBean implements Serializable {
         return userInvoices.size();
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+    public User getRegisteredUser() {
+        return registeredUser;
     }
 
     /* The @Transactional annotation ensures we have an active session when accessing the invoices. 
@@ -94,7 +96,8 @@ public class UserInvoiceOptionsBean implements Serializable {
     @Transactional
     public List<InvoiceDTO> getUserInvoices() {
         if (userInvoices == null) {
-            userInvoices = currentUser.getInvoices().stream()
+            // userInvoices = registeredUser.getInvoices().stream()
+            userInvoices = registeredUser.getInvoices().stream()
                 .map((Invoice invoice) -> invoiceService.convertToInvoiceDTO(invoice))
                 .collect(Collectors.toList());
         }
@@ -105,8 +108,8 @@ public class UserInvoiceOptionsBean implements Serializable {
     public void init() {
         ExternalContext externalContext = facesContext.getExternalContext();
         Map<String, Object> sessionMap = externalContext.getSessionMap();
-        currentUser = (User) sessionMap.get("user");
-        userInvoices = invoiceService.getInvoicesByUser(currentUser);
+        registeredUser = (User) sessionMap.get("user");
+        userInvoices = invoiceService.getInvoicesByUser(registeredUser);
     }
 
     public String viewInvoice(Long id) {
@@ -117,30 +120,30 @@ public class UserInvoiceOptionsBean implements Serializable {
         return "viewInvoice.xhtml?faces-redirect=true&id=" + id;
     }
 
-    // TODO - Bug: This method is only called for the first deletion, not for
-    // subsequent ones.
-    // This should be fixed.
-    public void deleteInvoice(Long id) {
+    public void deleteInvoice(String invoiceNumber) {
         try {
-            writeLogs("FFFFFFFFFFF - Going to delete invoice with ID: " + id);
-            invoiceService.deleteInvoice(id);
+            writeLogs("FFFFFFFFFFF - Going to delete invoice with InvNumber: " + invoiceNumber);
+            invoiceService.deleteInvoice(invoiceNumber);
+            writeLogs("Refreshing invoice list");
+            userInvoices = invoiceService.getInvoicesByUser(registeredUser);
             facesContext.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
-            // getUserInvoices();
         } catch (Exception e) {
             facesContext.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
         }
     }
 
-    public String prepareNewInvoice() {
+    public String goToCreateInvoice() {
         // Navigate to a page where there is a form to create the invoice
         return "newInvoice.xhtml?faces-redirect=true";
     }
 
     private void writeLogs(String text) {
         try {
-            Files.writeString(java.nio.file.Path.of("logs.txt"), text + "\n");
+            Files.writeString(Path.of("logs.txt"), text + "\n", 
+                StandardOpenOption.CREATE, 
+                StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }

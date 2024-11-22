@@ -76,7 +76,7 @@ class DocumentGenerationServiceTest {
                 .collect(Collectors.joining("\n"));
 
         assertThat(lines).contains(invoice.getInvoiceDate(), invoice.getInvoiceNumber(),
-                invoice.getCustomerName().toUpperCase(), invoice.getAmount());
+                invoice.getInvoiceCustomerName().toUpperCase(), invoice.getInvoiceAmount());
 
         paragraphs.forEach(paragraph -> System.out.println("Line: " + paragraph.getText()));
     }

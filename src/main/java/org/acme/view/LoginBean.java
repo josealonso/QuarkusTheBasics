@@ -82,7 +82,7 @@ public class LoginBean {
     }
 
     public String register() {
-        return "/register.xhtml?faces-redirect=true";
+        return "/registration.xhtml?faces-redirect=true";
     }
 
     public String forgotPassword() {
