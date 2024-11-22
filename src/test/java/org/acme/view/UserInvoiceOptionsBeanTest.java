@@ -126,6 +126,27 @@ class UserInvoiceOptionsBeanTest {
         assertThat(result).isEqualTo("newInvoice.xhtml?faces-redirect=true");
     }
 
+    @Test
+    void testViewInvoice() {
+        // Setup
+        Long invoiceId = 1L;
+
+        // Execute
+        String result = userInvoiceOptionsBean.viewInvoice(invoiceId);
+
+        // Verify
+        assertThat(result).isEqualTo("viewInvoice.xhtml?faces-redirect=true&id=" + invoiceId);
+
+        // Verify message was added
+        ArgumentCaptor<FacesMessage> messageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
+        verify(facesContext).addMessage(eq(null), messageCaptor.capture());
+        
+        FacesMessage capturedMessage = messageCaptor.getValue();
+        assertThat(capturedMessage.getSeverity()).isEqualTo(FacesMessage.SEVERITY_INFO);
+        assertThat(capturedMessage.getSummary()).isEqualTo("Viewing invoice");
+        assertThat(capturedMessage.getDetail()).isEqualTo("Invoice ID: " + invoiceId);
+    }
+
     // Utility method to set private fields using reflection
     private void setField(Object target, String fieldName, Object value) {
         try {
