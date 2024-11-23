@@ -149,10 +149,13 @@ public class ViewInvoiceBean implements Serializable {
             Utilities.writeToCentralLog("Generating PDF preview");
             currentPdfContent = pdfService.generateInvoicePdf(invoice, sessionUser);
             
-            // Stream the PDF to the browser
+            // Set response headers for new tab display
             externalContext.responseReset();
             externalContext.setResponseContentType("application/pdf");
             externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"invoice-" + invoice.getInvoiceNumber() + ".pdf\"");
+            externalContext.setResponseHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            externalContext.setResponseHeader("Pragma", "no-cache");
+            externalContext.setResponseHeader("Expires", "0");
             externalContext.setResponseContentLength(currentPdfContent.length);
             
             externalContext.getResponseOutputStream().write(currentPdfContent);

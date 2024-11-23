@@ -40,7 +40,9 @@
                                            action="#{viewInvoiceBean.previewPdf}"
                                            styleClass="ui-button-info mr-2"
                                            icon="pi pi-eye"
-                                           ajax="false"/>
+                                           ajax="false"
+                                           onclick="this.form.target='_blank';"
+                                           oncomplete="this.form.target='';"/>
                             
                             <p:commandButton value="Download" 
                                            action="#{viewInvoiceBean.downloadPdf}"
