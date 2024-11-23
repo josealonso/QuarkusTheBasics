@@ -6,11 +6,16 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+
 import org.acme.controller.InvoiceDTO;
 import org.acme.exceptions.InvoiceNotFoundException;
+import org.acme.service.InvoicePdfService;
 import org.acme.service.InvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +38,9 @@ class ViewInvoiceBeanTest {
     @Mock
     private ExternalContext externalContext;
 
+    @Mock
+    private InvoicePdfService pdfService;
+
     private ViewInvoiceBean viewInvoiceBean;
     private InvoiceDTO testInvoice;
 
@@ -51,6 +59,7 @@ class ViewInvoiceBeanTest {
         setField(viewInvoiceBean, "invoiceService", invoiceService);
         setField(viewInvoiceBean, "facesContext", facesContext);
         setField(viewInvoiceBean, "externalContext", externalContext);
+        setField(viewInvoiceBean, "pdfService", pdfService);
     }
 
     @Test
@@ -143,18 +152,56 @@ class ViewInvoiceBeanTest {
     }
 
     @Test
-    void testDownloadPdf() {
+    void testDownloadPdf() throws Exception {
+        // Setup
+        viewInvoiceBean.setInvoice(testInvoice);
+        byte[] pdfBytes = "test pdf content".getBytes();
+        when(pdfService.generateInvoicePdf(testInvoice)).thenReturn(pdfBytes);
+        
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        when(externalContext.getResponseOutputStream()).thenReturn(new ServletOutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                outputStream.write(b);
+            }
+            @Override
+            public boolean isReady() { return true; }
+            @Override
+            public void setWriteListener(WriteListener writeListener) {}
+        });
+
         // Execute
         viewInvoiceBean.downloadPdf();
 
-        // Verify info message (since it's not implemented yet)
+        // Verify response setup
+        verify(externalContext).responseReset();
+        verify(externalContext).setResponseContentType("application/pdf");
+        verify(externalContext).setResponseHeader(eq("Content-Disposition"), 
+            eq("attachment;filename=invoice-" + testInvoice.getInvoiceNumber() + ".pdf"));
+        verify(externalContext).setResponseContentLength(pdfBytes.length);
+        
+        // Verify PDF content
+        assertThat(outputStream.toByteArray()).isEqualTo(pdfBytes);
+        verify(facesContext).responseComplete();
+    }
+
+    @Test
+    void testDownloadPdfFailure() throws Exception {
+        // Setup
+        viewInvoiceBean.setInvoice(testInvoice);
+        when(pdfService.generateInvoicePdf(testInvoice)).thenThrow(new IOException("PDF generation failed"));
+
+        // Execute
+        viewInvoiceBean.downloadPdf();
+
+        // Verify error message
         ArgumentCaptor<FacesMessage> messageCaptor = ArgumentCaptor.forClass(FacesMessage.class);
         verify(facesContext).addMessage(eq(null), messageCaptor.capture());
         
         FacesMessage capturedMessage = messageCaptor.getValue();
-        assertThat(capturedMessage.getSeverity()).isEqualTo(FacesMessage.SEVERITY_INFO);
-        assertThat(capturedMessage.getSummary()).isEqualTo("Info");
-        assertThat(capturedMessage.getDetail()).isEqualTo("PDF download feature coming soon");
+        assertThat(capturedMessage.getSeverity()).isEqualTo(FacesMessage.SEVERITY_ERROR);
+        assertThat(capturedMessage.getSummary()).isEqualTo("Error");
+        assertThat(capturedMessage.getDetail()).isEqualTo("Failed to generate PDF");
     }
 
     // Utility method to set private fields using reflection

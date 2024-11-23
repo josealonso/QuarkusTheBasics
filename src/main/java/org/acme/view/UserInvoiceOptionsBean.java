@@ -8,6 +8,8 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
+
+import org.acme.Utilities;
 import org.acme.controller.InvoiceDTO;
 import org.acme.model.Invoice;
 import org.acme.model.User;
@@ -113,11 +115,23 @@ public class UserInvoiceOptionsBean implements Serializable {
     }
 
     public String viewInvoice(Long id) {
-        // Logic to view an invoice
-        // This could navigate to a new page or open a dialog
+        Utilities.writeToCentralLog("Inside UserInvoiceOptionsBean.viewInvoice() with ID: " + id);
+        
+        // Check if user is in session
+        User currentUser = (User) facesContext.getExternalContext().getSessionMap().get("user");
+        if (currentUser == null) {
+            Utilities.writeToCentralLog("No user in session during navigation attempt");
+            facesContext.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Please log in to view invoices"));
+            return "login.xhtml?faces-redirect=true";
+        }
+        
+        String redirectUrl = "viewInvoice.xhtml?faces-redirect=true&id=" + id;
+        Utilities.writeToCentralLog("Redirecting to: " + redirectUrl + " for user: " + currentUser.getEmail());
+        
         facesContext.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Viewing invoice", "Invoice ID: " + id));
-        return "viewInvoice.xhtml?faces-redirect=true&id=" + id;
+        return redirectUrl;
     }
 
     public void deleteInvoice(String invoiceNumber) {
@@ -137,6 +151,13 @@ public class UserInvoiceOptionsBean implements Serializable {
     public String goToCreateInvoice() {
         // Navigate to a page where there is a form to create the invoice
         return "newInvoice.xhtml?faces-redirect=true";
+    }
+
+    public String viewInvoice(InvoiceDTO invoice) {
+        if (invoice == null || invoice.getId() == null) {
+            return null;
+        }
+        return "viewInvoice.xhtml?faces-redirect=true&id=" + invoice.getId();
     }
 
     private void writeLogs(String text) {

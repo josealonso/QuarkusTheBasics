@@ -1,5 +1,9 @@
 package org.acme;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,5 +28,20 @@ public class Utilities {
 
     public String getJasperReportTemplate() {
         return "/reports/InvoiceReport.jrxml";
+    }
+
+    /**
+     * @param message
+     */
+    public static void writeToCentralLog(String message) {
+        try {
+            Files.write(
+                Paths.get("central-logs.txt"), (message + "\n").getBytes(),
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND
+            );
+        } catch (IOException e) {
+            //logger.severe("Failed to write to log file: " + e.getMessage());
+        }
     }
 }

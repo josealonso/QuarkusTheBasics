@@ -61,14 +61,15 @@
 
                     <p:column headerText="Actions" exportable="false" style="width:150px">
                         <div class="flex align-items-center gap-2">
-                            <p:commandButton icon="pi pi-file-pdf" 
+                            <p:commandButton icon="pi pi-eye" 
                                            styleClass="rounded-button ui-button-secondary p-mr-2" 
-                                           action="#{userInvoiceOptionsBean.downloadPdf(invoice)}"
-                                           title="Download PDF"/>
+                                           action="#{userInvoiceOptionsBean.viewInvoice(invoice.id)}"
+                                           title="View Invoice"
+                                           immediate="true"/>
                             
                             <p:commandButton icon="pi pi-pencil" 
                                            styleClass="rounded-button ui-button-warning p-mr-2" 
-                                           action="#{userInvoiceOptionsBean.editInvoice(invoice)}"
+                                           action="#{userInvoiceOptionsBean.editInvoice(invoice.id)}"
                                            title="Edit Invoice"
                                            rendered="#{not empty user}"/>
                             
