@@ -87,12 +87,48 @@ public class InvoicePdfResource {
         }
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteInvoice(@PathParam("id") Long id) {
+        try {
+            logger.info("Attempting to delete invoice with ID: " + id);
+            writeToLog("Delete request received for invoice ID: " + id);
+            
+            // Get user from session for authorization
+            ExternalContext externalContext = facesContext.getExternalContext();
+            User sessionUser = (User) externalContext.getSessionMap().get("user");
+            if (sessionUser == null) {
+                logger.severe("No user in session");
+                writeToLog("null user in session during delete attempt");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(Collections.singletonMap("message", "User not logged in"))
+                        .build();
+            }
+            
+            invoiceService.deleteInvoice(id);
+            
+            logger.info("Successfully deleted invoice with ID: " + id);
+            writeToLog("Successfully deleted invoice ID: " + id);
+            
+            return Response.ok()
+                    .entity(Collections.singletonMap("message", "Invoice deleted successfully"))
+                    .build();
+                    
+        } catch (Exception e) {
+            String errorMsg = "Failed to delete invoice: " + e.getMessage();
+            logger.severe(errorMsg);
+            writeToLog("Error: " + errorMsg);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Collections.singletonMap("message", errorMsg))
+                    .build();
+        }
+    }
+
     private void writeToLog(String message) {
         try {
             Files.write(
                 Paths.get("pdf-logs.txt"), message.getBytes(), 
-//                Collections.singletonList(message + "\n"),
-//                StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND
             );

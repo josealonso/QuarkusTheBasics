@@ -101,28 +101,22 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void deleteInvoice(String invoiceNumber) throws InvoiceNotFoundException {
-        writeLogs("DDDDDDDDDDD - Deleting invoice with invoiceNumber: " + invoiceNumber);
+    public void deleteInvoice(Long id) throws InvoiceNotFoundException {
+        writeLogs("Deleting invoice with ID: " + id);
         
         try {
-            TypedQuery<Invoice> query = entityManager
-                .createQuery("SELECT i FROM Invoice i WHERE i.invoiceNumber = :invoiceNumber", Invoice.class);
-            query.setParameter("invoiceNumber", invoiceNumber);
-            Invoice invoiceToBeRemoved = query.getSingleResult();
+            Invoice invoiceToBeRemoved = entityManager.find(Invoice.class, id);
                 
             if (invoiceToBeRemoved == null) {
-                writeLogs("DDDDDDDDDDD - Invoice is null");
-                throw new InvoiceNotFoundException("Invoice with number " + invoiceNumber + " not found");
+                writeLogs("Invoice not found with ID: " + id);
+                throw new InvoiceNotFoundException("Invoice with ID " + id + " not found");
             }
             
             entityManager.remove(invoiceToBeRemoved);
-            writeLogs("DDDDDDDDDDD - Invoice removed successfully");
+            writeLogs("Invoice removed successfully");
             
-        } catch (NoResultException e) {
-            writeLogs("DDDDDDDDDDD - NoResultException caught: " + e.getMessage());
-            throw new InvoiceNotFoundException("Invoice with number " + invoiceNumber + " not found");
         } catch (Exception e) {
-            writeLogs("DDDDDDDDDDD - Unexpected error: " + e.getClass().getName() + " - " + e.getMessage());
+            writeLogs("Error deleting invoice: " + e.getMessage());
             throw e;
         }
     }

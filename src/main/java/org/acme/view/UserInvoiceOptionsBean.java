@@ -8,6 +8,13 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.acme.Utilities;
 import org.acme.controller.InvoiceDTO;
@@ -22,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Named("userInvoiceOptionsBean")
@@ -44,6 +52,11 @@ public class UserInvoiceOptionsBean implements Serializable {
 
     @Inject
     private FacesContext facesContext;
+
+    @Inject
+    private ExternalContext externalContext;
+
+    private static final String API_BASE_URL = "/api/invoices";
 
     @Inject
     public UserInvoiceOptionsBean(InvoiceService invoiceService) {
@@ -134,17 +147,21 @@ public class UserInvoiceOptionsBean implements Serializable {
         return redirectUrl;
     }
 
-    public void deleteInvoice(String invoiceNumber) {
+    public void deleteInvoice(Long invoiceNumber) {
         try {
-            writeLogs("FFFFFFFFFFF - Going to delete invoice with InvNumber: " + invoiceNumber);
+            writeLogs("Deleting invoice with number: " + invoiceNumber);
             invoiceService.deleteInvoice(invoiceNumber);
-            writeLogs("Refreshing invoice list");
+            
+            // Refresh the invoice list
             userInvoices = invoiceService.getInvoicesByUser(registeredUser);
             facesContext.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+                
         } catch (Exception e) {
+            String errorMsg = "Failed to delete invoice: " + e.getMessage();
+            writeLogs("Error: " + errorMsg);
             facesContext.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
         }
     }
 

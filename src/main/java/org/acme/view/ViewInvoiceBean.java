@@ -7,6 +7,13 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.acme.Utilities;
 import org.acme.controller.InvoiceDTO;
@@ -123,14 +130,59 @@ public class ViewInvoiceBean implements Serializable {
     }
 
     public void deleteInvoice() {
+        logger.info("Delete invoice called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
+        Utilities.writeToCentralLog("Delete invoice called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
+        
+        if (invoice == null || invoice.getId() == null) {
+            facesContext.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No invoice selected"));
+            Utilities.writeToCentralLog("No invoice selected for deletion");
+            return;
+        }
+
         try {
-            invoiceService.deleteInvoice(invoice.getInvoiceNumber().toString());
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
-            navigateToListing();
+            Client client = ClientBuilder.newClient();
+            String baseUrl = externalContext.getRequestScheme() + "://" + 
+                           externalContext.getRequestServerName() + ":" + 
+                           externalContext.getRequestServerPort();
+            
+            WebTarget target = client.target(baseUrl)
+                                   .path("/api/invoices")
+                                   .path(String.valueOf(invoice.getId()));
+            
+            Response response = target.request(MediaType.APPLICATION_JSON)
+                                   .delete();
+            
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                logger.info("Invoice deleted successfully");
+                Utilities.writeToCentralLog("Invoice deleted successfully via API");
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+                
+                // Redirect to the listing page
+                externalContext.redirect("listing.xhtml");
+            } else {
+                String errorMsg;
+                try {
+                    Map<String, String> errorResponse = response.readEntity(new GenericType<Map<String, String>>() {});
+                    errorMsg = errorResponse.getOrDefault("message", "Unknown error occurred");
+                } catch (Exception e) {
+                    errorMsg = "Failed to delete invoice. Server returned status: " + response.getStatus();
+                }
+                
+                logger.severe(errorMsg);
+                Utilities.writeToCentralLog(errorMsg);
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
+            }
+            
+            client.close();
         } catch (Exception e) {
+            String errorMsg = "Failed to delete invoice: " + e.getMessage();
+            logger.severe(errorMsg);
+            Utilities.writeToCentralLog(errorMsg);
             facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete invoice"));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
         }
     }
 
