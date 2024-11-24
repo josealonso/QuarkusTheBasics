@@ -153,7 +153,9 @@ public class UserInvoiceOptionsBean implements Serializable {
             invoiceService.deleteInvoice(invoiceNumber);
             
             // Refresh the invoice list
+            //userInvoices = null; // Force reload of the list
             userInvoices = invoiceService.getInvoicesByUser(registeredUser);
+            
             facesContext.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
                 

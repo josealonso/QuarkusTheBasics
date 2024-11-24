@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+    <f:metadata>
+        <f:viewParam name="id" value="#{viewInvoiceBean.invoiceId}"/>
+        <f:event type="preRenderView" listener="#{viewInvoiceBean.streamPdf}"/>
+    </f:metadata>
+    <h:head>
+        <title>PDF Preview</title>
+    </h:head>
+    <h:body>
+        <!-- This page will be used to stream the PDF content -->
+    </h:body>
+</html>

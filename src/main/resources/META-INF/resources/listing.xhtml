@@ -37,7 +37,8 @@
                            styleClass="p-datatable-sm"
                            paginator="true" 
                            rows="10"
-                           paginatorPosition="bottom">
+                           paginatorPosition="bottom"
+                           widgetVar="invoicesTable">
                     
                     <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}">
                         <h:outputText value="#{invoice.invoiceNumber}" />
@@ -61,29 +62,39 @@
 
                     <p:column headerText="Actions" exportable="false" style="width:150px">
                         <div class="flex align-items-center gap-2">
-                            <p:commandButton icon="pi pi-eye" 
-                                           styleClass="rounded-button ui-button-secondary p-mr-2" 
-                                           action="#{userInvoiceOptionsBean.viewInvoice(invoice.id)}"
-                                           title="View Invoice"
-                                           immediate="true"/>
+                            <p:button icon="pi pi-eye" 
+                                    styleClass="rounded-button ui-button-secondary p-mr-2" 
+                                    outcome="viewInvoice"
+                                    title="View Invoice">
+                                <f:param name="id" value="#{invoice.id}" />
+                            </p:button>
                             
                             <p:commandButton icon="pi pi-pencil" 
                                            styleClass="rounded-button ui-button-warning p-mr-2" 
                                            action="#{userInvoiceOptionsBean.editInvoice(invoice.id)}"
                                            title="Edit Invoice"
+                                           process="@this"
                                            rendered="#{not empty user}"/>
                             
                             <p:commandButton icon="pi pi-trash" 
                                            styleClass="rounded-button ui-button-danger" 
-                                           action="#{userInvoiceOptionsBean.deleteInvoice(invoice.id)}"
                                            title="Delete Invoice"
                                            rendered="#{not empty user}"
-                                           onclick="return confirm('Are you sure you want to delete this invoice?')"
-                                           update="@form">
+                                           action="#{userInvoiceOptionsBean.deleteInvoice(invoice.id)}"
+                                           update=":form:invoices :form:messages"
+                                           process="@this">
+                                <p:confirm header="Delete Invoice" 
+                                         message="Are you sure you want to delete invoice #{invoice.invoiceNumber}? This action cannot be undone."
+                                         icon="pi pi-exclamation-triangle"/>
                             </p:commandButton>
                         </div>
                     </p:column>
                 </p:dataTable>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
             </h:form>
         </div>
     </ui:define>

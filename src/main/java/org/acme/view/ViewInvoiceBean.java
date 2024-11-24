@@ -186,7 +186,7 @@ public class ViewInvoiceBean implements Serializable {
         }
     }
 
-    public void previewPdf() {
+    public String previewPdf() {
         logger.info("Preview PDF called. Invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
         Utilities.writeToCentralLog("Preview PDF called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
         
@@ -194,33 +194,19 @@ public class ViewInvoiceBean implements Serializable {
             facesContext.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No invoice selected"));
             Utilities.writeToCentralLog("No invoice selected for preview");
-            return;
+            return null;
         }
 
         try {
-            Utilities.writeToCentralLog("Generating PDF preview");
-            currentPdfContent = pdfService.generateInvoicePdf(invoice, sessionUser);
-            
-            // Set response headers for new tab display
-            externalContext.responseReset();
-            externalContext.setResponseContentType("application/pdf");
-            externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"invoice-" + invoice.getInvoiceNumber() + ".pdf\"");
-            externalContext.setResponseHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            externalContext.setResponseHeader("Pragma", "no-cache");
-            externalContext.setResponseHeader("Expires", "0");
-            externalContext.setResponseContentLength(currentPdfContent.length);
-            
-            externalContext.getResponseOutputStream().write(currentPdfContent);
-            facesContext.responseComplete();
-            
-            Utilities.writeToCentralLog("PDF preview streamed successfully");
-            logger.info("PDF preview generated and streamed successfully");
+            String viewUrl = "viewPdf.xhtml?id=" + invoice.getId() + "&faces-redirect=true";
+            return viewUrl;
         } catch (Exception e) {
             String errorMsg = "Failed to generate PDF preview: " + e.getMessage();
             logger.severe(errorMsg);
             Utilities.writeToCentralLog(errorMsg);
             facesContext.addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
+            return null;
         }
     }
 
@@ -257,9 +243,23 @@ public class ViewInvoiceBean implements Serializable {
         logger.info("Stream PDF called. Invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
         
         if (invoice == null) {
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No invoice selected"));
-            return;
+            String idParam = externalContext.getRequestParameterMap().get("id");
+            if (idParam != null && !idParam.trim().isEmpty()) {
+                try {
+                    Long id = Long.parseLong(idParam);
+                    invoice = invoiceService.getInvoiceById(id)
+                            .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with ID: " + id));
+                } catch (NumberFormatException e) {
+                    logger.severe("Invalid invoice ID format: " + idParam);
+                    return;
+                } catch (InvoiceNotFoundException e) {
+                    logger.severe("Invoice not found: " + e.getMessage());
+                    return;
+                }
+            } else {
+                logger.severe("No invoice ID provided");
+                return;
+            }
         }
 
         try {
@@ -269,7 +269,10 @@ public class ViewInvoiceBean implements Serializable {
             
             externalContext.responseReset();
             externalContext.setResponseContentType("application/pdf");
-            externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"invoice-preview.pdf\"");
+            externalContext.setResponseHeader("Content-Disposition", "inline; filename=\"invoice-" + invoice.getInvoiceNumber() + ".pdf\"");
+            externalContext.setResponseHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            externalContext.setResponseHeader("Pragma", "no-cache");
+            externalContext.setResponseHeader("Expires", "0");
             externalContext.setResponseContentLength(currentPdfContent.length);
             
             externalContext.getResponseOutputStream().write(currentPdfContent);
@@ -278,8 +281,6 @@ public class ViewInvoiceBean implements Serializable {
             logger.info("PDF streamed successfully");
         } catch (Exception e) {
             logger.severe("Failed to stream PDF: " + e.getMessage());
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to stream PDF: " + e.getMessage()));
         }
     }
 

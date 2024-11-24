@@ -25,6 +25,15 @@
                     <p:autoUpdate />
                 </p:messages>
 
+                <p:growl id="growl" sticky="false" life="3000" showDetail="false">
+                    <p:autoUpdate />
+                </p:growl>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"/>
+                </p:confirmDialog>
+
                 <div class="invoice-details">
                     <div class="mb-4 flex justify-content-between align-items-center">
                         <div>
@@ -37,28 +46,69 @@
                                      outcome="/listing.xhtml"/>
                             
                             <p:commandButton value="Preview" 
-                                           action="#{viewInvoiceBean.previewPdf}"
-                                           styleClass="ui-button-info mr-2"
-                                           icon="pi pi-eye"
-                                           ajax="false"
-                                           onclick="this.form.target='_blank';"
-                                           oncomplete="this.form.target='';"/>
-                            
+                                     styleClass="ui-button-info mr-2"
+                                     icon="pi pi-eye"
+                                     onclick="PF('pdfConfirmDialog').show()"
+                                     type="button"/>
+
+                            <p:dialog header="PDF Preview" 
+                                    widgetVar="pdfConfirmDialog" 
+                                    modal="true" 
+                                    showEffect="fade" 
+                                    hideEffect="fade"
+                                    closeOnEscape="true">
+                                <p class="m-0">
+                                    The PDF will open in a new tab. Do you want to continue?
+                                </p>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Yes" 
+                                                   type="button"
+                                                   styleClass="ui-button-primary" 
+                                                   onclick="window.open('viewPdf.xhtml?id=#{viewInvoiceBean.invoice.id}', '_blank'); PF('pdfConfirmDialog').hide()"
+                                                   icon="pi pi-check"/>
+                                    <p:commandButton value="No" 
+                                                   type="button"
+                                                   styleClass="ui-button-secondary" 
+                                                   onclick="PF('pdfConfirmDialog').hide()"
+                                                   icon="pi pi-times"/>
+                                </f:facet>
+                            </p:dialog>
+
                             <p:commandButton value="Download" 
                                            action="#{viewInvoiceBean.downloadPdf}"
                                            styleClass="ui-button-success mr-2"
                                            icon="pi pi-download"
                                            ajax="false"/>
                             
-                            <p:commandButton value="Delete" 
-                                           actionListener="#{viewInvoiceBean.deleteInvoice}"
+                            <p:commandButton value="Delete"
                                            styleClass="ui-button-danger"
                                            icon="pi pi-trash"
-                                           update="@form">
-                                <p:confirm header="Confirmation" 
-                                         message="Are you sure you want to delete this invoice?" 
-                                         icon="pi pi-exclamation-triangle"/>
-                            </p:commandButton>
+                                           onclick="PF('deleteConfirmDialog').show()"
+                                           type="button"/>
+
+                            <p:dialog header="Delete Invoice" 
+                                    widgetVar="deleteConfirmDialog" 
+                                    modal="true" 
+                                    showEffect="fade" 
+                                    hideEffect="fade"
+                                    closeOnEscape="true">
+                                <p class="m-0">
+                                    Are you sure you want to delete invoice #{viewInvoiceBean.invoice.invoiceNumber}? This action cannot be undone.
+                                </p>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Yes" 
+                                                   action="#{viewInvoiceBean.deleteInvoice}"
+                                                   styleClass="ui-button-danger" 
+                                                   icon="pi pi-trash"
+                                                   oncomplete="PF('deleteConfirmDialog').hide()"
+                                                   update="@form"/>
+                                    <p:commandButton value="No" 
+                                                   type="button"
+                                                   styleClass="ui-button-secondary" 
+                                                   onclick="PF('deleteConfirmDialog').hide()"
+                                                   icon="pi pi-times"/>
+                                </f:facet>
+                            </p:dialog>
                         </div>
                     </div>
 
@@ -109,11 +159,6 @@
                 }
             </h:outputStylesheet>
         </div>
-
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" style="width: 6rem"/>
-            <p:commandButton value="Yes" type="button" styleClass="ui-button-danger" style="width: 6rem"/>
-        </p:confirmDialog>
     </ui:define>
 </ui:composition>
 </html>
