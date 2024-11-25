@@ -33,6 +33,43 @@ public class InvoicePdfResource {
     FacesContext facesContext;
 
     @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInvoice(@PathParam("id") Long id) {
+        try {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            
+            // Get user from session
+            User sessionUser = (User) externalContext.getSessionMap().get("user");
+            if (sessionUser == null) {
+                logger.severe("No user in session");
+                writeToLog("null user in session");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(Collections.singletonMap("message", "User not logged in"))
+                        .build();
+            }
+
+            var invoice = invoiceService.getInvoiceById(id)
+                    .orElseThrow(() -> new NotFoundException("Invoice not found"));
+
+            // Check if user has access to this invoice
+            if ( 2 == 3) {  // TODO
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity(Collections.singletonMap("message", "You don't have permission to access this invoice"))
+                        .build();
+            }
+
+            return Response.ok(invoice).build();
+        } catch (Exception e) {
+            logger.severe("Failed to get invoice: " + e.getMessage());
+            writeToLog("Failed to get invoice: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Collections.singletonMap("message", "Failed to get invoice: " + e.getMessage()))
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/{id}/pdf")
     @Produces("application/pdf")
     public Response getPdf(@PathParam("id") Long id) {

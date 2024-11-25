@@ -8,12 +8,13 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Response;
 
 import org.acme.Utilities;
 import org.acme.controller.InvoiceDTO;
 import org.acme.exceptions.InvoiceNotFoundException;
 import org.acme.model.User;
-import org.acme.service.InvoiceService;
+import org.acme.resource.InvoicePdfResource;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class EditInvoiceBean implements Serializable {
     private ExternalContext externalContext;
 
     @Inject
-    private InvoiceService invoiceService;
+    private InvoicePdfResource invoicePdfResource;
 
     private InvoiceDTO invoiceToSave;
     private User sessionUser;
@@ -56,8 +57,16 @@ public class EditInvoiceBean implements Serializable {
             if (idParam != null && !idParam.trim().isEmpty()) {
                 try {
                     Long invoiceId = Long.parseLong(idParam);
-                    invoiceToSave = invoiceService.getInvoiceById(invoiceId)
-                            .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with ID: " + invoiceId));
+                    Response response = invoicePdfResource.getInvoice(invoiceId);
+                    
+                    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                        invoiceToSave = response.readEntity(InvoiceDTO.class);
+                        logger.info("Successfully loaded invoice: " + invoiceToSave);
+                    } else {
+                        String errorMsg = "Failed to load invoice - API returned status: " + response.getStatus();
+                        logger.severe(errorMsg);
+                        throw new InvoiceNotFoundException(errorMsg);
+                    }
                 } catch (NumberFormatException e) {
                     logger.log(Level.SEVERE, "Invalid invoice ID format: " + idParam, e);
                     facesContext.addMessage(null,
@@ -96,17 +105,20 @@ public class EditInvoiceBean implements Serializable {
                 return null;
             }
 
-            // Update invoice using service (which is @Transactional)
-            invoiceToSave = invoiceService.updateInvoice(invoiceToSave);
+            // Update invoice using InvoicePdfResource API
+            Response response = invoicePdfResource.updateInvoice(invoiceToSave.getId(), invoiceToSave);
             
-            if (invoiceToSave != null) {
-                Utilities.writeToCentralLog("Invoice updated successfully. InvoiceDTO: " + invoiceToSave);
-                logger.info("Invoice updated successfully");
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                InvoiceDTO updatedInvoice = response.readEntity(InvoiceDTO.class);
+                invoiceToSave = updatedInvoice;
+                
+                Utilities.writeToCentralLog("Invoice updated successfully via API. InvoiceDTO: " + invoiceToSave);
+                logger.info("Invoice updated successfully via API");
                 facesContext.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice updated successfully"));
                 return "listing?faces-redirect=true";
             } else {
-                String errorMsg = "Failed to update invoice - no response from service";
+                String errorMsg = "Failed to update invoice - API returned status: " + response.getStatus();
                 logger.severe(errorMsg);
                 Utilities.writeToCentralLog("Error: " + errorMsg);
                 facesContext.addMessage(null,

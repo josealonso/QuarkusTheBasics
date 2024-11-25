@@ -5,8 +5,11 @@ import io.quarkus.test.InjectMock;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.NoResultException;
+
+import org.acme.controller.InvoiceDTO;
 import org.acme.exceptions.InvoiceNotFoundException;
 import org.acme.model.Invoice;
+import org.acme.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,6 +21,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
+import java.time.LocalDate;
+import java.util.Date;
 
 @QuarkusTest
 public class InvoiceServiceTest {
@@ -36,21 +42,20 @@ public class InvoiceServiceTest {
     @Test
     void deleteInvoiceSuccess() throws InvoiceNotFoundException {
         // Arrange
-        String invoiceNumber = "INV001";
-        Invoice mockInvoice = new Invoice();
-        mockInvoice.setInvoiceNumber(invoiceNumber);
+        Long invoiceId = 1L;
+        // String invoiceNumber = "INV001";
 
         TypedQuery<Invoice> typedQuery = mock(TypedQuery.class);
         when(entityManager.createQuery(anyString(), eq(Invoice.class))).thenReturn(typedQuery);
         when(typedQuery.setParameter(eq("invoiceNumber"), any())).thenReturn(typedQuery);
-        when(typedQuery.getSingleResult()).thenReturn(mockInvoice);
+        // when(typedQuery.getSingleResult()).thenReturn(mockInvoice);
 
         // Act & Assert
         assertThatCode(() -> 
-            invoiceService.deleteInvoice(invoiceNumber)
+            invoiceService.deleteInvoice(invoiceId)
         ).doesNotThrowAnyException();
 
-        verify(entityManager).remove(mockInvoice);
+        verify(entityManager).remove(Invoice.class);
     }
 
     @Test
