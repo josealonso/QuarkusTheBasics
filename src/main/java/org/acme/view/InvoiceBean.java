@@ -109,7 +109,7 @@ public class InvoiceBean implements Serializable {
     private void callEndpoint(String invoiceNumber, LocalDate invoiceDate, String customerName, String amount) {
         try {
             new WordDocumentResourceController(new WordDocumentGenerationService())
-                    .submitForm(invoiceNumber, String.valueOf(invoiceDate), customerName, amount);
+                    .submitForm(invoiceNumber, invoiceDate, customerName, amount);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

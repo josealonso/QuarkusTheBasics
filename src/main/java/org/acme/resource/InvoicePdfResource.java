@@ -1,9 +1,7 @@
 package org.acme.resource;
 
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
@@ -11,8 +9,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ExternalContext;
 import org.acme.model.User;
 import org.acme.controller.InvoiceDTO;
-import org.acme.exceptions.InvoiceNotFoundException;
-import org.acme.model.Invoice;
 import org.acme.service.InvoicePdfService;
 import org.acme.service.InvoiceService;
 

@@ -7,20 +7,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import org.acme.Utilities;
-import org.acme.controller.InvoiceDTO;
-import org.acme.model.Invoice;
-import org.acme.model.User;
-import org.acme.service.InvoiceService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,8 +16,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.acme.model.User;
+import org.acme.model.Invoice;
+import org.acme.controller.InvoiceDTO;
+import org.acme.service.InvoiceService;
+import org.acme.resource.InvoicePdfResource;
+import org.acme.Utilities;
 
 @Named("userInvoiceOptionsBean")
 @ViewScoped
@@ -56,7 +49,8 @@ public class UserInvoiceOptionsBean implements Serializable {
     @Inject
     private ExternalContext externalContext;
 
-    private static final String API_BASE_URL = "/api/invoices";
+    @Inject
+    private InvoicePdfResource invoicePdfResource;
 
     @Inject
     public UserInvoiceOptionsBean(InvoiceService invoiceService) {
@@ -108,10 +102,8 @@ public class UserInvoiceOptionsBean implements Serializable {
     /* The @Transactional annotation ensures we have an active session when accessing the invoices. 
      * We only load the invoices once and cache them in the bean.
      */
-    @Transactional
     public List<InvoiceDTO> getUserInvoices() {
         if (userInvoices == null) {
-            // userInvoices = registeredUser.getInvoices().stream()
             userInvoices = registeredUser.getInvoices().stream()
                 .map((Invoice invoice) -> invoiceService.convertToInvoiceDTO(invoice))
                 .collect(Collectors.toList());
@@ -150,14 +142,22 @@ public class UserInvoiceOptionsBean implements Serializable {
     public void deleteInvoice(Long invoiceNumber) {
         try {
             writeLogs("Deleting invoice with number: " + invoiceNumber);
-            invoiceService.deleteInvoice(invoiceNumber);
             
-            // Refresh the invoice list
-            //userInvoices = null; // Force reload of the list
-            userInvoices = invoiceService.getInvoicesByUser(registeredUser);
+            writeLogs("Calling invoicePdfResource.deleteInvoice() with invoiceNumber: " + invoiceNumber);
+            Response response = invoicePdfResource.deleteInvoice(invoiceNumber);
             
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                // Refresh the invoices list
+                userInvoices = invoiceService.getInvoicesByUser(registeredUser);
+                
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
+            } else {
+                String errorMsg = "Failed to delete invoice. Server returned status: " + response.getStatus();
+                writeLogs("Error: " + errorMsg);
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
+            }
                 
         } catch (Exception e) {
             String errorMsg = "Failed to delete invoice: " + e.getMessage();

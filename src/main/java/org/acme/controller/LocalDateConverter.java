@@ -8,9 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Named
 @ApplicationScoped

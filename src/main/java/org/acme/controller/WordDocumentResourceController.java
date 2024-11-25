@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.time.LocalDate;
 
 import static org.acme.service.Constants.WORD_DOCUMENT_NAME;
 
@@ -40,7 +41,7 @@ public class WordDocumentResourceController {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @RolesAllowed("registered_user")
         public Response submitForm(@FormParam("invoiceNumber") String invoiceNumber,
-                               @FormParam("invoiceDate") String invoiceDate,
+                               @FormParam("invoiceDate") LocalDate invoiceDate,
                                @FormParam("customerName") String customerName,
                                @FormParam("amount") String amount) throws IOException {
 

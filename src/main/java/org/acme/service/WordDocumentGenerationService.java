@@ -98,7 +98,7 @@ public class WordDocumentGenerationService {
 
 	private XWPFDocument formatParagraphs(XWPFDocument document, InvoiceDTO invoice) {
 		MyDocString docString = new MyDocString(document, EMPTY_STRING);
-		docString.addLine(invoice.getInvoiceDate())
+		docString.addLine(invoice.getInvoiceDate().toString())
 				.addLine(EMPTY_STRING)
 				.addLine("INVOICE #" + invoice.getInvoiceNumber())
 				.addLine(EMPTY_STRING)
