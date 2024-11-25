@@ -96,8 +96,12 @@ public class InvoiceService {
 
     @Transactional
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO) {
+        writeLogs("Starting to update invoice: " + invoiceDTO);
         Invoice invoice = convertFromInvoiceDTO(invoiceDTO);
-        return convertToInvoiceDTO(entityManager.merge(invoice));
+        Invoice updatedInvoice = entityManager.merge(invoice);
+        InvoiceDTO result = convertToInvoiceDTO(updatedInvoice);
+        writeLogs("Invoice updated successfully: " + result);
+        return result;
     }
 
     @Transactional
@@ -137,8 +141,23 @@ public class InvoiceService {
     }
 
     public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
-        return new Invoice(invoiceDTO.getId(), invoiceDTO.getInvoiceNumber(), invoiceDTO.getInvoiceDate(),
-                invoiceDTO.getInvoiceCustomerName(), invoiceDTO.getInvoiceAmount(), new User());
+        Invoice existingInvoice = entityManager.find(Invoice.class, invoiceDTO.getId());
+        if (existingInvoice != null) {
+            // Update existing invoice
+            existingInvoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
+            existingInvoice.setInvoiceDate(invoiceDTO.getInvoiceDate());
+            existingInvoice.setCustomerName(invoiceDTO.getInvoiceCustomerName());
+            existingInvoice.setAmount(invoiceDTO.getInvoiceAmount());
+            return existingInvoice;
+        } else {
+            // Create new invoice
+            return new Invoice(invoiceDTO.getId(), 
+                             invoiceDTO.getInvoiceNumber(), 
+                             invoiceDTO.getInvoiceDate(),
+                             invoiceDTO.getInvoiceCustomerName(), 
+                             invoiceDTO.getInvoiceAmount(), 
+                             new User());
+        }
     }
 
     /************************

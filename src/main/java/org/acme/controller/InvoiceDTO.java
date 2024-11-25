@@ -35,5 +35,16 @@ public class InvoiceDTO {
     public String getInvoiceNumber() {
         return invoiceNumber;
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceDTO{" +
+                "id=" + id +
+                ", invoiceNumber='" + invoiceNumber + '\'' +
+                ", invoiceDate='" + invoiceDate + '\'' +
+                ", invoiceCustomerName='" + invoiceCustomerName + '\'' +
+                ", invoiceAmount='" + invoiceAmount + '\'' +
+                '}';
+    }
 }
 

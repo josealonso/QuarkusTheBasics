@@ -179,6 +179,11 @@ public class UserInvoiceOptionsBean implements Serializable {
         return "viewInvoice.xhtml?faces-redirect=true&id=" + invoice.getId();
     }
 
+    public String editInvoice(Long invoiceId) {
+        writeLogs("Inside editInvoice with invoiceId: " + invoiceId);
+        return "editInvoice?faces-redirect=true&id=" + invoiceId;
+    }
+
     private void writeLogs(String text) {
         try {
             Files.writeString(Path.of("logs.txt"), text + "\n", 

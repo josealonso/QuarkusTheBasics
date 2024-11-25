@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+    <ui:define name="title">Edit Invoice</ui:define>
+    <ui:define name="content">
+        <div class="card">
+            <h2 class="text-900 text-3xl font-medium mb-3">Edit Invoice</h2>
+            
+            <h:form id="form">
+                <p:panel id="formPanel" styleClass="form-panel">
+                    <p:messages id="messages" showDetail="false" closable="true" globalOnly="true">
+                        <p:autoUpdate />
+                    </p:messages>
+
+                    <p:panelGrid columns="2" styleClass="custom-panel-grid">
+                        <div class="flex flex-column gap-2">
+                            <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium"/>
+                            <p:inputText id="invoiceNumber" 
+                                       value="#{editInvoiceBean.invoice.invoiceNumber}" 
+                                       required="true"
+                                       requiredMessage="Invoice Number is required"
+                                       placeholder="Invoice Number"/>
+                            <p:message for="invoiceNumber" styleClass="text-red-500"/>
+                        </div>
+
+                        <div class="flex flex-column gap-2">
+                            <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium"/>
+                            <p:inputText id="customerName" 
+                                       value="#{editInvoiceBean.invoice.invoiceCustomerName}" 
+                                       required="true"
+                                       requiredMessage="Customer Name is required"
+                                       placeholder="Customer Name"/>
+                            <p:message for="customerName" styleClass="text-red-500"/>
+                        </div>
+
+                        <div class="flex flex-column gap-2">
+                            <p:outputLabel for="amount" value="Amount" styleClass="text-900 font-medium"/>
+                            <p:inputNumber id="amount" 
+                                         value="#{editInvoiceBean.invoice.invoiceAmount}" 
+                                         required="true"
+                                         requiredMessage="Amount is required"
+                                         placeholder="Amount"
+                                         minValue="0"
+                                         decimalPlaces="2"/>
+                            <p:message for="amount" styleClass="text-red-500"/>
+                        </div>
+
+                        <div class="flex flex-column gap-2">
+                            <p:outputLabel for="date" value="Invoice Date" styleClass="text-900 font-medium"/>
+                            <p:calendar id="date" 
+                                      value="#{editInvoiceBean.invoice.invoiceDate}" 
+                                      required="true"
+                                      requiredMessage="Invoice Date is required"
+                                      pattern="yyyy-MM-dd"
+                                      placeholder="Invoice Date"/>
+                            <p:message for="date" styleClass="text-red-500"/>
+                        </div>
+                    </p:panelGrid>
+
+                    <div class="flex justify-content-end gap-2 mt-3">
+                        <p:commandButton value="Save" 
+                                       action="#{editInvoiceBean.save(invoice)}" 
+                                       update="@form messages"
+                                       process="@form"
+                                       styleClass="ui-button-success"/>
+                        <p:button value="Cancel" 
+                                outcome="listing" 
+                                styleClass="ui-button-secondary"/>
+                    </div>
+                </p:panel>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>
