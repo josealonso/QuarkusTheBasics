@@ -56,7 +56,7 @@
 
                     <p:column headerText="Date" sortBy="#{invoice.invoiceDate}">
                         <h:outputText value="#{invoice.invoiceDate}">
-                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            <f:converter binding="#{dateConverter}"/>
                         </h:outputText>
                     </p:column>
 

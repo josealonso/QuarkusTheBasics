@@ -22,7 +22,7 @@
                         <div class="flex flex-column gap-2">
                             <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium"/>
                             <p:inputText id="invoiceNumber" 
-                                       value="#{editInvoiceBean.invoice.invoiceNumber}" 
+                                       value="#{editInvoiceBean.invoiceToSave.invoiceNumber}" 
                                        required="true"
                                        requiredMessage="Invoice Number is required"
                                        placeholder="Invoice Number"/>
@@ -32,7 +32,7 @@
                         <div class="flex flex-column gap-2">
                             <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium"/>
                             <p:inputText id="customerName" 
-                                       value="#{editInvoiceBean.invoice.invoiceCustomerName}" 
+                                       value="#{editInvoiceBean.invoiceToSave.invoiceCustomerName}" 
                                        required="true"
                                        requiredMessage="Customer Name is required"
                                        placeholder="Customer Name"/>
@@ -42,7 +42,7 @@
                         <div class="flex flex-column gap-2">
                             <p:outputLabel for="amount" value="Amount" styleClass="text-900 font-medium"/>
                             <p:inputNumber id="amount" 
-                                         value="#{editInvoiceBean.invoice.invoiceAmount}" 
+                                         value="#{editInvoiceBean.invoiceToSave.invoiceAmount}" 
                                          required="true"
                                          requiredMessage="Amount is required"
                                          placeholder="Amount"
@@ -54,18 +54,21 @@
                         <div class="flex flex-column gap-2">
                             <p:outputLabel for="date" value="Invoice Date" styleClass="text-900 font-medium"/>
                             <p:calendar id="date" 
-                                      value="#{editInvoiceBean.invoice.invoiceDate}" 
+                                      value="#{editInvoiceBean.invoiceToSave.invoiceDate}" 
                                       required="true"
                                       requiredMessage="Invoice Date is required"
-                                      pattern="yyyy-MM-dd"
-                                      placeholder="Invoice Date"/>
+                                      pattern="dd/MM/yyyy"
+                                      showIcon="true"
+                                      placeholder="Invoice Date">
+                                <f:converter binding="#{dateConverter}"/>
+                            </p:calendar>
                             <p:message for="date" styleClass="text-red-500"/>
                         </div>
                     </p:panelGrid>
 
                     <div class="flex justify-content-end gap-2 mt-3">
                         <p:commandButton value="Save" 
-                                       action="#{editInvoiceBean.save(invoice)}" 
+                                       action="#{editInvoiceBean.save}" 
                                        update="@form messages"
                                        process="@form"
                                        styleClass="ui-button-success"/>

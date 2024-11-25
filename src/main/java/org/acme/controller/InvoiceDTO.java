@@ -1,14 +1,16 @@
 package org.acme.controller;
 
+import java.time.LocalDate;
+
 public class InvoiceDTO {
 
     private Long id;
     private String invoiceNumber;
-    private String invoiceDate;
+    private LocalDate invoiceDate;
     private String invoiceCustomerName;
     private String invoiceAmount;
 
-    public InvoiceDTO(Long id, String amount, String customerName, String invoiceDate, String invoiceNumber) {
+    public InvoiceDTO(Long id, String amount, String customerName, LocalDate invoiceDate, String invoiceNumber) {
         this.id = id;
         this.invoiceAmount = amount;
         this.invoiceCustomerName = customerName;
@@ -28,7 +30,7 @@ public class InvoiceDTO {
         return invoiceCustomerName;
     }
 
-    public String getInvoiceDate() {
+    public LocalDate getInvoiceDate() {
         return invoiceDate;
     }
 
@@ -36,15 +38,34 @@ public class InvoiceDTO {
         return invoiceNumber;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public void setInvoiceCustomerName(String invoiceCustomerName) {
+        this.invoiceCustomerName = invoiceCustomerName;
+    }
+
+    public void setInvoiceAmount(String invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
     @Override
     public String toString() {
         return "InvoiceDTO{" +
                 "id=" + id +
                 ", invoiceNumber='" + invoiceNumber + '\'' +
-                ", invoiceDate='" + invoiceDate + '\'' +
+                ", invoiceDate=" + invoiceDate +
                 ", invoiceCustomerName='" + invoiceCustomerName + '\'' +
                 ", invoiceAmount='" + invoiceAmount + '\'' +
                 '}';
     }
 }
-

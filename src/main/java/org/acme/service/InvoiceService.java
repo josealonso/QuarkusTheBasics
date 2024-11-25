@@ -7,6 +7,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.acme.controller.InvoiceDTO;
+import org.acme.controller.LocalDateConverter;
 import org.acme.exceptions.InvoiceNotFoundException;
 import org.acme.model.Invoice;
 import org.acme.model.User;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,10 @@ public class InvoiceService {
     // exception.
     EntityManager entityManager;
 
+    LocalDateConverter localDateConverter;
+
     public InvoiceService() {
+        localDateConverter = new LocalDateConverter();
     }
 
     @Transactional
@@ -136,8 +141,11 @@ public class InvoiceService {
      **********************/
 
     public InvoiceDTO convertToInvoiceDTO(Invoice invoice) {
-        return new InvoiceDTO(invoice.getId(), invoice.getAmount(), invoice.getCustomerName(),
-                invoice.getInvoiceDate(), invoice.getInvoiceNumber());
+        return new InvoiceDTO(invoice.getId(), 
+                            invoice.getAmount(), 
+                            invoice.getCustomerName(),
+                            localDateConverter.convertToEntityAttribute(invoice.getInvoiceDate()), 
+                            invoice.getInvoiceNumber());
     }
 
     public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
@@ -145,7 +153,7 @@ public class InvoiceService {
         if (existingInvoice != null) {
             // Update existing invoice
             existingInvoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
-            existingInvoice.setInvoiceDate(invoiceDTO.getInvoiceDate());
+            existingInvoice.setInvoiceDate(localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()));
             existingInvoice.setCustomerName(invoiceDTO.getInvoiceCustomerName());
             existingInvoice.setAmount(invoiceDTO.getInvoiceAmount());
             return existingInvoice;
@@ -153,7 +161,7 @@ public class InvoiceService {
             // Create new invoice
             return new Invoice(invoiceDTO.getId(), 
                              invoiceDTO.getInvoiceNumber(), 
-                             invoiceDTO.getInvoiceDate(),
+                             localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()),
                              invoiceDTO.getInvoiceCustomerName(), 
                              invoiceDTO.getInvoiceAmount(), 
                              new User());

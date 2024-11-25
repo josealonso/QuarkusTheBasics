@@ -71,7 +71,7 @@ public class InvoicePdfService {
         addTableCell(table, "Invoice Number:", invoice.getInvoiceNumber(), true);
         addTableCell(table, "Customer Name:", invoice.getInvoiceCustomerName(), true);
         addTableCell(table, "Date:", 
-            invoice.getInvoiceDate().formatted(DateTimeFormatter.ofPattern("dd/MM/yyyy")), true);
+            invoice.getInvoiceDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), true);
         addTableCell(table, "Amount:", invoice.getInvoiceAmount(), true);
 
         document.add(table);

@@ -35,7 +35,7 @@ public class EditInvoiceBean implements Serializable {
     @Inject
     private InvoiceService invoiceService;
 
-    private InvoiceDTO invoice;
+    private InvoiceDTO invoiceToSave;
     private User sessionUser;
 
     @PostConstruct
@@ -56,7 +56,7 @@ public class EditInvoiceBean implements Serializable {
             if (idParam != null && !idParam.trim().isEmpty()) {
                 try {
                     Long invoiceId = Long.parseLong(idParam);
-                    invoice = invoiceService.getInvoiceById(invoiceId)
+                    invoiceToSave = invoiceService.getInvoiceById(invoiceId)
                             .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with ID: " + invoiceId));
                 } catch (NumberFormatException e) {
                     logger.log(Level.SEVERE, "Invalid invoice ID format: " + idParam, e);
@@ -82,8 +82,7 @@ public class EditInvoiceBean implements Serializable {
     }
 
     @Transactional
-    public String save(InvoiceDTO invoiceToSave) {
-        Utilities.writeToCentralLog("Inside EditInvoiceBean.save(). InvoiceDTO: " + invoiceToSave);
+    public String save() {
         try {
             logger.info("Saving invoice with ID: " + invoiceToSave.getId());
             Utilities.writeToCentralLog("Saving invoice with ID: " + invoiceToSave.getId() + ". InvoiceDTO: " + invoiceToSave);
@@ -98,10 +97,10 @@ public class EditInvoiceBean implements Serializable {
             }
 
             // Update invoice using service (which is @Transactional)
-            invoice = invoiceService.updateInvoice(invoiceToSave);
+            invoiceToSave = invoiceService.updateInvoice(invoiceToSave);
             
-            if (invoice != null) {
-                Utilities.writeToCentralLog("Invoice updated successfully. InvoiceDTO: " + invoice);
+            if (invoiceToSave != null) {
+                Utilities.writeToCentralLog("Invoice updated successfully. InvoiceDTO: " + invoiceToSave);
                 logger.info("Invoice updated successfully");
                 facesContext.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice updated successfully"));
@@ -140,11 +139,11 @@ public class EditInvoiceBean implements Serializable {
         }
     }
 
-    public InvoiceDTO getInvoice() {
-        return invoice;
+    public InvoiceDTO getInvoiceToSave() {
+        return invoiceToSave;
     }
 
-    public void setInvoice(InvoiceDTO invoice) {
-        this.invoice = invoice;
+    public void setInvoiceToSave(InvoiceDTO invoice) {
+        this.invoiceToSave = invoice;
     }
 }

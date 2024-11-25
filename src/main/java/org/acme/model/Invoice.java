@@ -2,6 +2,8 @@ package org.acme.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,7 +18,7 @@ public class Invoice {
     private String invoiceNumber;
 
     @Column(name = "invoice_date")
-    private String invoiceDate;
+    private Date invoiceDate;
 
     @Column(name = "customer_name")
     private String customerName;
@@ -39,7 +41,7 @@ public class Invoice {
 
     } // This default constructor is required by JPA/Hibernate
 
-    public Invoice(Long id, String invoiceNumber, String invoiceDate, String customerName, String amount, User user) {
+    public Invoice(Long id, String invoiceNumber, Date invoiceDate, String customerName, String amount, User user) {
         this.id = id;
         this.invoiceNumber = invoiceNumber;
         this.invoiceDate = invoiceDate;
@@ -67,11 +69,11 @@ public class Invoice {
         this.invoiceNumber = invoiceNumber;
     }   
 
-    public String getInvoiceDate() {
+    public Date getInvoiceDate() {
         return invoiceDate;
     }
 
-    public void setInvoiceDate(String invoiceDate) {
+    public void setInvoiceDate(Date invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
 
