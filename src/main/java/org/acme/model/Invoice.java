@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 public class Invoice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    // IDENTITY strategy lets the database handle ID generation. It was AUTO earlier.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "invoice_number")

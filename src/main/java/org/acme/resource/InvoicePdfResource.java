@@ -7,6 +7,10 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ExternalContext;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+
+import org.acme.model.Invoice;
 import org.acme.model.User;
 import org.acme.controller.InvoiceDTO;
 import org.acme.service.InvoicePdfService;
@@ -16,7 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.logging.Logger;
 
 @Path("/api/invoices")
@@ -31,6 +37,9 @@ public class InvoicePdfResource {
 
     @Inject
     FacesContext facesContext;
+
+    @Inject
+    EntityManager entityManager;  // IMPORTANT
 
     @GET
     @Path("/{id}")
@@ -126,10 +135,12 @@ public class InvoicePdfResource {
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
     public Response createInvoice(InvoiceDTO invoiceDTO) {
         try {
             logger.info("Attempting to create invoice");
-            writeToLog("Create request received");
+            writeToLog("Inside InvoicePdfResource.createInvoice(). " + "Create request received");
+            writeToLog("Inside InvoicePdfResource.createInvoice(). " + "Invoice data: " + invoiceDTO);
             
             // Get user from session for authorization
             ExternalContext externalContext = facesContext.getExternalContext();
@@ -141,11 +152,39 @@ public class InvoicePdfResource {
                         .entity(Collections.singletonMap("message", "User not logged in"))
                         .build();
             }
+
+            writeToLog("Inside InvoicePdfResource.createInvoice(). " 
+                        + "About to call entityManager.find(User.class, sessionUser.getId())");
             
-            invoiceService.createInvoice(invoiceDTO);
+            // IMPORTANT!! DO NOT use a detached User instance from the session
+            // Get managed user instance from database
+            User managedUser = entityManager.find(User.class, sessionUser.getId());
+            if (managedUser == null) {
+                logger.severe("User not found in database");
+                writeToLog("User not found in database during create attempt");
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity(Collections.singletonMap("message", "User not found"))
+                        .build();
+            }
+    
+            // Create new invoice entity directly
+            Invoice newInvoice = new Invoice(
+                null,
+                invoiceDTO.getInvoiceNumber(),
+                new java.sql.Date(new Date().getTime()),  // Convert util.Date to sql.Date
+                invoiceDTO.getInvoiceCustomerName(),
+                invoiceDTO.getInvoiceAmount(),
+                managedUser
+            );
+            
+            writeToLog("Inside InvoicePdfResource.createInvoice(). " 
+                        + "About to call entityManager.persist(newInvoice)");
+            // Persist the invoice
+            entityManager.persist(newInvoice);
+            entityManager.flush();
             
             logger.info("Successfully created invoice");
-            writeToLog("Successfully created invoice");
+            writeToLog("Successfully created invoice" + invoiceDTO);
             
             return Response.ok()
                     .entity(Collections.singletonMap("message", "Invoice created successfully"))
@@ -258,7 +297,7 @@ public class InvoicePdfResource {
     private void writeToLog(String message) {
         try {
             Files.write(
-                Paths.get("pdf-logs.txt"), message.getBytes(), 
+                Paths.get("log.txt"), ("\n" + message + "\n").getBytes(), 
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND
             );

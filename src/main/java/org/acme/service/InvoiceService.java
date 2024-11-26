@@ -25,20 +25,16 @@ import java.util.Optional;
 public class InvoiceService {
 
     @Inject
-    // @PersistenceContext(unitName = "invoices") // This annotation causes an
-    // exception.
     EntityManager entityManager;
 
+    @Inject     // IMPORTANT!!
     LocalDateConverter localDateConverter;
 
-    public InvoiceService() {
-        localDateConverter = new LocalDateConverter();
-    }
-
     @Transactional
-    public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
-        writeLogs("DDDDDDDDDDD - Creating invoice: " + invoiceDTO);
-        entityManager.persist(convertFromInvoiceDTO(invoiceDTO));
+    public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO, User user) {
+        writeLogs("Creating invoice: " + invoiceDTO + " for user: " + user);
+        Invoice invoice = convertFromInvoiceDTO(invoiceDTO, user);
+        entityManager.persist(invoice);
         return invoiceDTO;
     }
 
@@ -102,7 +98,7 @@ public class InvoiceService {
     @Transactional
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO) {
         writeLogs("Starting to update invoice: " + invoiceDTO);
-        Invoice invoice = convertFromInvoiceDTO(invoiceDTO);
+        Invoice invoice = convertFromInvoiceDTO(invoiceDTO, null);
         Invoice updatedInvoice = entityManager.merge(invoice);
         InvoiceDTO result = convertToInvoiceDTO(updatedInvoice);
         writeLogs("Invoice updated successfully: " + result);
@@ -148,24 +144,25 @@ public class InvoiceService {
                             invoice.getInvoiceNumber());
     }
 
-    public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO) {
-        Invoice existingInvoice = entityManager.find(Invoice.class, invoiceDTO.getId());
-        if (existingInvoice != null) {
-            // Update existing invoice
-            existingInvoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
-            existingInvoice.setInvoiceDate(localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()));
-            existingInvoice.setCustomerName(invoiceDTO.getInvoiceCustomerName());
-            existingInvoice.setAmount(invoiceDTO.getInvoiceAmount());
-            return existingInvoice;
-        } else {
-            // Create new invoice
-            return new Invoice(invoiceDTO.getId(), 
-                             invoiceDTO.getInvoiceNumber(), 
-                             localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()),
-                             invoiceDTO.getInvoiceCustomerName(), 
-                             invoiceDTO.getInvoiceAmount(), 
-                             new User());
+    public Invoice convertFromInvoiceDTO(InvoiceDTO invoiceDTO, User user) {
+        if (invoiceDTO.getId() != null) {
+            Invoice existingInvoice = entityManager.find(Invoice.class, invoiceDTO.getId());
+            if (existingInvoice != null) {
+                // Update existing invoice
+                existingInvoice.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
+                existingInvoice.setInvoiceDate(localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()));
+                existingInvoice.setCustomerName(invoiceDTO.getInvoiceCustomerName());
+                existingInvoice.setAmount(invoiceDTO.getInvoiceAmount());
+                return existingInvoice;
+            }
         }
+        // Create new invoice
+        return new Invoice(null, 
+                         invoiceDTO.getInvoiceNumber(), 
+                         localDateConverter.convertToDatabaseColumn(invoiceDTO.getInvoiceDate()),
+                         invoiceDTO.getInvoiceCustomerName(), 
+                         invoiceDTO.getInvoiceAmount(), 
+                         user != null ? user : new User());
     }
 
     /************************

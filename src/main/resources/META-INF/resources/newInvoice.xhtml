@@ -12,7 +12,7 @@
     
     <ui:define name="content">
         <div class="card">
-            <h2 class="text-900 text-3xl font-medium mb-3">Document Generation Form</h2>
+            <h2 class="text-900 text-3xl font-medium mb-3">Create New Invoice</h2>
             
             <h:form>
                 <p:panel id="formPanel" styleClass="form-panel">
@@ -24,7 +24,7 @@
 
                         <div class="flex flex-column gap-2">
                         <p:outputLabel id="invoiceNumberLabel" for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium"/>
-                            <p:inputText id="invoiceNumber" value="#{invoiceBean.invoiceNumber}" 
+                            <p:inputText id="invoiceNumber" value="#{createInvoiceBean.invoiceNumber}" 
                                 placeholder="Invoice Number" required="true"
                                 requiredMessage="Invoice Number is required">
                             </p:inputText>
@@ -33,7 +33,7 @@
 
                         <div class="flex flex-column gap-2">
                         <h:outputLabel id="invoiceDateLabel" for="invoiceDate" value="Invoice Date:" styleClass="text-900 font-medium"/>
-                            <p:calendar id="invoiceDate" value="#{invoiceBean.invoiceDate}" 
+                            <p:calendar id="invoiceDate" value="#{createInvoiceBean.invoiceDate}" 
                                 placeholder="Invoice Date" required="true"
                                 requiredMessage="Invoice Date is required"
                                 pattern="dd-MM-yyyy">
@@ -43,7 +43,7 @@
 
                         <div class="flex flex-column gap-2">
                         <h:outputLabel id="customerNameLabel" for="customerName" value="Customer Name:" styleClass="text-900 font-medium"/>
-                            <p:inputText id="customerName" value="#{invoiceBean.customerName}"
+                            <p:inputText id="customerName" value="#{createInvoiceBean.customerName}"
                                 placeholder="Customer Name" required="true"
                                 requiredMessage="Customer Name is required"
                                 validatorMessage="Please enter a valid name">
@@ -53,7 +53,7 @@
 
                         <div class="flex flex-column gap-2">
                         <h:outputLabel id="amountLabel" for="amount" value="Amount in euros:" styleClass="text-900 font-medium"/>
-                            <p:inputText id="amount" value="#{invoiceBean.amount}" 
+                            <p:inputText id="amount" value="#{createInvoiceBean.amount}" 
                                 placeholder="Amount" required="true" 
                                 requiredMessage="Amount is required">
                             </p:inputText>
@@ -64,8 +64,8 @@
 
                     <div class="flex justify-content-between mt-3">
                         <p:commandButton id="submitButton" 
-                                       value="Generate Invoice" 
-                                       action="#{invoiceBean.submitInvoice}"
+                                       value="Create Invoice" 
+                                       action="#{createInvoiceBean.submitInvoice}"
                                        update="@form"
                                        styleClass="ui-button-raised"
                                        icon="pi pi-file-export"
@@ -85,17 +85,9 @@
                 </p:panel>
             </h:form>
 
-            <p:dialog id="statusDialog" 
-                      widgetVar="statusDialog" 
-                      modal="true" 
-                      draggable="false"
-                      closable="false" 
-                      resizable="false" 
-                      showHeader="false">
-                <div class="flex align-items-center gap-2">
-                    <p:graphicImage name="/images/ajaxloadingbar.gif" />
-                    <span>Generating invoice...</span>
-                </div>
+            <p:dialog id="statusDialog" widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="images/loading.gif" />
+                <h:outputText value="Processing..." />
             </p:dialog>
         </div>
     </ui:define>
