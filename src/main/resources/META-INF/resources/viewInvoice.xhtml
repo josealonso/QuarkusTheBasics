@@ -79,36 +79,6 @@
                                            styleClass="ui-button-success mr-2"
                                            icon="pi pi-download"
                                            ajax="false"/>
-                            
-                            <p:commandButton value="Delete"
-                                           styleClass="ui-button-danger"
-                                           icon="pi pi-trash"
-                                           onclick="PF('deleteConfirmDialog').show()"
-                                           type="button"/>
-
-                            <p:dialog header="Delete Invoice" 
-                                    widgetVar="deleteConfirmDialog" 
-                                    modal="true" 
-                                    showEffect="fade" 
-                                    hideEffect="fade"
-                                    closeOnEscape="true">
-                                <p class="m-0">
-                                    Are you sure you want to delete invoice #{viewInvoiceBean.invoice.invoiceNumber}? This action cannot be undone.
-                                </p>
-                                <f:facet name="footer">
-                                    <p:commandButton value="Yes" 
-                                                   action="#{viewInvoiceBean.deleteInvoice}"
-                                                   styleClass="ui-button-danger" 
-                                                   icon="pi pi-trash"
-                                                   oncomplete="PF('deleteConfirmDialog').hide()"
-                                                   update="@form"/>
-                                    <p:commandButton value="No" 
-                                                   type="button"
-                                                   styleClass="ui-button-secondary" 
-                                                   onclick="PF('deleteConfirmDialog').hide()"
-                                                   icon="pi pi-times"/>
-                                </f:facet>
-                            </p:dialog>
                         </div>
                     </div>
 

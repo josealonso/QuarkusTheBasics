@@ -129,63 +129,6 @@ public class ViewInvoiceBean implements Serializable {
         }
     }
 
-    public void deleteInvoice() {
-        logger.info("Delete invoice called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
-        Utilities.writeToCentralLog("Delete invoice called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
-        
-        if (invoice == null || invoice.getId() == null) {
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No invoice selected"));
-            Utilities.writeToCentralLog("No invoice selected for deletion");
-            return;
-        }
-
-        try {
-            Client client = ClientBuilder.newClient();
-            String baseUrl = externalContext.getRequestScheme() + "://" + 
-                           externalContext.getRequestServerName() + ":" + 
-                           externalContext.getRequestServerPort();
-            
-            WebTarget target = client.target(baseUrl)
-                                   .path("/api/invoices")
-                                   .path(String.valueOf(invoice.getId()));
-            
-            Response response = target.request(MediaType.APPLICATION_JSON)
-                                   .delete();
-            
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                logger.info("Invoice deleted successfully");
-                Utilities.writeToCentralLog("Invoice deleted successfully via API");
-                facesContext.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Invoice deleted successfully"));
-                
-                // Redirect to the listing page
-                externalContext.redirect("listing.xhtml");
-            } else {
-                String errorMsg;
-                try {
-                    Map<String, String> errorResponse = response.readEntity(new GenericType<Map<String, String>>() {});
-                    errorMsg = errorResponse.getOrDefault("message", "Unknown error occurred");
-                } catch (Exception e) {
-                    errorMsg = "Failed to delete invoice. Server returned status: " + response.getStatus();
-                }
-                
-                logger.severe(errorMsg);
-                Utilities.writeToCentralLog(errorMsg);
-                facesContext.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
-            }
-            
-            client.close();
-        } catch (Exception e) {
-            String errorMsg = "Failed to delete invoice: " + e.getMessage();
-            logger.severe(errorMsg);
-            Utilities.writeToCentralLog(errorMsg);
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", errorMsg));
-        }
-    }
-
     public String previewPdf() {
         logger.info("Preview PDF called. Invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
         Utilities.writeToCentralLog("Preview PDF called for invoice: " + (invoice != null ? invoice.getInvoiceNumber() : "null"));
