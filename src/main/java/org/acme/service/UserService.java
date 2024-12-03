@@ -116,15 +116,18 @@ public class UserService {
     }
 
     public boolean isTheRightPassword(User user, String password) {
-        return true;  // Temporarily return true
-        /*
+        // return true;  // Temporarily return true
         try {
-            writeLogs("password: " + password + "\n user password: " + user.getPassword());
+            writeLogs("Attempting password verification:");
+            writeLogs("Input password: " + password);
+            writeLogs("Stored hash: " + user.getPassword());
+            boolean matches = BcryptUtil.matches(password, user.getPassword());
+            writeLogs("Password match result: " + matches);
+            return matches;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            return false;
         }
-        return BcryptUtil.matches(password, user.getPassword()); */
     }
 
     public void changePassword(String username, String newPassword) {
@@ -153,4 +156,16 @@ public class UserService {
         Files.writeString(Paths.get("UserService-logs.txt"), text + "\n", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
+    // Test method to generate BCrypt hash
+    public String generateBcryptHash(String password) {
+        String hash = BcryptUtil.bcryptHash(password);
+        try {
+            writeLogs("Generated hash for testing:");
+            writeLogs("Password: " + password);
+            writeLogs("Generated Hash: " + hash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hash;
+    }
 }

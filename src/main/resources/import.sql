@@ -25,7 +25,7 @@ CREATE TABLE invoices (
 
 -- Insert users
 INSERT INTO users (username, password, email, roles) VALUES
-('alice', '$2a$10$7BXE8bpTQsA6ZgZvqP5wEeq1eSIbBQjxs7Q2nUMXSGQIVCGHBULCu', 'alice@gmail.com', 'ROLE_ADMIN'),
+('alice', '$2a$10$n7D0QFOTQ4WnzPzSoyKdMOoF8f617o7sW8BOyzYMCgZZktvdGpwqu', 'alice@gmail.com', 'ROLE_ADMIN'),
 ('john', '$2a$10$0pQoVTkLzPnuGJCkAYzm0.Yl9g2bKF4/9xEUqCeXj7NAjgcfLhMZe', 'john@gmail.com', 'ROLE_USER');
 
 -- Insert invoices for alice (user_id = 1)
