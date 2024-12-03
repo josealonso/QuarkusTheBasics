@@ -9,8 +9,8 @@
 <ui:composition>
     <div class="header">
         <p:menubar>
-            <p:menuitem value="Home" outcome="/login.xhtml" icon="pi pi-home"/>
-            <p:menuitem value="Invoices" outcome="/listing.xhtml" icon="pi pi-file"/>
+            <p:menuitem value="Home" outcome="#{empty user ? '/login.xhtml' : '/listing.xhtml'}" icon="pi pi-home"/>
+<!--            <p:menuitem value="Invoices" outcome="/listing.xhtml" icon="pi pi-file"/> -->
             
             <f:facet name="options">
                 <h:form rendered="#{not empty user}">
