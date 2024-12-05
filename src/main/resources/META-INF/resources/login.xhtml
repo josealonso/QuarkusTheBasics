@@ -15,9 +15,9 @@
             <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
                 <h:form id="loginForm">
                     <div class="text-center mb-5">
-                        <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
-                        <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-                        <p:commandLink action="#{loginBean.register()}" value="Register" immediate="true"
+                        <div class="text-900 text-3xl font-medium mb-3">#{msg.value['login.welcome']}</div>
+                        <span class="text-600 font-medium line-height-3">#{msg.value['login.no.account']}</span>
+                        <p:commandLink action="#{loginBean.register()}" value="#{msg.value['login.register']}" immediate="true"
                         styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
                     </div>
 
@@ -27,49 +27,45 @@
                         </p:messages>
 
                         <div class="flex flex-column gap-2 mb-3">
-                            <p:outputLabel for="email" value="Email" styleClass="text-900 font-medium"/>
+                            <p:outputLabel for="email" value="#{msg.value['login.email']}" styleClass="text-900 font-medium"/>
                             <p:inputText id="email" value="#{loginBean.email}" 
                                        required="true"
-                                       requiredMessage="Email is required"
-                                       validatorMessage="Please enter a valid email"
+                                       requiredMessage="#{msg.value['message.required']}"
+                                       validatorMessage="#{msg.value['message.invalid.email']}"
                                        styleClass="w-full">
                                 <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@(.+)$"/>
                                 <p:ajax event="focus" update="messages" global="false"/>
                             </p:inputText>
-                            <p:message for="email" styleClass="text-red-500"/>
+                            <p:message for="email" styleClass="text-red-500 mt-2 block"/>
                         </div>
 
                         <div class="flex flex-column gap-2 mb-3">
-                            <p:outputLabel for="password" value="Password" styleClass="text-900 font-medium"/>
+                            <p:outputLabel for="password" value="#{msg.value['login.password']}" styleClass="text-900 font-medium"/>
                             <p:password id="password" value="#{loginBean.password}" 
                                       required="true"
-                                      requiredMessage="Password is required"
+                                      requiredMessage="#{msg.value['message.required']}"
                                       toggleMask="true"
                                       styleClass="w-full">
                                 <p:ajax event="focus" update="messages" global="false"/>
                             </p:password>
-                            <p:message for="password" styleClass="text-red-500"/>
+                            <p:message for="password" styleClass="text-red-500 mt-2 block"/>
                         </div>
 
                         <div class="flex align-items-center justify-content-between mb-4">
                             <div class="flex align-items-center">
                                 <p:selectBooleanCheckbox id="rememberme" value="#{loginBean.rememberMe}"/>
-                                <p:outputLabel for="rememberme" styleClass="ml-2 text-900" value="Remember me"/>
+                                <p:outputLabel for="rememberme" styleClass="ml-2 text-900" value="#{msg.value['login.rememberme']}"/>
                             </div>
-                            <p:commandLink action="#{loginBean.forgotPassword()}" value="Forgot password?" immediate="true"
+                            <p:commandLink action="#{loginBean.forgotPassword()}" value="#{msg.value['login.forgot.password']}" immediate="true"
                             styleClass="font-medium no-underline text-blue-500 cursor-pointer hover:text-blue-700"/>
                         </div>
                         
                         <div class="flex flex-column gap-2">
-                            <p:commandButton value="Sign In" 
+                            <p:commandButton value="#{msg.value['login.signin']}" 
                                            action="#{loginBean.login}" 
                                            update="@form" 
                                            styleClass="w-full"
                                            icon="pi pi-sign-in"/>
-                            <p:button value="Go to listing" 
-                                    outcome="/listing.xhtml" 
-                                    styleClass="ui-button-secondary w-full"
-                                    icon="pi pi-list"/>
                         </div>
                     </div>
                 </h:form>

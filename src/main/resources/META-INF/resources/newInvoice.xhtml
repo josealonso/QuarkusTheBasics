@@ -8,11 +8,11 @@
       xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="/templates/template.xhtml">
-    <ui:define name="title">New Invoice</ui:define>
+    <ui:define name="title">#{msg.value['invoice.new']}</ui:define>
     
     <ui:define name="content">
         <div class="card">
-            <h2 class="text-900 text-3xl font-medium mb-3">Create New Invoice</h2>
+            <h2 class="text-900 text-3xl font-medium mb-3">#{msg.value['invoice.new']}</h2>
             
             <h:form>
                 <p:panel id="formPanel" styleClass="form-panel">
@@ -23,11 +23,10 @@
                     <div class="grid">
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="invoiceNumber" value="#{msg.value['invoice.number']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputText id="invoiceNumber" value="#{createInvoiceBean.invoiceNumber}" 
-                                    placeholder="Invoice Number" required="true"
-                                    requiredMessage="Invoice Number is required"
-                                    styleClass="w-full">
+                                    placeholder="#{msg.value['invoice.number']}" required="true"
+                                    requiredMessage="#{msg.value['message.required']}">
                                 </p:inputText>
                                 <p:message for="invoiceNumber" styleClass="text-red-500 mt-2 block"/>
                             </div>
@@ -35,10 +34,10 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="invoiceDate" value="Invoice Date" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="invoiceDate" value="#{msg.value['invoice.date']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:calendar id="invoiceDate" value="#{createInvoiceBean.invoiceDate}" 
-                                    placeholder="Invoice Date" required="true"
-                                    requiredMessage="Invoice Date is required"
+                                    placeholder="#{msg.value['invoice.date']}" required="true"
+                                    requiredMessage="#{msg.value['message.required']}"
                                     pattern="dd-MM-yyyy"
                                     styleClass="w-full"
                                     inputStyleClass="w-full">
@@ -49,12 +48,10 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="customerName" value="#{msg.value['invoice.customer']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputText id="customerName" value="#{createInvoiceBean.customerName}"
-                                    placeholder="Customer Name" required="true"
-                                    requiredMessage="Customer Name is required"
-                                    validatorMessage="Please enter a valid name"
-                                    styleClass="w-full">
+                                    placeholder="#{msg.value['invoice.customer']}" required="true"
+                                    requiredMessage="#{msg.value['message.required']}">
                                 </p:inputText>
                                 <p:message for="customerName" styleClass="text-red-500 mt-2 block"/>
                             </div>
@@ -62,11 +59,10 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="amount" value="Amount in euros" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="amount" value="#{msg.value['invoice.amount.euros']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputText id="amount" value="#{createInvoiceBean.amount}" 
-                                    placeholder="Amount" required="true" 
-                                    requiredMessage="Amount is required"
-                                    styleClass="w-full">
+                                    placeholder="#{msg.value['invoice.amount']}" required="true" 
+                                    requiredMessage="#{msg.value['message.required']}">
                                 </p:inputText>
                                 <p:message for="amount" styleClass="text-red-500 mt-2 block"/>
                             </div>
@@ -74,8 +70,7 @@
                     </div>
 
                     <div class="flex justify-content-between mt-3">
-                        <p:commandButton id="submitButton" 
-                                       value="Create Invoice" 
+                        <p:commandButton value="#{msg.value['button.submit']}" 
                                        action="#{createInvoiceBean.submitInvoice}"
                                        update="@form"
                                        styleClass="ui-button-raised"
@@ -88,7 +83,7 @@
                             <f:param name="paramInvoiceAmount" value="#{invoiceBean.amount}" />
                         </p:commandButton>
 
-                        <p:button value="Back to Invoices" 
+                        <p:button value="#{msg.value['button.back']}" 
                                 outcome="listing"
                                 styleClass="ui-button-secondary"
                                 icon="pi pi-arrow-left"/>

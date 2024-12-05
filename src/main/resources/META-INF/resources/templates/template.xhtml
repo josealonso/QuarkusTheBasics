@@ -21,6 +21,25 @@
     <h:body>
         <ui:include src="/templates/header.xhtml" />
         
+        <div class="layout-topbar">
+            <div class="layout-topbar-inner" style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+                <div class="layout-topbar-left">
+                    <p:outputLabel value="#{msg.value['app.title']}" style="font-size: x-large;" styleClass="layout-topbar-logo" />
+                </div>
+                <div class="layout-topbar-right">
+                    <h:form style="display: inline-block; margin-right: 20px;">
+                        <p:selectOneMenu value="#{languageBean.localeCode}" styleClass="language-select">
+                            <f:selectItems value="#{languageBean.countries}"/>
+                            <p:ajax listener="#{languageBean.changeLanguage}" update="@all"/>
+                        </p:selectOneMenu>
+                    </h:form>
+                    <h:form style="display: inline-block; margin-right: 5px;">
+                        <p:commandButton value="Logout" action="#{loginBean.logout}" styleClass="ui-button-secondary"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
         <div class="container">
             <ui:insert name="content">
                 <p>Default content</p>

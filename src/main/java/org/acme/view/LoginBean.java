@@ -1,21 +1,28 @@
 package org.acme.view;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 import org.acme.service.UserService;
-
+import org.acme.Utilities;
+import org.acme.config.ResourceBundleConfig;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ResourceBundle;
 
 @Named
-@RequestScoped
-public class LoginBean {
+@SessionScoped
+public class LoginBean implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String username;
     private String password;
     private String email;
@@ -26,6 +33,9 @@ public class LoginBean {
     @Inject
     private UserService userService;
 
+    @Inject
+    private ResourceBundleConfig resourceBundleConfig;
+
     private static boolean isFirstWrite = true;
 
     private ExternalContext getExternalContext() {
@@ -35,13 +45,31 @@ public class LoginBean {
         return externalContext;
     }
 
-    public void checkLoggedIn() {
-        if (getExternalContext().getSessionMap().get("user") == null) {
-            try {
-                getExternalContext().redirect(getExternalContext().getRequestContextPath() + "/login.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
+    @PostConstruct
+    public void init() {
+        try {
+            if (resourceBundleConfig != null) {
+                var bundle = resourceBundleConfig.getResourceBundle();
+                if (bundle != null) {
+                    String welcomeMessage = bundle.getString("login.welcome");
+                    Utilities.writeToCentralLog(welcomeMessage);
+                }
             }
+        } catch (Exception e) {
+            Utilities.writeToCentralLog("Error initializing LoginBean: " + e.getMessage());
+        }
+    }
+
+    public void checkLoggedIn() {
+        try {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            if (externalContext.getRequest() instanceof HttpServletRequest) {
+                if (externalContext.getSessionMap().get("user") == null) {
+                    externalContext.redirect(externalContext.getRequestContextPath() + "/login.xhtml");
+                }
+            }
+        } catch (IOException e) {
+            Utilities.writeToCentralLog("Error in checkLoggedIn: " + e.getMessage());
         }
     }
 
@@ -129,7 +157,7 @@ public class LoginBean {
         this.rememberMe = rememberMe;
     }
 
-    
+
     private void writeLogs(String text) throws Exception {
         System.out.println("LOG: " + text);
         if (isFirstWrite) {

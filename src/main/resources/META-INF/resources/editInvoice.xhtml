@@ -7,10 +7,10 @@
       xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="/templates/template.xhtml">
-    <ui:define name="title">Edit Invoice</ui:define>
+    <ui:define name="title">#{msg.value['invoice.edit']}</ui:define>
     <ui:define name="content">
         <div class="card">
-            <h2 class="text-900 text-3xl font-medium mb-3">Edit Invoice</h2>
+            <h2 class="text-900 text-3xl font-medium mb-3">#{msg.value['invoice.edit']}</h2>
             
             <h:form id="form">
                 <p:panel id="formPanel" styleClass="form-panel">
@@ -21,12 +21,12 @@
                     <div class="grid">
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="invoiceNumber" value="#{msg.value['invoice.number']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputText id="invoiceNumber" 
                                            value="#{editInvoiceBean.invoiceToSave.invoiceNumber}" 
                                            required="true"
-                                           requiredMessage="Invoice Number is required"
-                                           placeholder="Invoice Number"
+                                           requiredMessage="#{msg.value['message.required']}"
+                                           placeholder="#{msg.value['invoice.number']}"
                                            styleClass="w-full"/>
                                 <p:message for="invoiceNumber" styleClass="text-red-500 mt-2 block"/>
                             </div>
@@ -34,12 +34,12 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="customerName" value="#{msg.value['invoice.customer']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputText id="customerName" 
                                            value="#{editInvoiceBean.invoiceToSave.invoiceCustomerName}" 
                                            required="true"
-                                           requiredMessage="Customer Name is required"
-                                           placeholder="Customer Name"
+                                           requiredMessage="#{msg.value['message.required']}"
+                                           placeholder="#{msg.value['invoice.customer']}"
                                            styleClass="w-full"/>
                                 <p:message for="customerName" styleClass="text-red-500 mt-2 block"/>
                             </div>
@@ -47,12 +47,12 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="amount" value="Amount" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="amount" value="#{msg.value['invoice.amount']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:inputNumber id="amount" 
                                              value="#{editInvoiceBean.invoiceToSave.invoiceAmount}" 
                                              required="true"
-                                             requiredMessage="Amount is required"
-                                             placeholder="Amount"
+                                             requiredMessage="#{msg.value['message.required']}"
+                                             placeholder="#{msg.value['invoice.amount']}"
                                              minValue="0"
                                              decimalPlaces="2"
                                              styleClass="w-full"
@@ -63,14 +63,14 @@
 
                         <div class="col-12 lg:col-6 xl:col-6">
                             <div class="field">
-                                <p:outputLabel for="date" value="Invoice Date" styleClass="text-900 font-medium block mb-2"/>
+                                <p:outputLabel for="date" value="#{msg.value['invoice.date']}" styleClass="text-900 font-medium block mb-2"/>
                                 <p:calendar id="date" 
                                           value="#{editInvoiceBean.invoiceToSave.invoiceDate}" 
                                           required="true"
-                                          requiredMessage="Invoice Date is required"
+                                          requiredMessage="#{msg.value['message.required']}"
                                           pattern="dd/MM/yyyy"
                                           showIcon="true"
-                                          placeholder="Invoice Date"
+                                          placeholder="#{msg.value['invoice.date']}"
                                           styleClass="w-full"
                                           inputStyleClass="w-full">
                                     <f:converter binding="#{dateConverter}"/>
@@ -81,12 +81,12 @@
                     </div>
 
                     <div class="flex justify-content-end gap-2 mt-3">
-                        <p:commandButton value="Save" 
+                        <p:commandButton value="#{msg.value['button.save']}" 
                                        action="#{editInvoiceBean.save}" 
                                        update="@form messages"
                                        process="@form"
                                        styleClass="ui-button-success"/>
-                        <p:button value="Cancel" 
+                        <p:button value="#{msg.value['button.cancel']}" 
                                 outcome="listing" 
                                 styleClass="ui-button-secondary"/>
                     </div>

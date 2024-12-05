@@ -12,11 +12,10 @@
         <f:metadata>
             <f:viewParam name="id" value="#{viewInvoiceBean.invoiceId}"/>
             <f:event type="preRenderView" listener="#{viewInvoiceBean.init}"/>
-            <f:event type="preRenderView" listener="#{loginBean.checkLoggedIn}"/>
         </f:metadata>
     </ui:define>
     
-    <ui:define name="title">View Invoice</ui:define>
+    <ui:define name="title">#{msg.value['invoice.view']}</ui:define>
     
     <ui:define name="content">
         <div class="card">
@@ -37,10 +36,10 @@
                 <div class="invoice-details">
                     <div class="mb-4 flex justify-content-between align-items-center">
                         <div>
-                            <h2 class="text-900 font-bold m-0">Invoice Details</h2>
+                            <h2 class="text-900 font-bold m-0">#{msg.value['invoice.view']}</h2>
                         </div>
                         <div>
-                            <p:button value="Back to List" 
+                            <p:button value="#{msg.value['button.back']}" 
                                      icon="pi pi-arrow-left" 
                                      styleClass="ui-button-secondary mr-2" 
                                      outcome="/listing.xhtml"/>
@@ -58,7 +57,7 @@
                                     hideEffect="fade"
                                     closeOnEscape="true">
                                 <p class="m-0">
-                                    The PDF will open in a new tab. Do you want to continue?
+                                    The PDF invoice will be opened in a new tab. Do you want to continue?
                                 </p>
                                 <f:facet name="footer">
                                     <p:commandButton value="Yes" 
@@ -85,21 +84,21 @@
                     <div class="grid">
                         <div class="col-12 md:col-6">
                             <div class="field">
-                                <label class="font-bold">Invoice Number</label>
+                                <label class="font-bold">#{msg.value['invoice.number']}</label>
                                 <div>#{viewInvoiceBean.invoice.invoiceNumber}</div>
                             </div>
                         </div>
 
                         <div class="col-12 md:col-6">
                             <div class="field">
-                                <label class="font-bold">Customer Name</label>
+                                <label class="font-bold">#{msg.value['invoice.customer']}</label>
                                 <div>#{viewInvoiceBean.invoice.invoiceCustomerName}</div>
                             </div>
                         </div>
 
                         <div class="col-12 md:col-6">
                             <div class="field">
-                                <label class="font-bold">Amount</label>
+                                <label class="font-bold">#{msg.value['invoice.amount']}</label>
                                 <div>
                                     <h:outputText value="#{viewInvoiceBean.invoice.invoiceAmount}">
                                         <f:convertNumber type="currency" currencySymbol="€"/>
@@ -110,7 +109,7 @@
 
                         <div class="col-12 md:col-6">
                             <div class="field">
-                                <label class="font-bold">Date</label>
+                                <label class="font-bold">#{msg.value['invoice.date']}</label>
                                 <div>
                                     <h:outputText value="#{viewInvoiceBean.invoice.invoiceDate}">
                                         <f:converter binding="#{dateConverter}"/>
