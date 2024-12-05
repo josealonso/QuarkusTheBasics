@@ -18,53 +18,67 @@
                         <p:autoUpdate />
                     </p:messages>
 
-                    <p:panelGrid columns="2" styleClass="custom-panel-grid">
-                        <div class="flex flex-column gap-2">
-                            <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium"/>
-                            <p:inputText id="invoiceNumber" 
-                                       value="#{editInvoiceBean.invoiceToSave.invoiceNumber}" 
-                                       required="true"
-                                       requiredMessage="Invoice Number is required"
-                                       placeholder="Invoice Number"/>
-                            <p:message for="invoiceNumber" styleClass="text-red-500"/>
+                    <div class="grid">
+                        <div class="col-12 lg:col-6 xl:col-6">
+                            <div class="field">
+                                <p:outputLabel for="invoiceNumber" value="Invoice Number" styleClass="text-900 font-medium block mb-2"/>
+                                <p:inputText id="invoiceNumber" 
+                                           value="#{editInvoiceBean.invoiceToSave.invoiceNumber}" 
+                                           required="true"
+                                           requiredMessage="Invoice Number is required"
+                                           placeholder="Invoice Number"
+                                           styleClass="w-full"/>
+                                <p:message for="invoiceNumber" styleClass="text-red-500 mt-2 block"/>
+                            </div>
                         </div>
 
-                        <div class="flex flex-column gap-2">
-                            <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium"/>
-                            <p:inputText id="customerName" 
-                                       value="#{editInvoiceBean.invoiceToSave.invoiceCustomerName}" 
-                                       required="true"
-                                       requiredMessage="Customer Name is required"
-                                       placeholder="Customer Name"/>
-                            <p:message for="customerName" styleClass="text-red-500"/>
+                        <div class="col-12 lg:col-6 xl:col-6">
+                            <div class="field">
+                                <p:outputLabel for="customerName" value="Customer Name" styleClass="text-900 font-medium block mb-2"/>
+                                <p:inputText id="customerName" 
+                                           value="#{editInvoiceBean.invoiceToSave.invoiceCustomerName}" 
+                                           required="true"
+                                           requiredMessage="Customer Name is required"
+                                           placeholder="Customer Name"
+                                           styleClass="w-full"/>
+                                <p:message for="customerName" styleClass="text-red-500 mt-2 block"/>
+                            </div>
                         </div>
 
-                        <div class="flex flex-column gap-2">
-                            <p:outputLabel for="amount" value="Amount" styleClass="text-900 font-medium"/>
-                            <p:inputNumber id="amount" 
-                                         value="#{editInvoiceBean.invoiceToSave.invoiceAmount}" 
-                                         required="true"
-                                         requiredMessage="Amount is required"
-                                         placeholder="Amount"
-                                         minValue="0"
-                                         decimalPlaces="2"/>
-                            <p:message for="amount" styleClass="text-red-500"/>
+                        <div class="col-12 lg:col-6 xl:col-6">
+                            <div class="field">
+                                <p:outputLabel for="amount" value="Amount" styleClass="text-900 font-medium block mb-2"/>
+                                <p:inputNumber id="amount" 
+                                             value="#{editInvoiceBean.invoiceToSave.invoiceAmount}" 
+                                             required="true"
+                                             requiredMessage="Amount is required"
+                                             placeholder="Amount"
+                                             minValue="0"
+                                             decimalPlaces="2"
+                                             styleClass="w-full"
+                                             inputStyleClass="w-full"/>
+                                <p:message for="amount" styleClass="text-red-500 mt-2 block"/>
+                            </div>
                         </div>
 
-                        <div class="flex flex-column gap-2">
-                            <p:outputLabel for="date" value="Invoice Date" styleClass="text-900 font-medium"/>
-                            <p:calendar id="date" 
-                                      value="#{editInvoiceBean.invoiceToSave.invoiceDate}" 
-                                      required="true"
-                                      requiredMessage="Invoice Date is required"
-                                      pattern="dd/MM/yyyy"
-                                      showIcon="true"
-                                      placeholder="Invoice Date">
-                                <f:converter binding="#{dateConverter}"/>
-                            </p:calendar>
-                            <p:message for="date" styleClass="text-red-500"/>
+                        <div class="col-12 lg:col-6 xl:col-6">
+                            <div class="field">
+                                <p:outputLabel for="date" value="Invoice Date" styleClass="text-900 font-medium block mb-2"/>
+                                <p:calendar id="date" 
+                                          value="#{editInvoiceBean.invoiceToSave.invoiceDate}" 
+                                          required="true"
+                                          requiredMessage="Invoice Date is required"
+                                          pattern="dd/MM/yyyy"
+                                          showIcon="true"
+                                          placeholder="Invoice Date"
+                                          styleClass="w-full"
+                                          inputStyleClass="w-full">
+                                    <f:converter binding="#{dateConverter}"/>
+                                </p:calendar>
+                                <p:message for="date" styleClass="text-red-500 mt-2 block"/>
+                            </div>
                         </div>
-                    </p:panelGrid>
+                    </div>
 
                     <div class="flex justify-content-end gap-2 mt-3">
                         <p:commandButton value="Save" 
