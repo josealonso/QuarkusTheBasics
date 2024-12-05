@@ -44,7 +44,9 @@
                                       required="true"
                                       requiredMessage="Password is required"
                                       toggleMask="true"
-                                      styleClass="w-full"/>
+                                      styleClass="w-full">
+                                <p:ajax event="focus" update="messages" global="false"/>
+                            </p:password>
                             <p:message for="password" styleClass="text-red-500"/>
                         </div>
 
