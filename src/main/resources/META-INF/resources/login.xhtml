@@ -34,6 +34,7 @@
                                        validatorMessage="Please enter a valid email"
                                        styleClass="w-full">
                                 <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@(.+)$"/>
+                                <p:ajax event="focus" update="messages" global="false"/>
                             </p:inputText>
                             <p:message for="email" styleClass="text-red-500"/>
                         </div>
