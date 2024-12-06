@@ -12,14 +12,14 @@
         <f:event type="preRenderView" listener="#{loginBean.checkLoggedIn}"/>
     </ui:define>
 
-    <ui:define name="title">Invoice List</ui:define>
+    <ui:define name="title">#{msg.getString('list.title')}</ui:define>
     
     <ui:define name="content">
         <div class="card">
             <h:form id="form">
                 <div class="flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-900 font-bold m-0">Your Invoices</h2>
-                    <p:commandButton value="Create Invoice"  immediate="true"
+                    <h2 class="text-900 font-bold m-0">#{msg.getString('list.title')}</h2>
+                    <p:commandButton value="#{msg.getString('invoice.new')}"  immediate="true"
                                    icon="pi pi-plus"
                                    styleClass="ui-button-success"
                                    action="#{userInvoiceOptionsBean.goToCreateInvoice()}"
@@ -33,67 +33,61 @@
                 <p:dataTable id="invoices" 
                            var="invoice" 
                            value="#{userInvoiceOptionsBean.userInvoices}"
-                           emptyMessage="No invoices found"
+                           emptyMessage="#{msg.getString('list.empty')}"
                            styleClass="p-datatable-sm"
                            paginator="true" 
                            rows="10"
                            paginatorPosition="bottom"
                            widgetVar="invoicesTable">
                     
-                    <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}">
+                    <p:column headerText="#{msg.getString('invoice.number')}" sortBy="#{invoice.invoiceNumber}">
                         <h:outputText value="#{invoice.invoiceNumber}" />
                     </p:column>
 
-                    <p:column headerText="Customer Name" sortBy="#{invoice.invoiceCustomerName}">
+                    <p:column headerText="#{msg.getString('invoice.customer')}" sortBy="#{invoice.invoiceCustomerName}">
                         <h:outputText value="#{invoice.invoiceCustomerName}" />
                     </p:column>
 
-                    <p:column headerText="Amount" sortBy="#{invoice.invoiceAmount}">
+                    <p:column headerText="#{msg.getString('invoice.amount')}" sortBy="#{invoice.invoiceAmount}">
                         <h:outputText value="#{invoice.invoiceAmount}">
-                            <f:convertNumber type="currency" currencySymbol="€"/>
+                            <f:convertNumber type="currency" currencySymbol="€" />
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Date" sortBy="#{invoice.invoiceDate}">
+                    <p:column headerText="#{msg.getString('invoice.date')}" sortBy="#{invoice.invoiceDate}">
                         <h:outputText value="#{invoice.invoiceDate}">
                             <f:converter binding="#{dateConverter}"/>
                         </h:outputText>
                     </p:column>
 
-                    <p:column headerText="Actions" exportable="false" style="width:150px">
-                        <div class="flex align-items-center gap-2">
-                            <p:button icon="pi pi-eye" 
-                                    styleClass="rounded-button ui-button-secondary p-mr-2" 
-                                    outcome="viewInvoice"
-                                    title="View Invoice">
-                                <f:param name="id" value="#{invoice.id}" />
-                            </p:button>
-                            
-                            <p:commandButton icon="pi pi-pencil" 
-                                    styleClass="rounded-button ui-button-warning p-mr-2" 
+                    <p:column headerText="#{msg.getString('list.actions')}" style="width:100px">
+                        <div class="flex justify-content-around">
+                            <p:commandButton icon="pi pi-eye" 
+                                           styleClass="rounded-button ui-button-secondary ui-button-outlined"
+                                           action="#{userInvoiceOptionsBean.viewInvoice(invoice)}"
+                                           title="#{msg.getString('view.title')}"
+                                           immediate="true"/>
+                            <p:commandButton icon="pi pi-pencil"
+                                           styleClass="rounded-button ui-button-warning ui-button-outlined"
                                            action="#{userInvoiceOptionsBean.editInvoice(invoice.id)}"
-                                    title="Edit Invoice"
-                                           process="@this"
-                                           rendered="#{not empty user}"/>
-                            
+                                           title="#{msg.getString('edit.title')}"
+                                           immediate="true"/>
                             <p:commandButton icon="pi pi-trash" 
-                                           styleClass="rounded-button ui-button-danger" 
-                                           title="Delete Invoice"
-                                           rendered="#{not empty user}"
+                                           styleClass="rounded-button ui-button-danger ui-button-outlined"
                                            action="#{userInvoiceOptionsBean.deleteInvoice(invoice.id)}"
-                                           update=":form:invoices :form:messages"
-                                           process="@this">
-                                <p:confirm header="Delete Invoice" 
-                                         message="Are you sure you want to delete invoice #{invoice.invoiceNumber}? This action cannot be undone."
-                                         icon="pi pi-exclamation-triangle"/>
+                                           title="#{msg.getString('view.delete')}"
+                                           update="@form">
+                                <p:confirm header="#{msg.getString('list.delete.confirm')}" 
+                                          message="#{msg.getString('list.delete.confirm')}" 
+                                          icon="pi pi-exclamation-triangle"/>
                             </p:commandButton>
                         </div>
                     </p:column>
                 </p:dataTable>
 
                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                    <p:commandButton value="#{msg.getString('button.yes')}" type="button" styleClass="ui-confirmdialog-yes"/>
+                    <p:commandButton value="#{msg.getString('button.no')}" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"/>
                 </p:confirmDialog>
             </h:form>
         </div>

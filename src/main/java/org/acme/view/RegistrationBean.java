@@ -17,6 +17,7 @@ public class RegistrationBean {
     private Long id;
     private String username;
     private String password;
+    private String confirmPassword;
     private String email;
     private String roles;
 
@@ -60,9 +61,11 @@ public class RegistrationBean {
     }
 
     private void clearForm() {
-        username = null;
-        password = null;
-        email = null;
+        this.username = null;
+        this.password = null;
+        this.confirmPassword = null;
+        this.email = null;
+        this.roles = null;
     }
 
     public Long getId() {
@@ -103,6 +106,14 @@ public class RegistrationBean {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public String login() {

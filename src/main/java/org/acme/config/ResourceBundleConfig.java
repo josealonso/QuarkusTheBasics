@@ -1,5 +1,6 @@
 package org.acme.config;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.faces.context.FacesContext;
@@ -13,8 +14,22 @@ public class ResourceBundleConfig {
     private ResourceBundle resourceBundle;
     private Locale currentLocale;
 
-    public ResourceBundleConfig() {
-        this.currentLocale = Locale.ENGLISH;
+    @PostConstruct
+    public void init() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            Locale sessionLocale = (Locale) context.getExternalContext().getSessionMap().get("locale");
+            if (sessionLocale != null) {
+                this.currentLocale = sessionLocale;
+                if (context.getViewRoot() != null) {
+                    context.getViewRoot().setLocale(sessionLocale);
+                }
+            } else {
+                this.currentLocale = Locale.ENGLISH;
+            }
+        } else {
+            this.currentLocale = Locale.ENGLISH;
+        }
         initResourceBundle();
     }
 
@@ -36,8 +51,19 @@ public class ResourceBundleConfig {
     }
 
     public void setLocale(Locale locale) {
-        this.currentLocale = locale;
-        initResourceBundle();
+        if (locale != null) {
+            this.currentLocale = locale;
+            initResourceBundle();
+            
+            // Update the session and ViewRoot
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null) {
+                context.getExternalContext().getSessionMap().put("locale", locale);
+                if (context.getViewRoot() != null) {
+                    context.getViewRoot().setLocale(locale);
+                }
+            }
+        }
     }
 
     public ResourceBundle getResourceBundle() {

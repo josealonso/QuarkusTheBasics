@@ -76,56 +76,65 @@ public class ViewInvoiceBean implements Serializable {
             
             logger.info("Init called for user: " + sessionUser.getEmail());
             
-            String idParam = externalContext.getRequestParameterMap().get("id");
-            String streamParam = externalContext.getRequestParameterMap().get("stream");
-            streamMode = "true".equals(streamParam);
+            loadInvoice();
             
-            Utilities.writeToCentralLog("Processing parameters - ID: " + idParam + ", stream: " + streamMode);
-            
-            if (idParam != null && !idParam.trim().isEmpty()) {
-                try {
-                    invoiceId = Long.parseLong(idParam);
-                    Utilities.writeToCentralLog("Looking up invoice with ID: " + invoiceId);
-                    
-                    invoice = invoiceService.getInvoiceById(invoiceId)
-                            .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with ID: " + invoiceId));
-                    
-                    Utilities.writeToCentralLog("Invoice found: " + invoice.getInvoiceNumber() + " for customer: " + invoice.getInvoiceCustomerName());
-                    
-                    // Check if user has access to this invoice
-                    /*if (!invoice.getInvoiceCustomerName().equals(sessionUser.getEmail())) {
-                        logger.severe("User " + sessionUser.getEmail() + " attempted to access invoice: " + invoice.getInvoiceNumber());
-                        facesContext.addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "You don't have permission to view this invoice"));
-                        Utilities.writeToCentralLog("Access denied - Invoice customer: " + invoice.getInvoiceCustomerName() + " != Session user: " + sessionUser.getEmail());
-                        navigateToListing();
-                        return;
-                    } */
-                    
-                    Utilities.writeToCentralLog("Access granted - Loading invoice view");
-                    
-                    if (streamMode) {
-                        Utilities.writeToCentralLog("Streaming PDF for invoice: " + invoice.getInvoiceNumber());
-                        streamPdf();
-                    }
-                } catch (NumberFormatException e) {
-                    logger.severe("Invalid invoice ID format: " + idParam);
-                    facesContext.addMessage(null, 
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invalid invoice ID format"));
-                    navigateToListing();
-                } catch (InvoiceNotFoundException e) {
-                    logger.severe("Invoice not found: " + e.getMessage());
-                    facesContext.addMessage(null, 
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
-                    navigateToListing();
-                }
-            } else {
-                logger.warning("No ID parameter provided");
-            }
         } catch (Exception e) {
-            logger.severe("Error in init(): " + e.getMessage());
+            logger.severe("Error in init: " + e.getMessage());
             facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to initialize: " + e.getMessage()));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to initialize page"));
+            navigateToListing();
+        }
+    }
+    
+    private void loadInvoice() {
+        String idParam = externalContext.getRequestParameterMap().get("id");
+        String streamParam = externalContext.getRequestParameterMap().get("stream");
+        streamMode = "true".equals(streamParam);
+        
+        Utilities.writeToCentralLog("Processing parameters - ID: " + idParam + ", stream: " + streamMode);
+        
+        if (idParam != null && !idParam.trim().isEmpty()) {
+            try {
+                invoiceId = Long.parseLong(idParam);
+                Utilities.writeToCentralLog("Looking up invoice with ID: " + invoiceId);
+                
+                invoice = invoiceService.getInvoiceById(invoiceId)
+                        .orElseThrow(() -> new InvoiceNotFoundException("Invoice not found with ID: " + invoiceId));
+                
+                Utilities.writeToCentralLog("Invoice found: " + invoice.getInvoiceNumber() + " for customer: " + invoice.getInvoiceCustomerName());
+                
+                // Check if user has access to this invoice
+                /*if (!invoice.getInvoiceCustomerName().equals(sessionUser.getEmail())) {
+                    logger.severe("User " + sessionUser.getEmail() + " attempted to access invoice: " + invoice.getInvoiceNumber());
+                    facesContext.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "You don't have permission to view this invoice"));
+                    Utilities.writeToCentralLog("Access denied - Invoice customer: " + invoice.getInvoiceCustomerName() + " != Session user: " + sessionUser.getEmail());
+                    navigateToListing();
+                    return;
+                } */
+                
+                Utilities.writeToCentralLog("Access granted - Loading invoice view");
+                
+                if (streamMode) {
+                    Utilities.writeToCentralLog("Streaming PDF for invoice: " + invoice.getInvoiceNumber());
+                    streamPdf();
+                }
+            } catch (NumberFormatException e) {
+                logger.severe("Invalid invoice ID: " + idParam);
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invalid invoice ID"));
+                navigateToListing();
+            } catch (InvoiceNotFoundException e) {
+                logger.severe("Invoice not found: " + e.getMessage());
+                facesContext.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invoice not found"));
+                navigateToListing();
+            }
+        } else {
+            logger.severe("No invoice ID provided");
+            facesContext.addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No invoice ID provided"));
+            navigateToListing();
         }
     }
 

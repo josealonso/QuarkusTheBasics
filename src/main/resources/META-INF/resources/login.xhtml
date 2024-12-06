@@ -15,9 +15,9 @@
             <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
                 <h:form id="loginForm">
                     <div class="text-center mb-5">
-                        <div class="text-900 text-3xl font-medium mb-3">#{msg.value['login.welcome']}</div>
-                        <span class="text-600 font-medium line-height-3">#{msg.value['login.no.account']}</span>
-                        <p:commandLink action="#{loginBean.register()}" value="#{msg.value['login.register']}" immediate="true"
+                        <div class="text-900 text-3xl font-medium mb-3">#{msg.getString('login.welcome')}</div>
+                        <span class="text-600 font-medium line-height-3">#{msg.getString('login.no.account')}</span>
+                        <p:commandLink action="#{loginBean.register()}" value="#{msg.getString('login.register')}" immediate="true"
                         styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
                     </div>
 

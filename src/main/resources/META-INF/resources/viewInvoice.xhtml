@@ -44,7 +44,7 @@
                                      styleClass="ui-button-secondary mr-2" 
                                      outcome="/listing.xhtml"/>
                             
-                            <p:commandButton value="Preview" 
+                            <p:commandButton value="#{msg.value['view.preview.pdf']}" 
                                      styleClass="ui-button-info mr-2"
                                      icon="pi pi-eye"
                                      onclick="PF('pdfConfirmDialog').show()"
@@ -73,7 +73,7 @@
                                 </f:facet>
                             </p:dialog>
 
-                            <p:commandButton value="Download" 
+                            <p:commandButton value="#{msg.value['view.download.pdf']}" 
                                            action="#{viewInvoiceBean.downloadPdf}"
                                            styleClass="ui-button-success mr-2"
                                            icon="pi pi-download"
@@ -101,7 +101,7 @@
                                 <label class="font-bold">#{msg.value['invoice.amount']}</label>
                                 <div>
                                     <h:outputText value="#{viewInvoiceBean.invoice.invoiceAmount}">
-                                        <f:convertNumber type="currency" currencySymbol="€"/>
+                                        <f:convertNumber type="currency" currencySymbol="€" locale="#{facesContext.viewRoot.locale}"/>
                                     </h:outputText>
                                 </div>
                             </div>
