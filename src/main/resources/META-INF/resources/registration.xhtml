@@ -18,7 +18,7 @@
                     <div class="text-center mb-5">
                         <div class="text-900 text-3xl font-medium mb-3">#{msg.getString('registration.create.account')}</div>
                         <span class="text-600 font-medium line-height-3">#{msg.getString('registration.have.account')}</span>
-                        <p:commandLink action="#{loginBean.login()}" value="#{msg.getString('registration.signin')}" immediate="true"
+                        <p:commandLink action="/login.xhtml?faces-redirect=true" value="#{msg.getString('registration.signin')}" immediate="true"
                         styleClass="font-medium no-underline ml-2 text-blue-500 cursor-pointer"/>
                     </div>
 
