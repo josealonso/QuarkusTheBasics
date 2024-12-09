@@ -67,43 +67,39 @@ public class LanguageBean implements Serializable {
 
     public void changeLanguage() {
         try {
+            // Ensure the localeCode is not null and valid
+            if (localeCode == null || localeCode.isEmpty()) {
+                localeCode = "en"; // default to English
+            }
+
+            // Create Locale object
             Locale locale = new Locale(localeCode);
             
-            // Update ResourceBundleConfig first (it will handle session and ViewRoot)
-            resourceBundleConfig.setLocale(locale);
-            
-            // Clear resource bundle caches
-            ResourceBundle.clearCache();
-            ResourceBundle.clearCache(Thread.currentThread().getContextClassLoader());
-            
-            // Force a redirect to refresh the page while preserving view parameters
-            String viewId = facesContext.getViewRoot().getViewId();
+            // Update session and view root locale
+            FacesContext facesContext = FacesContext.getCurrentInstance();
             ExternalContext externalContext = facesContext.getExternalContext();
             
-            // Get the current query string using HttpServletRequest
-            HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-            String currentQueryString = request.getQueryString();
+            // Set locale in session
+            externalContext.getSessionMap().put("locale", locale);
             
-            StringBuilder redirectUrl = new StringBuilder(externalContext.getRequestContextPath())
-                .append(viewId)
-                .append("?faces-redirect=true&includeViewParams=true");
-                
-            // Preserve existing query parameters if they exist
-            if (currentQueryString != null && !currentQueryString.isEmpty() && 
-                !currentQueryString.contains("faces-redirect=true")) {
-                redirectUrl.append("&").append(currentQueryString);
-            }
+            // Update ResourceBundleConfig
+            resourceBundleConfig.setLocale(locale);
             
-            // Preserve theme and styling context
-            externalContext.getSessionMap().put("preserveThemeContext", true);
+            // Update FacesContext view root locale
+            facesContext.getViewRoot().setLocale(locale);
             
-            externalContext.redirect(redirectUrl.toString());
+            // Prepare redirect
+            String viewId = facesContext.getViewRoot().getViewId();
+            String redirectUrl = externalContext.getRequestContextPath() + viewId + 
+                                 "?faces-redirect=true&includeViewParams=true";
             
-            Utilities.writeToCentralLog("Language changed to: " + localeCode + " with URL: " + redirectUrl);
-        } catch (Exception e) {
+            // Redirect to preserve language
+            externalContext.redirect(redirectUrl);
+            
+            // Log the language change
+            Utilities.writeToCentralLog("Language changed to: " + localeCode);
+        } catch (IOException e) {
             Utilities.writeToCentralLog("Error changing language: " + e.getMessage());
-            facesContext.addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error changing language", e.getMessage()));
         }
     }
 

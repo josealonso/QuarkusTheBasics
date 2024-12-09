@@ -8,6 +8,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.acme.service.UserService;
 import org.acme.Utilities;
 import org.acme.config.ResourceBundleConfig;
@@ -103,10 +105,36 @@ public class LoginBean implements Serializable {
             return null;
         }
     }
-
+    
     public String logout() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "/login.xhtml?faces-redirect=true";
+        var context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+
+        // Preserve the current locale
+        String currentLocale = (String) externalContext.getSessionMap().get("localeCode");
+
+        // Clear user session
+        externalContext.getSessionMap().remove("user");
+
+        // Invalidate the session
+        externalContext.invalidateSession();
+
+        // Create a new session and restore the locale
+        HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+        HttpSession newSession = request.getSession(true);
+        
+        if (currentLocale != null) {
+            newSession.setAttribute("localeCode", currentLocale);
+        }
+
+        // Redirect to login page with locale parameter
+        String loginUrl = externalContext.getRequestContextPath() + 
+            "/login.xhtml?faces-redirect=true&includeViewParams=true" + 
+            (currentLocale != null ? "&localeCode=" + currentLocale : "");
+        // Ensure no further processing
+        // facesContext.responseComplete();
+        
+        return loginUrl;
     }
 
     public String register() {

@@ -48,6 +48,11 @@ public class MessageProvider {
         return getString(key);
     }
 
+    // Add this method to support direct method call in EL
+    public String logout() {
+        return getString("logout.button");
+    }
+
     private void updateBundle() {
         try {
             if (facesContext != null && facesContext.getViewRoot() != null) {
