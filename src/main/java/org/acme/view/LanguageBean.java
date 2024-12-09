@@ -86,13 +86,16 @@ public class LanguageBean implements Serializable {
             
             StringBuilder redirectUrl = new StringBuilder(externalContext.getRequestContextPath())
                 .append(viewId)
-                .append("?faces-redirect=true");
+                .append("?faces-redirect=true&includeViewParams=true");
                 
             // Preserve existing query parameters if they exist
             if (currentQueryString != null && !currentQueryString.isEmpty() && 
                 !currentQueryString.contains("faces-redirect=true")) {
                 redirectUrl.append("&").append(currentQueryString);
             }
+            
+            // Preserve theme and styling context
+            externalContext.getSessionMap().put("preserveThemeContext", true);
             
             externalContext.redirect(redirectUrl.toString());
             
